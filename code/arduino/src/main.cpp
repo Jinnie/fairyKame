@@ -35,7 +35,7 @@ void loop() {
   // get the active command
   String activeCommand = connector.getActiveCommand();
 
-  Serial.println("Executing command: " + activeCommand);
+//  Serial.println("Executing command: " + activeCommand);
 
   if (executor.isAutonomous()) {
       // the good stuff, not very smart yet. Tryouts.

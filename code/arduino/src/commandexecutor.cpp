@@ -7,69 +7,40 @@ void CommandExecutor::init(MiniKame* kame) {
 }
 
 void CommandExecutor::parseCommand(String command) {
-  switch (command.toInt()){
 
-    case 1:
+  if (command == "run") {
     robot->run(1,550);
     running = 1;
-    break;
-
-    case 2:
-    break;
-
-    case 3:
+  } else if (command == "turnL") {
     robot->turnL(1,550);
     running = 1;
-    break;
-
-    case 4:
+  } else if (command == "turnR") {
     robot->turnR(1,550);
     running = 1;
-    break;
-
-    case 5:
-    //STOP
+  } else if (command == "stop") {
     running = 0;
     autonomous = false;
     robot->home();
     delay(100);
-    break;
-
-    case 6: //heart
+  } else if (command == "pushUp") {
     robot->pushUp(2,1400);
-    break;
-
-    case 7: //fire
+  } else if (command == "upDown") {
     robot->upDown(4,250);
-    break;
-
-    case 8: //skull
+  } else if (command == "jump") {
     robot->jump();
-    break;
-
-    case 9: //cross
+  } else if (command == "hello") {
     robot->hello();
-    break;
-
-    case 10: //punch
-    //robot.moonwalkL(4,2000);
+  } else if (command == "frontBack") {
     robot->frontBack(4,200);
-    break;
-
-    case 11: //mask
+  } else if (command == "dance") {
     robot->dance(2,1000);
-    break;
-
-    case 13: //autonomous mode toggle
+  } else if (command == "moonWalk") {
+    robot->moonwalkL(4,2000);
+  } else if (command == "auto") {
     autonomous = true;
-    break;
-
-    default:
+  } else {
     robot->home();
     delay(100);
-    break;
-
-
   }
 }
 

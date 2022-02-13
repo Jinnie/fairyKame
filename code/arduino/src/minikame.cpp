@@ -1,7 +1,7 @@
 #include "minikame.h"
 
 int angToUsec(float value){
-    return value/180 * (MAX_PULSE_WIDTH-MIN_PULSE_WIDTH) + MIN_PULSE_WIDTH;
+    return value/180 * (DEFAULT_MAX_PULSE_WIDTH-DEFAULT_MIN_PULSE_WIDTH) + DEFAULT_MIN_PULSE_WIDTH;
 }
 
 void MiniKame::init(){
