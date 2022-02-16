@@ -3,11 +3,15 @@
 
 #include <Servo.h>
 #include "octosnake.h"
+#include "body/leg-2dof.h"
 
 class MiniKame {
 
     public:
+        ~MiniKame();
         void init();
+        void pulse();
+
         void run(float steps, float period);
         void walk(float steps, float period);
         //void backward(float steps, float period);
@@ -27,6 +31,7 @@ class MiniKame {
         void reverseServo(int id);
         float getServo(int id);
         void moveServos(int time, float target[8]);
+        void magic();
 
     private:
         Oscillator oscillator[8];
@@ -42,6 +47,11 @@ class MiniKame {
 
         //int angToUsec(float value);
         void execute(float steps, float period[8], int amplitude[8], int offset[8], int phase[8]);
+
+        Leg2DOF *frontLeftLeg = new Leg2DOF(true, true);
+        Leg2DOF *frontRightLeg = new Leg2DOF(true, false);
+        Leg2DOF *backLeftLeg = new Leg2DOF(false, true);
+        Leg2DOF *backRightLeg = new Leg2DOF(false, false);
 };
 
 #endif

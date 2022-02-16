@@ -4,9 +4,7 @@ int angToUsec(float value){
     return value/180 * (DEFAULT_MAX_PULSE_WIDTH-DEFAULT_MIN_PULSE_WIDTH) + DEFAULT_MIN_PULSE_WIDTH;
 }
 
-void MiniKame::init(){
-
-
+void MiniKame::init(){    
     board_pins[0] = D1; // front left inner
     board_pins[1] = D4, // front right inner
     board_pins[2] = D8; // front left outer
@@ -18,22 +16,40 @@ void MiniKame::init(){
 
     // inner: 0, 1, 4, 5
 
-    trim[0] = 0;
-    trim[1] = 0;
-    trim[2] = 0;
-    trim[3] = 0;
-    trim[4] = 0;
-    trim[5] = 0;
-    trim[6] = 0;
-    trim[7] = 10;
+    // Originals! Return if you recenter your bot!!!
+    // trim[0] = 0;
+    // trim[1] = 0;
+    // trim[2] = 0;
+    // trim[3] = 0;
+    // trim[4] = 0;
+    // trim[5] = 0;
+    // trim[6] = 0;
+    // trim[7] = 10;
+
+    trim[0] = -5;
+    trim[1] = 5;
+    trim[2] = -3;
+    trim[3] = 7;
+    trim[4] = 7;
+    trim[5] = -8;
+    trim[6] = 5;
+    trim[7] = -5;
+    trim[8] = 1;
 
     for (int i=0; i<8; i++) reverse[i] = 0;
-
 
     for(int i=0; i<8; i++) oscillator[i].setTrim(trim[i]);
     for(int i=0; i<8; i++) servo[i].attach(board_pins[i]);
     home();
 }
+
+void MiniKame::pulse() {
+    this->frontLeftLeg->pulse();
+    this->frontRightLeg->pulse();
+    this->backLeftLeg->pulse();
+    this->backRightLeg->pulse();
+}
+
 
 void MiniKame::turnR(float steps, float T=600){
     int x_amp = 15;
@@ -224,8 +240,6 @@ void MiniKame::hello(){
 
 }
 
-
-
 void MiniKame::jump(){
     float sentado[]={90+15,90-15,90-65,90+65,90+20,90-20,90+10,90-10};
     int ap = 20;
@@ -307,4 +321,20 @@ void MiniKame::execute(float steps, float period[8], int amplitude[8], int offse
         }
         yield();
     }
+}
+
+bool _magic = false;
+
+void MiniKame::magic() {
+    this->frontRightLeg->knee->oscillate(2000, 15, 60, 0);
+    // this->frontLeftLeg->knee->oscillate(2000, 15, 0, 0);
+    this->frontRightLeg->hip->oscillate(2000, 15, 0, 0);
+    // this->frontLeftLeg->hip->oscillate(2000, 10, 0, 0);
+}
+
+MiniKame::~MiniKame() {
+    delete this->frontLeftLeg;
+    delete this->frontRightLeg;
+    delete this->backLeftLeg;
+    delete this->backRightLeg;
 }

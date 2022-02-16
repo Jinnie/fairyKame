@@ -36,6 +36,8 @@ void CommandExecutor::parseCommand(String command) {
     robot->dance(2,1000);
   } else if (command == "moonWalk") {
     robot->moonwalkL(4,2000);
+  } else if (command == "magic") {
+    robot->magic();
   } else if (command == "auto") {
     autonomous = true;
   } else {
