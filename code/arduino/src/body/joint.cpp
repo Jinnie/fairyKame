@@ -13,10 +13,11 @@ Joint::Joint(int pin, int trim, bool reverse) {
 }
 
 void Joint::setPosition(float target){
-    if (target > 45 || target < -45) {
+    const int limit = 70;
+    if (target > limit || target < -limit) {
         Serial.print("wrong position ");
         Serial.println(target);
-        return;
+        target = target > limit ? limit : -limit;
     }
     if (!this->reverse)
         this->servo.writeMicroseconds(this->angToUsec(this->_basePosition + target + this->trim)); // todo: make trim reverse sensitive

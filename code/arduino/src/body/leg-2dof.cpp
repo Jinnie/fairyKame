@@ -33,6 +33,16 @@ Leg2DOF::Leg2DOF(bool front, bool left) {
     }
 }
 
+void Leg2DOF::walk(int period, int amplitude, int phase, const std::initializer_list<int>& offsets, bool backward) {
+    this->hip->oscillate(period, amplitude, phase, offsets.begin()[0]);
+    int kneePhase = phase + (backward ? -90 : 90);
+    // int kneePhase =  (phase + 90) * (backward ? -1 : 1);
+    this->knee->oscillate(period, amplitude, kneePhase, offsets.begin()[1]);
+
+    Serial.print(phase); Serial.print(' '); Serial.print(kneePhase); Serial.print(' ');
+    Serial.println(phase - kneePhase);
+}
+
 void Leg2DOF::pulse() {
     this->hip->pulse();
     this->knee->pulse();

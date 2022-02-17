@@ -326,10 +326,18 @@ void MiniKame::execute(float steps, float period[8], int amplitude[8], int offse
 bool _magic = false;
 
 void MiniKame::magic() {
-    this->frontRightLeg->knee->oscillate(2000, 15, 60, 0);
+    // this->frontRightLeg->knee->oscillate(2000, 15, 90, 0);
     // this->frontLeftLeg->knee->oscillate(2000, 15, 0, 0);
-    this->frontRightLeg->hip->oscillate(2000, 15, 0, 0);
+    // this->frontRightLeg->hip->oscillate(2000, 15, 0, 0);
     // this->frontLeftLeg->hip->oscillate(2000, 10, 0, 0);
+
+
+    // Finally, some unsteady walk
+    // todo: it can be extracted in gait object. and walk() and other functions just get a named gait as parameter
+    this->frontLeftLeg->walk(700, 20, 0, {30, -40}, false);
+    this->frontRightLeg->walk(700, 20, 180, {30, -40}, false);
+    this->backLeftLeg->walk(700, 20, 180, {30, -40}, false);
+    this->backRightLeg->walk(700, 20, 0, {30, -40}, false);
 }
 
 MiniKame::~MiniKame() {
