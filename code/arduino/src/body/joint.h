@@ -20,7 +20,8 @@ class Joint {
         Servo servo;
         float _position;
         int angToUsec(float value);
-        float _basePosition = 75;
+        float _basePosition = 90;
+        // float _basePosition = 75;
         bool oscillating = false;
         unsigned long osc_until;
 };

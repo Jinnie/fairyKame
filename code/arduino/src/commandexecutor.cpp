@@ -2,23 +2,23 @@
 
 void CommandExecutor::init(MiniKame* kame) {
   robot = kame;
-  running = false;
   autonomous = false;
 }
 
 void CommandExecutor::parseCommand(String command) {
 
   if (command == "run") {
-    robot->run(1,550);
-    running = 1;
+    // robot->run(1,550);
+    robot->just_walk();
   } else if (command == "turnL") {
-    robot->turnL(1,550);
-    running = 1;
+    // robot->turnL(1,550);
+    robot->just_left();
   } else if (command == "turnR") {
-    robot->turnR(1,550);
-    running = 1;
+    // robot->turnR(1,550);
+    robot->just_right();
+  } else if (command == "back") {
+    robot->just_back();
   } else if (command == "stop") {
-    running = 0;
     autonomous = false;
     robot->home();
     delay(100);

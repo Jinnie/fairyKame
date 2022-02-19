@@ -66,7 +66,8 @@ const char * page_html = R"CPPHTML(
         <div class="cBStop" id="stop" onclick="fireCommand('stop')">Stop</div>
         <div class="cBDir" id="turnR" onclick="fireCommand('turnR')">Right</div>
         <div class="cB" id="hello" onclick="fireCommand('hello')">Hello</div>
-        <div class="cBDir" id="frontBack" onclick="fireCommand('frontBack')">Back</div>
+        <div class="cBDir" id="back" onclick="fireCommand('back')">Back</div>
+        <div class="cB" id="frontBack" onclick="fireCommand('frontBack')">Front Back</div>
         <div class="cB" id="jump" onclick="fireCommand('jump')">Jump</div>
         <div class="cB" id="dance" onclick="fireCommand('dance')">Dance</div>
         <div class="cB" id="frontBack" onclick="fireCommand('frontBack')">Front Back</div>

@@ -4,6 +4,7 @@
 #include <Servo.h>
 #include "octosnake.h"
 #include "body/leg-2dof.h"
+#include "mind/gaits.h"
 
 class MiniKame {
 
@@ -31,6 +32,15 @@ class MiniKame {
         void reverseServo(int id);
         float getServo(int id);
         void moveServos(int time, float target[8]);
+
+        // new gaits
+        void just_walk();
+        void just_relax();
+        void just_dance();
+        void just_back();
+        void just_left();
+        void just_right();
+        void just_jiggle();
         void magic();
 
     private:

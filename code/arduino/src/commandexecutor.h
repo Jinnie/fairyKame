@@ -10,7 +10,6 @@ class CommandExecutor {
     boolean isAutonomous();
   private:
     MiniKame * robot;
-    bool running;
     bool autonomous;
 };
 #endif

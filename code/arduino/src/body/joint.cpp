@@ -20,7 +20,7 @@ void Joint::setPosition(float target){
         target = target > limit ? limit : -limit;
     }
     if (!this->reverse)
-        this->servo.writeMicroseconds(this->angToUsec(this->_basePosition + target + this->trim)); // todo: make trim reverse sensitive
+        this->servo.writeMicroseconds(this->angToUsec(this->_basePosition + target + this->trim));
     else
         this->servo.writeMicroseconds(this->angToUsec(180 - (this->_basePosition + target + this->trim)));
     this->_position = target;
@@ -38,7 +38,7 @@ void Joint::oscillate(int period, int amplitude, int phase, int offset) {
         this->oscillator.setOffset(offset);
 
         this->oscillator.reset();
-        this->osc_until = this->oscillator.getTime() + period; // period*steps !?!?
+        this->osc_until = this->oscillator.getTime() + period;
         this->oscillating = true;
     }
 }

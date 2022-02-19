@@ -1,6 +1,7 @@
 #pragma once
 
 #include "joint.h"
+#include "mind/gaits.h"
 
 class Leg2DOF {
   public:
@@ -11,7 +12,14 @@ class Leg2DOF {
     Joint *hip{};
     Joint *knee{};
 
-    void walk(int period, int amplitude, int phase, const std::initializer_list<int>& offsets, bool backward);
+    // Save the initilizer list version
+    // void walk(int period, int amplitude, int phase, const std::initializer_list<int>& offsets, bool backward);
+
+    // direct parameter set
+    void walk(int period, int amplitude, int phase, const int offsets[2], bool backward);
+    // alternative gait based
+    void walk(Gait gait);
+    void relax();
   private:
     // these, honestly, should be enums, but naming the 2 enums readably is pain. left/right can be Side. But what about front/back
     bool left;  // lefthand
