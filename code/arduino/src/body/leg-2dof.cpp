@@ -36,6 +36,7 @@ Leg2DOF::Leg2DOF(bool front, bool left) {
     }
 }
 
+// TODO: add non-circular amplitudes
 void Leg2DOF::walk(int period, int amplitude, int phase, const int offsets[2], bool backward) {
     // Cross sync for the case when we have different directions for different legs.
     phase += backward ? 90 : 0;
@@ -49,14 +50,14 @@ void Leg2DOF::walk(int period, int amplitude, int phase, const int offsets[2], b
     Serial.println(phase - kneePhase);
 }
 
-void Leg2DOF::flex(int period, int amplitude, int phase, const int offsets[2]) {
-    this->hip->setPosition(offsets[0]);
-    this->knee->oscillate(period, amplitude, phase, offsets[1]);
-}
-
 void Leg2DOF::walk(Gait gait) {
     int offsets[2] = {gait.position.height, gait.position.spread};
     walk(gait.period, gait.amplitude, gait.phase, offsets, gait.direction);
+}
+
+void Leg2DOF::flex(int period, int amplitude, int phase, const int offsets[2]) {
+    this->hip->setPosition(offsets[0]);
+    this->knee->oscillate(period, amplitude, phase, offsets[1]);
 }
 
 void Leg2DOF::pose(int hip, int knee) {

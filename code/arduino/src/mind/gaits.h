@@ -27,5 +27,6 @@ class Gait {
 class Gaits {
     public:
         static Gait steadyGait(int phase, bool direction);
+        static Gait steadyShortGait(int phase, bool direction);
         static Gait shortRapidGait(int phase, bool direction); //DZAK! todo
 };

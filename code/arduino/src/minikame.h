@@ -40,9 +40,14 @@ class MiniKame {
         void just_back();
         void just_left();
         void just_right();
+        void just_upLeft();
+        void just_upRight();
+        void just_backLeft();
+        void just_backRight();
         void just_jiggle();
         void just_moonwalk();
         void just_stretch();
+        void just_confused();
         void magic();
 
     private:

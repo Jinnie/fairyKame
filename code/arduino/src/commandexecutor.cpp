@@ -40,13 +40,15 @@ void CommandExecutor::parseCommand(String command) {
   } else if (command == "stretch") {
     robot->just_stretch();
   } else if (command == "upLeft") {
-    robot->just_jiggle();
+    robot->just_upLeft();
   } else if (command == "upRight") {
-    robot->just_jiggle();
-  } else if (command == "downLeft") {
-    robot->just_jiggle();
-  } else if (command == "downRight") {
-    robot->just_jiggle();
+    robot->just_upRight();
+  } else if (command == "backLeft") {
+    robot->just_backLeft();
+  } else if (command == "backRight") {
+    robot->just_backRight();
+  } else if (command == "confused") {
+    robot->just_confused();
   } else {
     robot->just_relax();
     delay(100);

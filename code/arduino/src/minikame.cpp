@@ -430,7 +430,36 @@ void MiniKame::just_right()
     this->backRightLeg->walk(Gaits::steadyGait(0, Gait::BACKWARD));
 }
 
-// not-connected; accidental fun gait
+void MiniKame::just_upLeft()
+{
+    this->frontLeftLeg->walk(Gaits::steadyShortGait(0, Gait::FORWARD));
+    this->frontRightLeg->walk(Gaits::steadyGait(180, Gait::FORWARD));
+    this->backLeftLeg->walk(Gaits::steadyShortGait(180, Gait::FORWARD));
+    this->backRightLeg->walk(Gaits::steadyGait(0, Gait::FORWARD));
+}
+void MiniKame::just_upRight()
+{
+    this->frontLeftLeg->walk(Gaits::steadyGait(0, Gait::FORWARD));
+    this->frontRightLeg->walk(Gaits::steadyShortGait(180, Gait::FORWARD));
+    this->backLeftLeg->walk(Gaits::steadyGait(180, Gait::FORWARD));
+    this->backRightLeg->walk(Gaits::steadyShortGait(0, Gait::FORWARD));
+}
+
+void MiniKame::just_backLeft()
+{
+    this->frontLeftLeg->walk(Gaits::steadyShortGait(0, Gait::BACKWARD));
+    this->frontRightLeg->walk(Gaits::steadyGait(180, Gait::BACKWARD));
+    this->backLeftLeg->walk(Gaits::steadyShortGait(180, Gait::BACKWARD));
+    this->backRightLeg->walk(Gaits::steadyGait(0, Gait::BACKWARD));
+}
+void MiniKame::just_backRight()
+{
+    this->frontLeftLeg->walk(Gaits::steadyGait(0, Gait::BACKWARD));
+    this->frontRightLeg->walk(Gaits::steadyShortGait(180, Gait::BACKWARD));
+    this->backLeftLeg->walk(Gaits::steadyGait(180, Gait::BACKWARD));
+    this->backRightLeg->walk(Gaits::steadyShortGait(0, Gait::BACKWARD));
+}
+
 void MiniKame::just_jiggle()
 {
     this->frontLeftLeg->walk(Gaits::steadyGait(0, Gait::FORWARD));
@@ -438,6 +467,15 @@ void MiniKame::just_jiggle()
     this->backLeftLeg->walk(Gaits::steadyGait(0, Gait::FORWARD));
     this->backRightLeg->walk(Gaits::steadyGait(0, Gait::FORWARD));
 }
+
+void MiniKame::just_confused()
+{
+    int shrug[2] = {0, 60};
+    this->frontLeftLeg->flex(200, 15, 0, shrug);
+    this->frontRightLeg->flex(200, 15, 0, shrug);
+    this->backLeftLeg->flex(200, 15, 0, shrug);
+    this->backRightLeg->flex(200, 15, 0, shrug);
+};
 
 void MiniKame::magic()
 {

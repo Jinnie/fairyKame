@@ -49,6 +49,7 @@ void loop() {
   // give it some life
   // we'll use the pulse system to simulate multithreading
   robot.pulse();
+  // this delay limits the shortest possible period; want faster robot - then reduce the delay.
   delay(50);  // test longer values
   yield(); // yield for sync!
 }
