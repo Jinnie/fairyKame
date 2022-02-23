@@ -13,25 +13,25 @@ class MiniKame {
         void init();
         void pulse();
 
-        void run(float steps, float period);
-        void walk(float steps, float period);
+        // void run(float steps, float period);
+        // void walk(float steps, float period);
         //void backward(float steps, float period);
-        void turnL(float steps, float period);
-        void turnR(float steps, float period);
-        void moonwalkL(float steps, float period);
-        void dance(float steps, float period);
-        void upDown(float steps, float period);
-        void pushUp(float steps, float period);
-        void hello();
-        void jump();
-        void home();
-        void zero();
-        void frontBack(float steps, float period);
+        // void turnL(float steps, float period);
+        // void turnR(float steps, float period);
+        // void moonwalkL(float steps, float period);
+        // void dance(float steps, float period);
+        // void upDown(float steps, float period);
+        // void pushUp(float steps, float period);
+        // void hello();
+        // void jump();
+        // void home();
+        // void zero();
+        // void frontBack(float steps, float period);
 
-        void setServo(int id, float target);
-        void reverseServo(int id);
-        float getServo(int id);
-        void moveServos(int time, float target[8]);
+        // void setServo(int id, float target);
+        // void reverseServo(int id);
+        // float getServo(int id);
+        // void moveServos(int time, float target[8]);
 
         // new gaits
         void just_walk();
@@ -41,6 +41,8 @@ class MiniKame {
         void just_left();
         void just_right();
         void just_jiggle();
+        void just_moonwalk();
+        void just_stretch();
         void magic();
 
     private:

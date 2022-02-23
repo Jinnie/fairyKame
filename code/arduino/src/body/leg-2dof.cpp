@@ -49,14 +49,23 @@ void Leg2DOF::walk(int period, int amplitude, int phase, const int offsets[2], b
     Serial.println(phase - kneePhase);
 }
 
+void Leg2DOF::flex(int period, int amplitude, int phase, const int offsets[2]) {
+    this->hip->setPosition(offsets[0]);
+    this->knee->oscillate(period, amplitude, phase, offsets[1]);
+}
+
 void Leg2DOF::walk(Gait gait) {
     int offsets[2] = {gait.position.height, gait.position.spread};
     walk(gait.period, gait.amplitude, gait.phase, offsets, gait.direction);
 }
 
+void Leg2DOF::pose(int hip, int knee) {
+    this->hip->setPosition(hip);
+    this->knee->setPosition(knee);
+}
+
 void Leg2DOF::relax() {
-    this->hip->setPosition(0);
-    this->knee->setPosition(0);
+    pose(0, 0);
 }
 
 void Leg2DOF::pulse() {

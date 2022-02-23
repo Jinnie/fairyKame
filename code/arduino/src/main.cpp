@@ -4,13 +4,11 @@
 #include <Servo.h>
 #include "octosnake.h"
 #include "minikame.h"
-#include "sensoreyes.h"
 #include "webconnector.h"
 #include "commandexecutor.h"
 #include "mind/mind.h"
 
 MiniKame robot;
-SensorEyes eyes;
 WebConnector connector;
 CommandExecutor executor;
 String activeCommand;
@@ -25,7 +23,6 @@ void setup() {
 
   connector.init();
   robot.init();
-  eyes.init();
   executor.init(&robot);
   Serial.println("Robot is starting.");
   Mind::start_work();
@@ -46,18 +43,6 @@ void loop() {
     activeCommand = connector.getActiveCommand();
   }
 
-  // todo: this should be handled in a robot head or something
-  if (executor.isAutonomous()) {
-      // the good stuff, not very smart yet. Tryouts.
-      eyes.measureDistance();
-      if (eyes.getDistance() == 0 ||  eyes.getDistance() > 20) {
-        // just run, and for the moment, run into a wall if we get no values
-        executor.parseCommand("run");
-      } else {
-        // something is in the way, try to go right
-        executor.parseCommand("turnR");
-      }
-  }
   // execute the active command, which calls the robot
   executor.parseCommand(activeCommand);
 

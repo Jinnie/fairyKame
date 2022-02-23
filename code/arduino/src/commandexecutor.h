@@ -7,9 +7,9 @@ class CommandExecutor {
   public:
     void init(MiniKame* kame);
     void parseCommand(String command);
-    boolean isAutonomous();
+    // boolean isAutonomous();
   private:
     MiniKame * robot;
-    bool autonomous;
+    // bool autonomous;
 };
 #endif

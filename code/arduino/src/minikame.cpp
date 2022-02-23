@@ -1,13 +1,13 @@
 #include "minikame.h"
 
-int angToUsec(float value)
-{
-    return value / 180 * (DEFAULT_MAX_PULSE_WIDTH - DEFAULT_MIN_PULSE_WIDTH) + DEFAULT_MIN_PULSE_WIDTH;
-}
+// int angToUsec(float value)
+// {
+//     return value / 180 * (DEFAULT_MAX_PULSE_WIDTH - DEFAULT_MIN_PULSE_WIDTH) + DEFAULT_MIN_PULSE_WIDTH;
+// }
 
 void MiniKame::init()
 {
-    board_pins[0] = D1;     // front left inner
+/*     board_pins[0] = D1;     // front left inner
     board_pins[1] = D4,     // front right inner
     board_pins[2] = D8;     // front left outer
     board_pins[3] = D6;     // front right outer
@@ -45,7 +45,9 @@ void MiniKame::init()
         oscillator[i].setTrim(trim[i]);
     for (int i = 0; i < 8; i++)
         servo[i].attach(board_pins[i]);
-    home();
+*/
+    // home();
+    just_relax();
 }
 
 void MiniKame::pulse()
@@ -56,7 +58,11 @@ void MiniKame::pulse()
     this->backRightLeg->pulse();
 }
 
-void MiniKame::turnR(float steps, float T = 600)
+
+// TODO: migrate all moves as good as possible
+// leaving commented for reference to the one who works on the task.
+
+/* void MiniKame::turnR(float steps, float T = 600)
 {
     int x_amp = 15;
     int z_amp = 15;
@@ -68,9 +74,9 @@ void MiniKame::turnR(float steps, float T = 600)
     int phase[] = {0, 180, 90, 90, 180, 0, 90, 90};
 
     execute(steps, period, amplitude, offset, phase);
-}
+} */
 
-void MiniKame::turnL(float steps, float T = 600)
+/* void MiniKame::turnL(float steps, float T = 600)
 {
     int x_amp = 15;
     int z_amp = 15;
@@ -82,9 +88,9 @@ void MiniKame::turnL(float steps, float T = 600)
     int phase[] = {180, 0, 90, 90, 0, 180, 90, 90};
 
     execute(steps, period, amplitude, offset, phase);
-}
+} */
 
-void MiniKame::dance(float steps, float T = 600)
+/* void MiniKame::dance(float steps, float T = 600)
 {
     int x_amp = 0;
     int z_amp = 40;
@@ -96,9 +102,9 @@ void MiniKame::dance(float steps, float T = 600)
     int phase[] = {0, 0, 0, 270, 0, 0, 90, 180};
 
     execute(steps, period, amplitude, offset, phase);
-}
+} */
 
-void MiniKame::frontBack(float steps, float T = 600)
+/* void MiniKame::frontBack(float steps, float T = 600)
 {
     int x_amp = 30;
     int z_amp = 25;
@@ -110,9 +116,9 @@ void MiniKame::frontBack(float steps, float T = 600)
     int phase[] = {0, 180, 270, 90, 0, 180, 90, 270};
 
     execute(steps, period, amplitude, offset, phase);
-}
+} */
 
-void MiniKame::run(float steps, float T = 5000)
+/* void MiniKame::run(float steps, float T = 5000)
 {
     int x_amp = 15;
     int z_amp = 15;
@@ -132,9 +138,9 @@ void MiniKame::run(float steps, float T = 5000)
     int phase[] = {0, 0, 90, 90, 180, 180, 90, 90};
 
     execute(steps, period, amplitude, offset, phase);
-}
+} */
 
-void MiniKame::moonwalkL(float steps, float T = 5000)
+/* void MiniKame::moonwalkL(float steps, float T = 5000)
 {
     int z_amp = 45;
     float period[] = {T, T, T, T, T, T, T, T};
@@ -143,9 +149,27 @@ void MiniKame::moonwalkL(float steps, float T = 5000)
     int phase[] = {0, 0, 0, 120, 0, 0, 180, 290};
 
     execute(steps, period, amplitude, offset, phase);
+} */
+
+void MiniKame::just_moonwalk() {
+    int front_position[2] = {-20, 30};
+    int back_position[2] = {20, 30};
+    this->frontLeftLeg->flex(2000, 45, 0, front_position);
+    this->frontRightLeg->flex(2000, 45, 120, front_position);
+    this->backLeftLeg->flex(2000, 45, 0, back_position);
+    this->backRightLeg->flex(2000, 45, 120, back_position);
 }
 
-void MiniKame::walk(float steps, float T = 5000)
+// not used, accidental
+void MiniKame::just_stretch() {
+    int position[2] = {0, 0};
+    this->frontLeftLeg->flex(2000, 45, 0, position);
+    this->frontRightLeg->flex(2000, 45, 120, position);
+    this->backLeftLeg->flex(2000, 45, 180, position);
+    this->backRightLeg->flex(2000, 45, 290, position);
+}
+
+/* void MiniKame::walk(float steps, float T = 5000)
 {
     volatile int x_amp = 15;
     volatile int z_amp = 20;
@@ -197,8 +221,8 @@ void MiniKame::walk(float steps, float T = 5000)
         delay(1);
     }
 }
-
-void MiniKame::upDown(float steps, float T = 5000)
+ */
+/* void MiniKame::upDown(float steps, float T = 5000)
 {
     int x_amp = 0;
     int z_amp = 35;
@@ -219,8 +243,8 @@ void MiniKame::upDown(float steps, float T = 5000)
 
     execute(steps, period, amplitude, offset, phase);
 }
-
-void MiniKame::pushUp(float steps, float T = 600)
+ */
+/* void MiniKame::pushUp(float steps, float T = 600)
 {
     int z_amp = 40;
     int x_amp = 65;
@@ -232,8 +256,8 @@ void MiniKame::pushUp(float steps, float T = 600)
 
     execute(steps, period, amplitude, offset, phase);
 }
-
-void MiniKame::hello()
+ */
+/* void MiniKame::hello()
 {
     float sentado[] = {90 + 15, 90 - 15, 90 - 65, 90 + 65, 90 + 20, 90 - 20, 90 + 10, 90 - 10};
     moveServos(150, sentado);
@@ -253,8 +277,8 @@ void MiniKame::hello()
     moveServos(500, goingUp);
     delay(200);
 }
-
-void MiniKame::jump()
+ */
+/* void MiniKame::jump()
 {
     float sentado[] = {90 + 15, 90 - 15, 90 - 65, 90 + 65, 90 + 20, 90 - 20, 90 + 10, 90 - 10};
     float ap = 20;
@@ -266,8 +290,8 @@ void MiniKame::jump()
     delay(100);
     home();
 }
-
-void MiniKame::home()
+ */
+/* void MiniKame::home()
 {
     int ap = 20;
     int hi = 35;
@@ -275,14 +299,14 @@ void MiniKame::home()
     for (int i = 0; i < 8; i++)
         setServo(i, position[i]);
 }
-
-void MiniKame::zero()
+ */
+/* void MiniKame::zero()
 {
     for (int i = 0; i < 8; i++)
         setServo(i, 90);
 }
-
-void MiniKame::reverseServo(int id)
+ */
+/* void MiniKame::reverseServo(int id)
 {
     if (reverse[id])
         reverse[id] = 0;
@@ -356,7 +380,7 @@ void MiniKame::execute(float steps, float period[8], int amplitude[8], int offse
         yield();
     }
 }
-
+ */
 void MiniKame::just_relax()
 {
 
@@ -382,7 +406,6 @@ void MiniKame::just_back()
     this->backRightLeg->walk(Gaits::steadyGait(0, Gait::BACKWARD));
 }
 
-// not connected; accidental
 void MiniKame::just_dance()
 {
     this->frontLeftLeg->walk(Gaits::steadyGait(0, Gait::BACKWARD));
@@ -393,10 +416,10 @@ void MiniKame::just_dance()
 
 void MiniKame::just_left()
 {
-    this->frontLeftLeg->walk(Gaits::steadyGait(0, Gait::BACKWARD));
-    this->frontRightLeg->walk(Gaits::steadyGait(180, Gait::FORWARD));
-    this->backLeftLeg->walk(Gaits::steadyGait(180, Gait::BACKWARD));
-    this->backRightLeg->walk(Gaits::steadyGait(0, Gait::FORWARD));
+    this->frontLeftLeg->walk(Gaits::steadyGait(180, Gait::BACKWARD));
+    this->frontRightLeg->walk(Gaits::steadyGait(0, Gait::FORWARD));
+    this->backLeftLeg->walk(Gaits::steadyGait(0, Gait::BACKWARD));
+    this->backRightLeg->walk(Gaits::steadyGait(180, Gait::FORWARD));
 }
 
 void MiniKame::just_right()
@@ -418,7 +441,7 @@ void MiniKame::just_jiggle()
 
 void MiniKame::magic()
 {
-    just_jiggle();
+    just_dance();
     // this->frontLeftLeg->walk(Gaits::steadyGait(0, Gait::FORWARD));
     // this->frontRightLeg->walk(Gaits::steadyGait(180, Gait::FORWARD));
     // this->backLeftLeg->walk(Gaits::steadyGait(180, Gait::FORWARD));

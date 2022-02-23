@@ -39,7 +39,15 @@ const char * page_html = R"CPPHTML(
         }
 
         .cBDir {
+            font-size: 40px;
+            line-height: 300%;
             background-color: orange;
+        }
+        .cBDir.dg {
+            background-color: blue;
+        }
+        .cBMgc {
+            background-color: green;
         }
     </style>
     <script type="text/javascript">
@@ -59,21 +67,21 @@ const char * page_html = R"CPPHTML(
 
 <body>
     <div>
-        <div class="cB" id="pushUp" onclick="fireCommand('pushUp')">Push Up</div>
-        <div class="cBDir" id="run" onclick="fireCommand('run')">Run</div>
-        <div class="cB" id="upDown" onclick="fireCommand('upDown')">Up Down</div>
-        <div class="cBDir" id="turnL" onclick="fireCommand('turnL')">Left</div>
+        <div class="cBDir dg" id="upLeft" onclick="fireCommand('upLeft')">↖</div>
+        <div class="cBDir" id="run" onclick="fireCommand('run')">↑</div>
+        <div class="cBDir dg" id="upRight" onclick="fireCommand('upRight')">↗</div>
+        <div class="cBDir" id="turnL" onclick="fireCommand('turnL')">←</div>
         <div class="cBStop" id="stop" onclick="fireCommand('stop')">Stop</div>
-        <div class="cBDir" id="turnR" onclick="fireCommand('turnR')">Right</div>
-        <div class="cB" id="hello" onclick="fireCommand('hello')">Hello</div>
-        <div class="cBDir" id="back" onclick="fireCommand('back')">Back</div>
-        <div class="cB" id="frontBack" onclick="fireCommand('frontBack')">Front Back</div>
-        <div class="cB" id="jump" onclick="fireCommand('jump')">Jump</div>
+        <div class="cBDir" id="turnR" onclick="fireCommand('turnR')">→</div>
+        <div class="cBDir dg" id="downLeft" onclick="fireCommand('downLeft')">↙</div>
+        <div class="cBDir" id="back" onclick="fireCommand('back')">↓</div>
+        <div class="cBDir dg" id="downRight" onclick="fireCommand('downRight')">↘</div>
+        <div class="cB" id="stretch" onclick="fireCommand('stretch')">Stretch</div>
         <div class="cB" id="dance" onclick="fireCommand('dance')">Dance</div>
-        <div class="cB" id="frontBack" onclick="fireCommand('frontBack')">Front Back</div>
-        <div class="cB" id="auto" onclick="fireCommand('auto')">Auto</div>
+        <div class="cB" id="jiggle" onclick="fireCommand('jiggle')">Jiggle</div>
         <div class="cB" id="moonWalk" onclick="fireCommand('moonWalk')">Moonwalk</div>
-        <div class="cB" id="magic" onclick="fireCommand('magic')">Magic</div>
+        
+        <div class="cBMgc" id="magic" onclick="fireCommand('magic')">Magic</div>
     </div>
 </body>
 

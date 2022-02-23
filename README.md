@@ -13,6 +13,14 @@ This is a fork of the miniKame, I'll use it to extend the functionality of my ad
 
 For details on the bot, please take a look at the [splendid original miniKame](https://github.com/bqlabs/miniKame).
 
+# Setup guide:
+
+- Set wifi id and password in webconnector.cpp
+- Calibrate your robot by setting trim height (for robot height) and trim spread (legs angle) in leg-2dof.cpp. Or set to (0, 0) and then position the servos.
+- Explore basic command options at minicame.cpp. Create your own combinations of gaits, phases, directions.
+- Explore the gaits in mind/gaits. Create your own.
+- Pull requests for gaits are more than welcome. Any other contributions too.
+
 # More Info and Pictures
 
 Please visit

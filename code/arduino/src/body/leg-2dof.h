@@ -19,6 +19,8 @@ class Leg2DOF {
     void walk(int period, int amplitude, int phase, const int offsets[2], bool backward);
     // alternative gait based
     void walk(Gait gait);
+    void flex(int period, int amplitude, int phase, const int offsets[2]);
+    void pose(int hip, int knee);
     void relax();
   private:
     // these, honestly, should be enums, but naming the 2 enums readably is pain. left/right can be Side. But what about front/back
