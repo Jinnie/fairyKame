@@ -48,6 +48,7 @@ const char * page_html = R"CPPHTML(
         }
         .cBMgc {
             background-color: green;
+            width: 99%;
         }
     </style>
     <script type="text/javascript">
@@ -76,6 +77,7 @@ const char * page_html = R"CPPHTML(
         <div class="cBDir dg" id="backLeft" onclick="fireCommand('backLeft')">↙</div>
         <div class="cBDir" id="back" onclick="fireCommand('back')">↓</div>
         <div class="cBDir dg" id="backRight" onclick="fireCommand('backRight')">↘</div>
+        <div class="cB" id="pushUps" onclick="fireCommand('pushUps')">Push Ups</div>
         <div class="cB" id="stretch" onclick="fireCommand('stretch')">Stretch</div>
         <div class="cB" id="dance" onclick="fireCommand('dance')">Dance</div>
         <div class="cB" id="jiggle" onclick="fireCommand('jiggle')">Jiggle</div>

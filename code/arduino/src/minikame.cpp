@@ -151,23 +151,6 @@ void MiniKame::pulse()
     execute(steps, period, amplitude, offset, phase);
 } */
 
-void MiniKame::just_moonwalk() {
-    Pair front_position = {-20, 30};
-    Pair back_position = {20, 30};
-    this->frontLeftLeg->flex(2000, 45, 0, front_position);
-    this->frontRightLeg->flex(2000, 45, 120, front_position);
-    this->backLeftLeg->flex(2000, 45, 0, back_position);
-    this->backRightLeg->flex(2000, 45, 120, back_position);
-}
-
-void MiniKame::just_stretch() {
-    Pair position = {0, 0};
-    this->frontLeftLeg->flex(2000, 45, 0, position);
-    this->frontRightLeg->flex(2000, 45, 120, position);
-    this->backLeftLeg->flex(2000, 45, 180, position);
-    this->backRightLeg->flex(2000, 45, 290, position);
-}
-
 /* void MiniKame::walk(float steps, float T = 5000)
 {
     volatile int x_amp = 15;
@@ -305,81 +288,7 @@ void MiniKame::just_stretch() {
         setServo(i, 90);
 }
  */
-/* void MiniKame::reverseServo(int id)
-{
-    if (reverse[id])
-        reverse[id] = 0;
-    else
-        reverse[id] = 1;
-}
 
-void MiniKame::setServo(int id, float target)
-{
-    if (!reverse[id])
-        servo[id].writeMicroseconds(angToUsec(target + trim[id]));
-    else
-        servo[id].writeMicroseconds(angToUsec(180 - (target + trim[id])));
-    _servo_position[id] = target;
-}
-
-float MiniKame::getServo(int id)
-{
-    return _servo_position[id];
-}
-
-void MiniKame::moveServos(int time, float target[8])
-{
-    if (time > 10)
-    {
-        for (int i = 0; i < 8; i++)
-            _increment[i] = (target[i] - _servo_position[i]) / (time / 10.0);
-        _final_time = millis() + time;
-
-        while (millis() < _final_time)
-        {
-            _partial_time = millis() + 10;
-            for (int i = 0; i < 8; i++)
-                setServo(i, _servo_position[i] + _increment[i]);
-            while (millis() < _partial_time)
-                ; // pause
-        }
-    }
-    else
-    {
-        for (int i = 0; i < 8; i++)
-            setServo(i, target[i]);
-    }
-    for (int i = 0; i < 8; i++)
-        _servo_position[i] = target[i];
-}
-
-void MiniKame::execute(float steps, float period[8], int amplitude[8], int offset[8], int phase[8])
-{
-
-    for (int i = 0; i < 8; i++)
-    {
-        oscillator[i].setPeriod(period[i]);
-        oscillator[i].setAmplitude(amplitude[i]);
-        oscillator[i].setPhase(phase[i]);
-        oscillator[i].setOffset(offset[i]);
-    }
-
-    unsigned long global_time = millis();
-
-    for (int i = 0; i < 8; i++)
-        oscillator[i].setTime(global_time);
-
-    _final_time = millis() + period[0] * steps;
-    while (millis() < _final_time)
-    {
-        for (int i = 0; i < 8; i++)
-        {
-            setServo(i, oscillator[i].refresh());
-        }
-        yield();
-    }
-}
- */
 void MiniKame::just_relax()
 {
 
@@ -476,13 +385,34 @@ void MiniKame::just_confused()
     this->backRightLeg->flex(200, 15, 0, shrug);
 };
 
+void MiniKame::just_pushUps()
+{
+    this->frontLeftLeg->flex(1400, 65, 0, {-10, -50});
+    this->frontRightLeg->flex(1400, 65, 0, {-10, -50});
+    this->backLeftLeg->pose(-90, -30); // 90 is a bit too much, check after recalibration.
+    this->backRightLeg->pose(-90, -30);
+}
+
+void MiniKame::just_moonwalk() {
+    Pair front_position = {-20, 30};
+    Pair back_position = {20, 30};
+    this->frontLeftLeg->flex(2000, 45, 0, front_position);
+    this->frontRightLeg->flex(2000, 45, 120, front_position);
+    this->backLeftLeg->flex(2000, 45, 0, back_position);
+    this->backRightLeg->flex(2000, 45, 120, back_position);
+}
+
+void MiniKame::just_stretch() {
+    Pair position = {0, 0};
+    this->frontLeftLeg->flex(2000, 45, 0, position);
+    this->frontRightLeg->flex(2000, 45, 120, position);
+    this->backLeftLeg->flex(2000, 45, 180, position);
+    this->backRightLeg->flex(2000, 45, 290, position);
+}
+
 void MiniKame::magic()
 {
-    just_dance();
-    // this->frontLeftLeg->walk(Gaits::steadyGait(0, Gait::FORWARD));
-    // this->frontRightLeg->walk(Gaits::steadyGait(180, Gait::FORWARD));
-    // this->backLeftLeg->walk(Gaits::steadyGait(180, Gait::FORWARD));
-    // this->backRightLeg->walk(Gaits::steadyGait(0, Gait::FORWARD));
+    this->just_pushUps();
 }
 
 MiniKame::~MiniKame()

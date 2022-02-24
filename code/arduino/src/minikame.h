@@ -48,6 +48,7 @@ class MiniKame {
         void just_moonwalk();
         void just_stretch();
         void just_confused();
+        void just_pushUps();
         void magic();
 
     private:
