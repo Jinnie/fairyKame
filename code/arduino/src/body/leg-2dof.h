@@ -16,10 +16,10 @@ class Leg2DOF {
     // void walk(int period, int amplitude, int phase, const std::initializer_list<int>& offsets, bool backward);
 
     // direct parameter set
-    void walk(int period, int amplitude, int phase, const int offsets[2], bool backward);
+    void walk(int period, Pair amplitude, int phase, const Pair offsets, bool backward);
     // alternative gait based
     void walk(Gait gait);
-    void flex(int period, int amplitude, int phase, const int offsets[2]);
+    void flex(int period, int amplitude, int phase, const Pair offsets);
     void pose(int hip, int knee);
     void relax();
   private:

@@ -152,17 +152,16 @@ void MiniKame::pulse()
 } */
 
 void MiniKame::just_moonwalk() {
-    int front_position[2] = {-20, 30};
-    int back_position[2] = {20, 30};
+    Pair front_position = {-20, 30};
+    Pair back_position = {20, 30};
     this->frontLeftLeg->flex(2000, 45, 0, front_position);
     this->frontRightLeg->flex(2000, 45, 120, front_position);
     this->backLeftLeg->flex(2000, 45, 0, back_position);
     this->backRightLeg->flex(2000, 45, 120, back_position);
 }
 
-// not used, accidental
 void MiniKame::just_stretch() {
-    int position[2] = {0, 0};
+    Pair position = {0, 0};
     this->frontLeftLeg->flex(2000, 45, 0, position);
     this->frontRightLeg->flex(2000, 45, 120, position);
     this->backLeftLeg->flex(2000, 45, 180, position);
@@ -470,7 +469,7 @@ void MiniKame::just_jiggle()
 
 void MiniKame::just_confused()
 {
-    int shrug[2] = {0, 60};
+    Pair shrug = {0, 60};
     this->frontLeftLeg->flex(200, 15, 0, shrug);
     this->frontRightLeg->flex(200, 15, 0, shrug);
     this->backLeftLeg->flex(200, 15, 0, shrug);

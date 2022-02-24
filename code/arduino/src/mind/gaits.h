@@ -5,12 +5,12 @@
  * You can copy/paste and adjust them for more complex or customized gaits.
  */
 
-class Position {
+class Pair {
     public:
         int height = 0;
         int spread = 0;
-        Position();
-        Position(int height, int spread);
+        Pair();
+        Pair(int spread, int height);
 };
 
 class Gait {
@@ -18,10 +18,10 @@ class Gait {
         static const bool FORWARD = false;
         static const bool BACKWARD = true;
         int period;
-        int amplitude;
+        Pair amplitude;
         int phase = 0;
         bool direction = FORWARD;
-        Position position;
+        Pair position;
 };
 
 class Gaits {
