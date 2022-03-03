@@ -8,11 +8,28 @@ I will also be dropping fatKame's sonic sensor support and auto mode for now, th
 
 # Goals
 
-## Direct Goals:
-- Make it easy for everyone, with even little coding skill, to create new gaits and moves.
-- Foster a positive community around the Kame family of robots.
+## Make it Easy:
+Make it easy for everyone, with even little coding skills, to create new gaits and moves.
+```CPP
+void MiniKame::just_walk()
+{
+    this->frontLeftLeg->walk(Gaits::steadyGait(0, Gait::FORWARD));
+    this->frontRightLeg->walk(Gaits::steadyGait(180, Gait::FORWARD));
+    this->backLeftLeg->walk(Gaits::steadyGait(180, Gait::FORWARD));
+    this->backRightLeg->walk(Gaits::steadyGait(0, Gait::FORWARD));
+}
+```
+Do you already have an idea what to change to make it walk backwards? Yes, you only need to change `Gait::FORWARD` to `Gait::BACKWARD`. Any ideas how to make it turn right? :) 
 
-## Stretch Goals:
+Explore what we already have here: [minicame.cpp](https://github.com/Jinnie/fairyKame/blob/develop/code/arduino/src/minikame.cpp)
+
+## Foster Community:
+
+Foster a positive community around the Kame family of robots.
+
+See our contribution guide below.
+
+# Stretch Goals
 - Improve on the control app.
 - Improve the control app even more. Try to create Android/iOS app (in React Native) which controls the robot over BT.
 - Experiment in creating lighter, smaller body.
@@ -20,16 +37,16 @@ I will also be dropping fatKame's sonic sensor support and auto mode for now, th
 
 # Setup guide:
 
-- Set wifi id and password in webconnector.cpp
-- If needed, finely calibrate your robot by setting trim height (for robot height) and trim spread (legs angle) in leg-2dof.cpp.
+- Set wifi id and password in [webconnector.cpp](https://github.com/Jinnie/fairyKame/blob/develop/code/arduino/src/soul/webconnector.cpp)
+- If needed, finely calibrate your robot by setting trim height (for robot height) and trim spread (legs angle) in [leg-2dof.cpp](https://github.com/Jinnie/fairyKame/blob/develop/code/arduino/src/body/leg-2dof.cpp).
 - You can build/deploy in PlatformIO, or in the Arduino dev environment (not tested, but should work, feedback is welcome if you try it)
 
 # Contribution guide:
 
 There is no small contribution. Anything counts - a question, vague idea, anything. Post your thoughts as Issues and we'll get in discussion about them.
 
-- Explore basic command options at minicame.cpp. Create your own combinations of gaits, phases, directions.
-- Explore the gaits in mind/gaits. Create your own.
+- Explore basic command options at [minicame.cpp](https://github.com/Jinnie/fairyKame/blob/develop/code/arduino/src/minikame.cpp). Create your own combinations of gaits, phases, directions.
+- Explore the gait objects in [gaits.cpp](https://github.com/Jinnie/fairyKame/blob/develop/code/arduino/src/mind/gaits.cpp). They give you more control over the robot then the basic moves. If you want a more rapid move, or longer steps, that's the place to go.
 - Suggest your own modifications on the robot body, or share ideas.
 - Be patient. Opensource contribution takes time and dialog.
 - If you have ideas that are diverging from ours, or we're not accepting yours, fork and go! Respect the License.
