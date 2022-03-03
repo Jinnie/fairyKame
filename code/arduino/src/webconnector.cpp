@@ -1,12 +1,12 @@
 #include "webconnector.h"
 
-const char* ssid = "MINIKAME";
+const char *ssid = "MINIKAME";
 // const char* password = "asdf";
 
 ESP8266WebServer server(80);
-String WebConnector::activeCommand = "home";
+String WebConnector::activeCommand = "stop";
 
-const char * page_html = R"CPPHTML(
+const char *page_html = R"CPPHTML(
 <!doctype html>
 <html>
 
@@ -50,6 +50,48 @@ const char * page_html = R"CPPHTML(
             background-color: green;
             width: 99%;
         }
+
+        #trim, #tilt {
+            color: white;
+            float: right;
+            font-size: 25px;
+            margin-right: 1%;
+        }
+
+        .slider {
+          -webkit-appearance: none;
+          width: 99%;
+          height: 50px;
+          background: #e3e3e3;
+          outline: none;
+          -webkit-transition: .2s;
+          transition: opacity .2s;
+          margin-top: 25px;
+          border-top: 4px solid #999999;
+          border-bottom: 4px solid #999999;
+        }
+
+        .slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 50px;
+          height: 50px;
+          background: #DD7700;
+          border-radius: 12px;
+          cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+          width: 50px;
+          height: 50px;
+          background: #DD7700;
+          border-radius: 12px;
+          cursor: pointer;
+        }
+
+        body {
+          background-color: black;
+        }
     </style>
     <script type="text/javascript">
       function fireCommand(value) {
@@ -63,6 +105,21 @@ const char * page_html = R"CPPHTML(
         xhttp.open("GET", "cmd?command="+value, true);
         xhttp.send();
       }
+
+      function trim(value) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "trim?trim="+value, true);
+        xhttp.send();
+        document.getElementById('trim').innerHTML = 'trim override: ' + value;
+      }
+
+      function tilt(value) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "tilt?tilt="+value, true);
+        xhttp.send();
+        document.getElementById('tilt').innerHTML = 'tilt override: ' + value;
+      }
+      
     </script>
 </head>
 
@@ -85,33 +142,60 @@ const char * page_html = R"CPPHTML(
         <div class="cB" id="confused" onclick="fireCommand('confused')">Confused</div>
         
         <div class="cBMgc" id="magic" onclick="fireCommand('magic')">Magic</div>
+
+        <input type="range" min="-90" max="90" value="0" class="slider" onchange="trim(this.value)" >
+        <p id="trim"></p>
+
+        <input type="range" min="-90" max="90" value="0" class="slider" onchange="tilt(this.value)" >
+        <p id="tilt"></p>
     </div>
 </body>
 
 </html>
 )CPPHTML";
 
-
-void WebConnector::handleRoot() {
-  Serial.println("handle root...");
+void WebConnector::handleRoot()
+{
+  Serial.println("send web ui");
   server.send(200, "text/html", page_html);
 }
 
-void WebConnector::handleCommand() {
+void WebConnector::handleCommand()
+{
   String cmd = server.arg("command");
-  Serial.println("handle command... " + cmd);
+  Serial.println("command " + cmd);
   server.send(200);
   activeCommand = cmd;
 }
 
-void WebConnector::init() {
-  delay(1000);
+void WebConnector::handleTrim()
+{
+  String trim = server.arg("trim");
+  Serial.println("trim to " + trim);
+  server.send(200);
+  Mind::setHeightOverride(-trim.toInt());
+}
+
+void WebConnector::handleTilt()
+{
+  String tilt = server.arg("tilt");
+  Serial.println("tilt to " + tilt);
+  server.send(200);
+  Mind::setTiltCorrection(-tilt.toInt());
+}
+
+void WebConnector::init()
+{
   // WiFi.softAP(ssid, password);
   WiFi.softAP(ssid); // no password
-  
+
   server.on("/", handleRoot);
-  
+
   server.on("/cmd", handleCommand);
+
+  server.on("/trim", handleTrim);
+  
+  server.on("/tilt", handleTilt);
 
   server.begin();
 
@@ -120,10 +204,12 @@ void WebConnector::init() {
   Serial.println(WiFi.softAPIP());
 }
 
-void WebConnector::handleConnection() {
+void WebConnector::handleConnection()
+{
   server.handleClient();
 }
 
-String WebConnector::getActiveCommand() {
+String WebConnector::getActiveCommand()
+{
   return activeCommand;
 }

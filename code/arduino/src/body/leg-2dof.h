@@ -12,9 +12,6 @@ class Leg2DOF {
     Joint *hip{};
     Joint *knee{};
 
-    // Save the initilizer list version
-    // void walk(int period, int amplitude, int phase, const std::initializer_list<int>& offsets, bool backward);
-
     // direct parameter set
     void walk(int period, Pair amplitude, int phase, const Pair offsets, bool backward);
     // alternative gait based
@@ -26,4 +23,6 @@ class Leg2DOF {
     // these, honestly, should be enums, but naming the 2 enums readably is pain. left/right can be Side. But what about front/back
     bool left;  // lefthand
     bool front;  // front/rear
+    int heightOverride = 0;
+    int tiltCorrection = 0;
 };

@@ -14,9 +14,11 @@ Leg2DOF::Leg2DOF(bool front, bool left) {
     this->left = left;
     const bool clockwise = false;
     const bool anticlock = true;
-    // TODO: Recalibrate your robot to trim = 0
-    const int TRIM_HEIGHT = -20;
-    const int TRIM_SPREAD = 10;
+    // You can hardcode your trim here
+    // Todo: make possible to trim each leg separately.
+    const int TRIM_HEIGHT = 0;
+    const int TRIM_SPREAD = 0;
+
     if (this->front) {
         if (this->left) {
             this->hip = new Joint(D1, TRIM_SPREAD, clockwise);
@@ -36,18 +38,14 @@ Leg2DOF::Leg2DOF(bool front, bool left) {
     }
 }
 
-// TODO: add non-circular amplitudes
+// TODO: test adding non-circular amplitudes
 void Leg2DOF::walk(int period, Pair amplitude, int phase, const Pair offsets, bool backward) {
     // Cross sync for the case when we have different directions for different legs.
     phase += backward ? 90 : 0;
 
     this->hip->oscillate(period, amplitude.spread, phase, offsets.spread);
     int kneePhase = phase + (backward ? -90 : 90);
-    // int kneePhase =  (phase + 90) * (backward ? -1 : 1);
     this->knee->oscillate(period, amplitude.height, kneePhase, offsets.height);
-
-    Serial.print(phase); Serial.print(' '); Serial.print(kneePhase); Serial.print(' ');
-    Serial.println(phase - kneePhase);
 }
 
 void Leg2DOF::walk(Gait gait) {
@@ -71,6 +69,14 @@ void Leg2DOF::relax() {
 void Leg2DOF::pulse() {
     this->hip->pulse();
     this->knee->pulse();
+    if (Mind::getHeightOverride() != this->heightOverride) {
+        this->heightOverride = Mind::getHeightOverride();
+        this->knee->setTrim(this->heightOverride);
+    }
+    if (Mind::getTiltCorrection() != this->tiltCorrection) {
+        this->tiltCorrection = Mind::getTiltCorrection();
+        this->knee->setTilt(this->left ? this->tiltCorrection : -this->tiltCorrection);
+    }
 }
 
 Leg2DOF::~Leg2DOF() {

@@ -15,11 +15,7 @@ String activeCommand;
 
 void setup() {
   Serial.begin(115200);
-  delay(1000);
-
-  // assign SD_DATA2 and SD_DATA2 GPIO function
-  PIN_FUNC_SELECT(PERIPHS_IO_MUX_SD_DATA2_U, FUNC_GPIO9);
-  PIN_FUNC_SELECT(PERIPHS_IO_MUX_SD_DATA3_U, FUNC_GPIO10);
+  delay(3000);
 
   connector.init();
   robot.init();
@@ -29,8 +25,8 @@ void setup() {
 }
 
 void loop() {
-  // Previous iteration it requested stop all activities.
-  // All done - this iteration go on as normal.
+  // On previous iteration it was requested to stop all activities.
+  // All done - this iteration we go on as normal.
   if (Mind::in_rest()) {
     Mind::start_work();
   }
@@ -50,6 +46,9 @@ void loop() {
   // we'll use the pulse system to simulate multithreading
   robot.pulse();
   // this delay limits the shortest possible period; want faster robot - then reduce the delay.
-  delay(50);  // test longer values
-  yield(); // yield for sync!
+  // bigger delay means less accurate, lazy moves. too big values - moves are uneven and amplitudes get out of sync.
+  // no delay - slower servos don't get enough time to complete commands; phase may get out of sync.
+  // you can play with this setting, to find what's best for your own servos.
+  delay(50);
+  yield(); // yield for sync! remove to suffer
 }

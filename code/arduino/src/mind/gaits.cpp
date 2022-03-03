@@ -19,7 +19,7 @@ Gait Gaits::steadyGait(int phase, bool direction) {
 Gait Gaits::steadyShortGait(int phase, bool direction) {
     Gait g;
     g.period = 700;
-    g.amplitude = {10, 20};
+    g.amplitude = {5, 20};
     g.direction = direction;
     g.phase = phase;
     return g;

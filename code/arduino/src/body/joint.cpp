@@ -14,15 +14,15 @@ Joint::Joint(int pin, int trim, bool reverse) {
 
 void Joint::setPosition(float target){
     const int limit = 70;
-    if (target > limit || target < -limit) {
+    if (target + this->trim + this->tilt > limit || target + this->trim + this->tilt < -limit) {
         Serial.print("wrong position ");
         Serial.println(target);
-        target = target > limit ? limit : -limit;
+        target = target > 0 ? limit - this->trim - this->tilt : -(limit - this->trim - this->tilt);
     }
     if (!this->reverse)
-        this->servo.writeMicroseconds(this->angToUsec(this->_basePosition + target + this->trim));
+        this->servo.writeMicroseconds(this->angToUsec(this->_basePosition + target + this->trim + this->tilt));
     else
-        this->servo.writeMicroseconds(this->angToUsec(180 - (this->_basePosition + target + this->trim)));
+        this->servo.writeMicroseconds(this->angToUsec(180 - (this->_basePosition + target + this->trim + this->tilt)));
     this->_position = target;
 }
 
@@ -43,6 +43,22 @@ void Joint::oscillate(int period, int amplitude, int phase, int offset) {
     }
 }
 
+void Joint::setTrim(int trim) {
+    this->trim = trim;
+    this->oscillator.setTrim(trim);
+    if (!this->oscillating) {
+        this->setPosition(this->_position);
+    }
+}
+
+void Joint::setTilt(int tilt) {
+    this->tilt = tilt;
+    this->oscillator.setTrim(this->trim + this->tilt);
+    if (!this->oscillating) {
+        this->setPosition(this->_position);
+    }
+}
+
 void Joint::pulse() {
     if (Mind::in_rest()) {
         // invalidate
@@ -51,12 +67,9 @@ void Joint::pulse() {
     }
     if (this->oscillating) {
         if (millis() < this->osc_until) {
-            Serial.println(".");
             this->setPosition(this->oscillator.refresh());
-            // yield(); //todo: check if needed
         } else {
             this->oscillating = false;
-            Serial.println("------");
         }
     }
 }

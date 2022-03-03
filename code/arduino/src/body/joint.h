@@ -12,16 +12,17 @@ class Joint {
         void setPosition(float target);
         float getPosition();
         void oscillate(int period, int amplitude, int phase, int offset);
+        void setTrim(int trim);
+        void setTilt(int trim);
     private:
         bool reverse;
         int pin;
-        int trim; // not sure we need it... but the trim may be set directly in Oscilator on init.
-                  // we may need some lifecycle here.
+        int trim;
+        int tilt = 0;
         Servo servo;
         float _position;
         int angToUsec(float value);
         float _basePosition = 90;
-        // float _basePosition = 75;
         bool oscillating = false;
         unsigned long osc_until;
 };
