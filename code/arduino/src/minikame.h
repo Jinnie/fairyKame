@@ -2,7 +2,7 @@
 #define minikame_h
 
 #include <Servo.h>
-#include "octosnake.h"
+#include "soul/octosnake.h"
 #include "body/leg-2dof.h"
 #include "mind/gaits.h"
 

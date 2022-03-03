@@ -1,5 +1,7 @@
 #include "commandexecutor.h"
 
+// TODO not sure where this code belongs and if we need this class at all
+
 void CommandExecutor::init(MiniKame* kame) {
   robot = kame;
 }

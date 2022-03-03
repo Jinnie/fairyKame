@@ -1,7 +1,7 @@
 #pragma once
 #include <Servo.h>
-#include "octosnake.h"
-#include "../mind/mind.h"
+#include "soul/octosnake.h"
+#include "mind/mind.h"
 
 class Joint {
     public:

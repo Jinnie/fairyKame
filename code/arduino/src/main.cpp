@@ -2,10 +2,10 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <Servo.h>
-#include "octosnake.h"
+#include "soul/octosnake.h"
 #include "minikame.h"
-#include "webconnector.h"
-#include "commandexecutor.h"
+#include "soul/webconnector.h"
+#include "mind/commandexecutor.h"
 #include "mind/mind.h"
 
 MiniKame robot;
