@@ -21,26 +21,19 @@ void setup() {
   robot.init();
   executor.init(&robot);
   Serial.println("Robot is starting.");
-  Mind::start_work();
 }
 
 void loop() {
-  // On previous iteration it was requested to stop all activities.
-  // All done - this iteration we go on as normal.
-  if (Mind::in_rest()) {
-    Mind::start_work();
-  }
   // if there is a connection waiting, process it
   connector.handleConnection();
   // get the active command
   if (activeCommand != connector.getActiveCommand()) {
-    //Stop all activities
-    Mind::stop_work();
+    robot.stop_work();
+  
     activeCommand = connector.getActiveCommand();
+    // execute the active command, which calls the robot
+    executor.parseCommand(activeCommand);
   }
-
-  // execute the active command, which calls the robot
-  executor.parseCommand(activeCommand);
 
   // give it some life
   // we'll use the pulse system to simulate multithreading

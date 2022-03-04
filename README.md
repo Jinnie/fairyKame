@@ -48,7 +48,8 @@ There is no small contribution. Anything counts - a question, vague idea, anythi
 - Explore basic command options at [minicame.cpp](https://github.com/Jinnie/fairyKame/blob/develop/code/arduino/src/minikame.cpp). Create your own combinations of gaits, phases, directions.
 - Explore the gait objects in [gaits.cpp](https://github.com/Jinnie/fairyKame/blob/develop/code/arduino/src/mind/gaits.cpp). They give you more control over the robot then the basic moves. If you want a more rapid move, or longer steps, that's the place to go.
 - Suggest your own modifications on the robot body, or share ideas.
-- Be patient. Opensource contribution takes time and dialog.
+- If you want to commit code then: create your own fork, make modifications against it, submit Pull Request. Or contact me for help.
+- Be patient. Open source contribution may take a bit more time and and conversation.
 - If you have ideas that are diverging from ours, or we're not accepting yours, fork and go! Respect the License.
 
 # More Info and Pictures

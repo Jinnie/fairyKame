@@ -8,6 +8,7 @@ class Leg2DOF {
     Leg2DOF() = delete;
     Leg2DOF(bool left, bool front);
     ~Leg2DOF();
+    void stop_work();
     void pulse();
     Joint *hip{};
     Joint *knee{};

@@ -7,6 +7,7 @@ class Joint {
     public:
         Joint() = delete;
         Joint(int pin, int trim, bool reverse);
+        void stop_work();
         void pulse();
         Oscillator oscillator;
         void setPosition(float target);
@@ -24,5 +25,4 @@ class Joint {
         int angToUsec(float value);
         float _basePosition = 90;
         bool oscillating = false;
-        unsigned long osc_until;
 };

@@ -11,6 +11,7 @@ class MiniKame {
     public:
         ~MiniKame();
         void init();
+        void stop_work();
         void pulse();
 
         // gaits

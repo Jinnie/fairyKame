@@ -66,6 +66,11 @@ void Leg2DOF::relax() {
     pose(0, 0);
 }
 
+void Leg2DOF::stop_work() {
+    this->hip->stop_work();
+    this->knee->stop_work();
+}
+
 void Leg2DOF::pulse() {
     this->hip->pulse();
     this->knee->pulse();

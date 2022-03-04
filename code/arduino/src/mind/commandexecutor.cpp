@@ -42,6 +42,5 @@ void CommandExecutor::parseCommand(String command) {
     robot->just_pushUps();
   } else {
     robot->just_relax();
-    delay(100);
   }
 }

@@ -5,6 +5,14 @@ void MiniKame::init()
     just_relax();
 }
 
+void MiniKame::stop_work()
+{
+    this->frontLeftLeg->stop_work();
+    this->frontRightLeg->stop_work();
+    this->backLeftLeg->stop_work();
+    this->backRightLeg->stop_work();
+}
+
 void MiniKame::pulse()
 {
     this->frontLeftLeg->pulse();
@@ -134,10 +142,14 @@ void MiniKame::just_stretch() {
     this->backRightLeg->flex(2000, 45, 290, position);
 }
 
-// that's where test moves are built
+// that's where new moves are built
 void MiniKame::magic()
 {
-    this->just_pushUps();
+    // say hi
+    this->frontLeftLeg->pose(50, -40);
+    this->backLeftLeg->pose(-50, 50);
+    this->backRightLeg->pose(20, -25);
+    this->frontRightLeg->flex(300, 30, 0, {60, 60});
 }
 
 MiniKame::~MiniKame()
