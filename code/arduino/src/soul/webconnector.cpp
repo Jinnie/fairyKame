@@ -140,6 +140,7 @@ const char *page_html = R"CPPHTML(
         <div class="cB" id="jiggle" onclick="fireCommand('jiggle')">Jiggle</div>
         <div class="cB" id="moonWalk" onclick="fireCommand('moonWalk')">Moonwalk</div>
         <div class="cB" id="confused" onclick="fireCommand('confused')">Confused</div>
+        <div class="cB" id="sayHi" onclick="fireCommand('sayHi')">Say Hi</div>
         
         <div class="cBMgc" id="magic" onclick="fireCommand('magic')">Magic</div>
 

@@ -30,6 +30,7 @@ class MiniKame {
         void just_stretch();
         void just_confused();
         void just_pushUps();
+        void just_say_hi();
         void magic();
 
     private:

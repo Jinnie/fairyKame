@@ -142,14 +142,19 @@ void MiniKame::just_stretch() {
     this->backRightLeg->flex(2000, 45, 290, position);
 }
 
-// that's where new moves are built
-void MiniKame::magic()
-{
-    // say hi
+void MiniKame::just_say_hi() {
     this->frontLeftLeg->pose(50, -40);
     this->backLeftLeg->pose(-50, 50);
     this->backRightLeg->pose(20, -25);
     this->frontRightLeg->flex(300, 30, 0, {60, 60});
+}
+
+void MiniKame::magic() {
+    // say hi
+    this->frontLeftLeg->pose(90, -90);
+    this->frontRightLeg->pose(90, -90);
+    this->backLeftLeg->pose(-90, -90);
+    this->backRightLeg->pose(-90, -90);
 }
 
 MiniKame::~MiniKame()

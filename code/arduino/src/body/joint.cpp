@@ -13,7 +13,7 @@ Joint::Joint(int pin, int trim, bool reverse) {
 }
 
 void Joint::setPosition(float target){
-    const int limit = 70;
+    const int limit = 90;
     if ((target + this->trim + this->tilt) > limit) {
         target = limit - this->trim - this->tilt;
     } else if ((target + this->trim + this->tilt) < -limit) {
@@ -26,7 +26,7 @@ void Joint::setPosition(float target){
     else {
         this->servo.writeMicroseconds(this->angToUsec(180 - (this->_basePosition + target + this->trim + this->tilt)));
     }
-    
+
     this->_position = target;
 }
 

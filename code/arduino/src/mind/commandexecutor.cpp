@@ -40,6 +40,8 @@ void CommandExecutor::parseCommand(String command) {
     robot->just_confused();
   } else if (command == "pushUps") {
     robot->just_pushUps();
+  } else if (command == "sayHi") {
+    robot->just_say_hi();
   } else {
     robot->just_relax();
   }
