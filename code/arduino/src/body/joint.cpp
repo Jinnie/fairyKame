@@ -36,7 +36,7 @@ float Joint::getPosition(){
 
 void Joint::oscillate(int period, int amplitude, int phase, int offset) {
     if (!this->oscillating) {
-        this->oscillator.setPeriod(period);
+        this->oscillator.setPeriod(period / Mind::getSpeedModifier());
         this->oscillator.setAmplitude(amplitude);
         this->oscillator.setPhase(phase);
         this->oscillator.setOffset(offset);

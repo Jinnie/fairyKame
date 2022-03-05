@@ -12,6 +12,7 @@ class WebConnector {
     static void handleCommand();
     static void handleTrim();
     static void handleTilt();
+    static void handleSpeed();
     // Initialize the server
     void init();
     void handleConnection();

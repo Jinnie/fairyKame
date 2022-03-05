@@ -14,20 +14,20 @@ const char *page_html = R"CPPHTML(
     <meta charset="utf-8">
     <title>Mini Kame</title>
     <style>
-        div {
+        .block {
             width: 100%;
-            height: 400px;
         }
 
-        div div {
+        .btn {
             width: 33%;
-            height: 33%;
+            height: 120px;
             outline: 1px solid;
-            float: left;
+            display: inline-block;
             font-size: 24px;
             color: white;
             text-align: center;
             line-height: 500%;
+            margin-right: -3px;
         }
 
         .cB {
@@ -40,7 +40,7 @@ const char *page_html = R"CPPHTML(
 
         .cBDir {
             font-size: 40px;
-            line-height: 300%;
+            line-height: 280%;
             background-color: orange;
         }
         .cBDir.dg {
@@ -51,11 +51,10 @@ const char *page_html = R"CPPHTML(
             width: 99%;
         }
 
-        #trim, #tilt {
+        .sldLbl {
             color: white;
-            float: right;
             font-size: 25px;
-            margin-right: 1%;
+            margin-top: 25px;
         }
 
         .slider {
@@ -66,7 +65,7 @@ const char *page_html = R"CPPHTML(
           outline: none;
           -webkit-transition: .2s;
           transition: opacity .2s;
-          margin-top: 25px;
+          margin-top: 8px;
           border-top: 4px solid #999999;
           border-bottom: 4px solid #999999;
         }
@@ -119,36 +118,47 @@ const char *page_html = R"CPPHTML(
         xhttp.send();
         document.getElementById('tilt').innerHTML = 'tilt override: ' + value;
       }
+
+      function speed(value) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "speed?speed="+value, true);
+        xhttp.send();
+        document.getElementById('speed').innerHTML = 'speed: ' + (+Math.sqrt(Math.pow(2, value)).toFixed(2)) + 'x';
+      }
       
     </script>
 </head>
 
 <body>
-    <div>
-        <div class="cBDir dg" id="upLeft" onclick="fireCommand('upLeft')">↖</div>
-        <div class="cBDir" id="run" onclick="fireCommand('run')">↑</div>
-        <div class="cBDir dg" id="upRight" onclick="fireCommand('upRight')">↗</div>
-        <div class="cBDir" id="turnL" onclick="fireCommand('turnL')">←</div>
-        <div class="cBStop" id="stop" onclick="fireCommand('stop')">Stop</div>
-        <div class="cBDir" id="turnR" onclick="fireCommand('turnR')">→</div>
-        <div class="cBDir dg" id="backLeft" onclick="fireCommand('backLeft')">↙</div>
-        <div class="cBDir" id="back" onclick="fireCommand('back')">↓</div>
-        <div class="cBDir dg" id="backRight" onclick="fireCommand('backRight')">↘</div>
-        <div class="cB" id="pushUps" onclick="fireCommand('pushUps')">Push Ups</div>
-        <div class="cB" id="stretch" onclick="fireCommand('stretch')">Stretch</div>
-        <div class="cB" id="dance" onclick="fireCommand('dance')">Dance</div>
-        <div class="cB" id="jiggle" onclick="fireCommand('jiggle')">Jiggle</div>
-        <div class="cB" id="moonWalk" onclick="fireCommand('moonWalk')">Moonwalk</div>
-        <div class="cB" id="confused" onclick="fireCommand('confused')">Confused</div>
-        <div class="cB" id="sayHi" onclick="fireCommand('sayHi')">Say Hi</div>
-        
-        <div class="cBMgc" id="magic" onclick="fireCommand('magic')">Magic</div>
-
+    <div class="block">
+        <div id="trim" class="sldLbl">trim</div>
         <input type="range" min="-90" max="90" value="0" class="slider" onchange="trim(this.value)" >
-        <p id="trim"></p>
 
+        <div id="tilt" class="sldLbl">tilt</div>
         <input type="range" min="-90" max="90" value="0" class="slider" onchange="tilt(this.value)" >
-        <p id="tilt"></p>
+
+        <div id="speed" class="sldLbl">speed</div>
+        <input type="range" min="-5" max="5" value="0" class="slider" onchange="speed(this.value)" >
+    </div>
+    <div class="block" style="margin-top: 42px;">
+        <div class="btn cBDir dg" id="upLeft" onclick="fireCommand('upLeft')">↖</div>
+        <div class="btn cBDir" id="run" onclick="fireCommand('run')">↑</div>
+        <div class="btn cBDir dg" id="upRight" onclick="fireCommand('upRight')">↗</div>
+        <div class="btn cBDir" id="turnL" onclick="fireCommand('turnL')">←</div>
+        <div class="btn cBStop" id="stop" onclick="fireCommand('stop')">Stop</div>
+        <div class="btn cBDir" id="turnR" onclick="fireCommand('turnR')">→</div>
+        <div class="btn cBDir dg" id="backLeft" onclick="fireCommand('backLeft')">↙</div>
+        <div class="btn cBDir" id="back" onclick="fireCommand('back')">↓</div>
+        <div class="btn cBDir dg" id="backRight" onclick="fireCommand('backRight')">↘</div>
+        <div class="btn cB" id="pushUps" onclick="fireCommand('pushUps')">Push Ups</div>
+        <div class="btn cB" id="stretch" onclick="fireCommand('stretch')">Stretch</div>
+        <div class="btn cB" id="dance" onclick="fireCommand('dance')">Dance</div>
+        <div class="btn cB" id="jiggle" onclick="fireCommand('jiggle')">Jiggle</div>
+        <div class="btn cB" id="moonWalk" onclick="fireCommand('moonWalk')">Moonwalk</div>
+        <div class="btn cB" id="confused" onclick="fireCommand('confused')">Confused</div>
+        <div class="btn cB" id="sayHi" onclick="fireCommand('sayHi')">Say Hi</div>
+        
+        <div class="btn cBMgc" id="magic" onclick="fireCommand('magic')">Magic</div>
     </div>
 </body>
 
@@ -185,6 +195,13 @@ void WebConnector::handleTilt()
   Mind::setTiltCorrection(-tilt.toInt());
 }
 
+void WebConnector::handleSpeed()
+{
+  float speed = sqrt(pow(2, server.arg("speed").toInt()));
+  server.send(200);
+  Mind::setSpeedModifier(speed);
+}
+
 void WebConnector::init()
 {
   // WiFi.softAP(ssid, password);
@@ -197,6 +214,8 @@ void WebConnector::init()
   server.on("/trim", handleTrim);
   
   server.on("/tilt", handleTilt);
+  
+  server.on("/speed", handleSpeed);
 
   server.begin();
 

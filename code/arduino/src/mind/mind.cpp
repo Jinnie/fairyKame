@@ -2,6 +2,7 @@
 
 static int _height = 0;
 static int _tilt = 0;
+static float _speed = 1;
 
 int Mind::getHeightOverride() {
     return _height;
@@ -17,4 +18,12 @@ int Mind::getTiltCorrection() {
 
 void Mind::setTiltCorrection(int tilt) {
     _tilt = tilt;
+}
+
+float Mind::getSpeedModifier() {
+    return _speed;
+}
+
+void Mind::setSpeedModifier(float speed) {
+    _speed = speed;
 }
