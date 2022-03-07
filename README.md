@@ -1,5 +1,9 @@
 # 🧚 Kame (FairyKame)
 
+<p align="center">
+<img src="doc/images/fairyKame01.jpg" width="500" align = "center">
+</p>
+
 Hi!
 
 FairyKame is a fork of the great [fatKame](https://github.com/Blomdoft/fatKame) project, which adds a nice layer of code organization on top of the magnificent [miniKame](https://github.com/JavierIH/miniKame) robot. I am forking it with the idea to rework the code even more, in a way that will allow for very easy modification of the current gaits and moves and creation of new ones. I want to try building a community around it, so I am opening the Issues section for all to comment, request features, report bugs. There I will be adding my ideas as feature request issues. Any contribution, as new issues, or code, especially with new gaits and robot moves are more than welcome.
@@ -7,6 +11,16 @@ If you have any questions, please post them to the Issues for now. If needed, I'
 I will also be dropping fatKame's sonic sensor support and auto mode for now, they belong better there, and as I'll be adding a lot of new code, I need to reduce the scope a little bit.
 
 # Goals
+
+## Give More Control
+More and finer control over robot movements and position. Adding sliders to control:
+- Height (trim) - make it go up or down with the touch of a button.
+- Tilt - allow to walk on uneven survace.
+- Speed - you can make it sprint or walk in slow motion.
+
+<p align="center">
+<img src="doc/images/fairyKame-controls.jpg" width="340" align = "center">
+</p>
 
 ## Make it Easy:
 Make it easy for everyone, with even little coding skills, to create new gaits and moves.
