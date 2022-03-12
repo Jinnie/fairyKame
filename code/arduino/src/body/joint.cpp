@@ -14,6 +14,10 @@ Joint::Joint(int pin, int trim, bool reverse) {
 
 void Joint::setPosition(float target){
     const int limit = 90;
+    if (!ThreeLawsOfRobotics::conforms()) {
+        Serial.println("SEVERE! Violation of the Laws of Robotics detected!");
+        return;
+    }
     if ((target + this->trim + this->tilt) > limit) {
         target = limit - this->trim - this->tilt;
     } else if ((target + this->trim + this->tilt) < -limit) {
