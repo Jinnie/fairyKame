@@ -125,6 +125,13 @@ const char *page_html = R"CPPHTML(
         xhttp.send();
         document.getElementById('speed').innerHTML = 'speed: ' + (+Math.sqrt(Math.pow(2, value)).toFixed(2)) + 'x';
       }
+
+      function delay(value) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "delay?delay="+value, true);
+        xhttp.send();
+        document.getElementById('delay').innerHTML = 'delay: ' + value;
+      }
       
     </script>
 </head>
@@ -139,6 +146,12 @@ const char *page_html = R"CPPHTML(
 
         <div id="speed" class="sldLbl">speed</div>
         <input type="range" min="-5" max="5" value="0" class="slider" onchange="speed(this.value)" >
+
+      <!-- Uncomment to fine-tune your delay setting
+        <div id="delay" class="sldLbl">delay</div>
+        <input type="range" min="0" max="100" value="20" class="slider" onchange="delay(this.value)" >
+      -->
+
     </div>
     <div class="block" style="margin-top: 42px;">
         <div class="btn cBDir dg" id="upLeft" onclick="fireCommand('upLeft')">↖</div>
@@ -195,6 +208,14 @@ void WebConnector::handleTilt()
   Mind::setTiltCorrection(-tilt.toInt());
 }
 
+void WebConnector::handleDelay()
+{
+  String delay = server.arg("delay");
+  Serial.println("delay to " + delay);
+  server.send(200);
+  Mind::setDelay(delay.toInt());
+}
+
 void WebConnector::handleSpeed()
 {
   float speed = sqrt(pow(2, server.arg("speed").toInt()));
@@ -216,6 +237,8 @@ void WebConnector::init()
   server.on("/tilt", handleTilt);
   
   server.on("/speed", handleSpeed);
+
+  server.on("/delay", handleDelay);
 
   server.begin();
 

@@ -42,6 +42,6 @@ void loop() {
   // bigger delay means less accurate, lazy moves. too big values - moves are uneven and amplitudes get out of sync.
   // no delay - slower servos don't get enough time to complete commands; phase may get out of sync.
   // you can play with this setting, to find what's best for your own servos.
-  delay(50);
+  delay(Mind::getDelay());
   yield(); // yield for sync! remove to suffer
 }
