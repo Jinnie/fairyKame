@@ -4,7 +4,6 @@ const char *ssid = "MINIKAME";
 // const char* password = "asdf";
 
 ESP8266WebServer server(80);
-String WebConnector::activeCommand = "stop";
 
 const char *page_html = R"CPPHTML(
 <!doctype html>
@@ -170,6 +169,7 @@ const char *page_html = R"CPPHTML(
         <div class="btn cB" id="moonWalk" onclick="fireCommand('moonWalk')">Moonwalk</div>
         <div class="btn cB" id="confused" onclick="fireCommand('confused')">Confused</div>
         <div class="btn cB" id="sayHi" onclick="fireCommand('sayHi')">Say Hi</div>
+        <div class="btn cB" id="pack" onclick="fireCommand('pack')">Pack</div>
         
         <div class="btn cBMgc" id="magic" onclick="fireCommand('magic')">Magic</div>
     </div>
@@ -189,7 +189,7 @@ void WebConnector::handleCommand()
   String cmd = server.arg("command");
   Serial.println("command " + cmd);
   server.send(200);
-  activeCommand = cmd;
+  Mind::setActiveCommand(cmd);
 }
 
 void WebConnector::handleTrim()
@@ -250,9 +250,4 @@ void WebConnector::init()
 void WebConnector::handleConnection()
 {
   server.handleClient();
-}
-
-String WebConnector::getActiveCommand()
-{
-  return activeCommand;
 }

@@ -149,6 +149,13 @@ void MiniKame::just_say_hi() {
     this->frontRightLeg->flex(300, 30, 0, {60, 60});
 }
 
+void MiniKame::just_pack() {
+    this->frontLeftLeg->pose(90, -90);
+    this->frontRightLeg->pose(90, -90);
+    this->backLeftLeg->pose(-90, -90);
+    this->backRightLeg->pose(-90, -90);
+}
+
 void MiniKame::magic() {
     // say hi
     this->frontLeftLeg->pose(90, -90);

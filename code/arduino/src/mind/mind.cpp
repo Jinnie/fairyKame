@@ -4,6 +4,7 @@ static int _height = 0;
 static int _tilt = 0;
 static int _delay = 20;
 static float _speed = 1;
+static String _activeCommand = "stop";
 
 int Mind::getHeightOverride() {
     return _height;
@@ -35,4 +36,12 @@ float Mind::getSpeedModifier() {
 
 void Mind::setSpeedModifier(float speed) {
     _speed = speed;
+}
+
+String Mind::getActiveCommand() {
+    return _activeCommand;
+}
+
+void Mind::setActiveCommand(String activeCommand) {
+    _activeCommand = activeCommand;
 }

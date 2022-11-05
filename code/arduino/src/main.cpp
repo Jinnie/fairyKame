@@ -5,11 +5,13 @@
 #include "soul/octosnake.h"
 #include "minikame.h"
 #include "soul/webconnector.h"
+#include "soul/serialconnector.h"
 #include "mind/commandexecutor.h"
 #include "mind/mind.h"
 
 MiniKame robot;
-WebConnector connector;
+WebConnector webConnector;
+SerialConnector serialConnector;
 CommandExecutor executor;
 String activeCommand;
 
@@ -17,7 +19,8 @@ void setup() {
   Serial.begin(115200);
   delay(3000);
 
-  connector.init();
+  webConnector.init();
+  serialConnector.init();
   robot.init();
   executor.init(&robot);
   Serial.println("Robot is starting.");
@@ -25,12 +28,14 @@ void setup() {
 
 void loop() {
   // if there is a connection waiting, process it
-  connector.handleConnection();
+  webConnector.handleConnection();
+  serialConnector.handleConnection();
+
   // get the active command
-  if (activeCommand != connector.getActiveCommand()) {
+  if (activeCommand != Mind::getActiveCommand()) {
     robot.stop_work();
   
-    activeCommand = connector.getActiveCommand();
+    activeCommand = Mind::getActiveCommand();
     // execute the active command, which calls the robot
     executor.parseCommand(activeCommand);
   }

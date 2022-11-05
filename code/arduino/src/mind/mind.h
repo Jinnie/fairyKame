@@ -1,4 +1,5 @@
 #pragma once
+#include <ESP8266WiFi.h>
 
 class Mind {
     public:
@@ -10,4 +11,6 @@ class Mind {
         static void setDelay(int delay);
         static float getSpeedModifier();
         static void setSpeedModifier(float speed);
+        static String getActiveCommand();
+        static void setActiveCommand(String activeCommand);
 };

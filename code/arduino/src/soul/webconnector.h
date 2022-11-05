@@ -17,9 +17,6 @@ class WebConnector {
     // Initialize the server
     void init();
     void handleConnection();
-    String getActiveCommand();
-  private:
-    static String activeCommand;
 };
 
 #endif
