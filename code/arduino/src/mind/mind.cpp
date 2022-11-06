@@ -43,5 +43,7 @@ String Mind::getActiveCommand() {
 }
 
 void Mind::setActiveCommand(String activeCommand) {
+    Serial.print('#');
+    Serial.println(activeCommand);
     _activeCommand = activeCommand;
 }

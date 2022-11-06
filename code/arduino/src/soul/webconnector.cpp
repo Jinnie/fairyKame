@@ -242,8 +242,10 @@ void WebConnector::init()
 
   server.begin();
 
-  Serial.println("WiFi started");
+  Serial.println("WiFi butterfies flying");
+  Serial.print("  SSID: ");
   Serial.println(WiFi.softAPSSID());
+  Serial.print("  IP: ");
   Serial.println(WiFi.softAPIP());
 }
 

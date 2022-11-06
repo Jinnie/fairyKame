@@ -23,7 +23,7 @@ void setup() {
   serialConnector.init();
   robot.init();
   executor.init(&robot);
-  Serial.println("Robot is starting.");
+  Serial.println("A Fairy wakes up!");
 }
 
 void loop() {

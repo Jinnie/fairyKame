@@ -8,6 +8,8 @@ class SerialConnector {
   public:
     void init();
     void handleConnection();
+  private:
+    boolean readCmd = false;
 };
 
 #endif
