@@ -32,6 +32,8 @@ class MiniKame {
         void just_pushUps();
         void just_say_hi();
         void just_pack();
+        void just_strafe_left();
+        void just_strafe_right();
         void magic();
 
     private:

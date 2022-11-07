@@ -38,6 +38,38 @@ void MiniKame::just_walk()
     this->backRightLeg->walk(Gaits::steadyGait(0, Gait::FORWARD));
 }
 
+void MiniKame::just_strafe_left()
+{
+    Gait frontLeftGait = Gaits::steadyGait(0, Gait::BACKWARD);
+    frontLeftGait.position.spread = 60;
+    this->frontLeftLeg->walk(frontLeftGait);
+    Gait frontRightGait = Gaits::steadyGait(180, Gait::FORWARD);
+    frontRightGait.position.spread = 60;
+    this->frontRightLeg->walk(frontRightGait);
+    Gait backLeftGait = Gaits::steadyGait(180, Gait::FORWARD);
+    backLeftGait.position.spread = -50;
+    this->backLeftLeg->walk(backLeftGait);
+    Gait backRightGait = Gaits::steadyGait(0, Gait::BACKWARD);
+    backRightGait.position.spread = -50;
+    this->backRightLeg->walk(backRightGait);
+}
+
+void MiniKame::just_strafe_right()
+{
+    Gait frontLeftGait = Gaits::steadyGait(0, Gait::FORWARD);
+    frontLeftGait.position.spread = 60;
+    this->frontLeftLeg->walk(frontLeftGait);
+    Gait frontRightGait = Gaits::steadyGait(180, Gait::BACKWARD);
+    frontRightGait.position.spread = 60;
+    this->frontRightLeg->walk(frontRightGait);
+    Gait backLeftGait = Gaits::steadyGait(180, Gait::BACKWARD);
+    backLeftGait.position.spread = -50;
+    this->backLeftLeg->walk(backLeftGait);
+    Gait backRightGait = Gaits::steadyGait(0, Gait::FORWARD);
+    backRightGait.position.spread = -50;
+    this->backRightLeg->walk(backRightGait);
+}
+
 void MiniKame::just_back()
 {
     this->frontLeftLeg->walk(Gaits::steadyGait(0, Gait::BACKWARD));
@@ -157,11 +189,20 @@ void MiniKame::just_pack() {
 }
 
 void MiniKame::magic() {
-    // say hi
-    this->frontLeftLeg->pose(90, -90);
-    this->frontRightLeg->pose(90, -90);
-    this->backLeftLeg->pose(-90, -90);
-    this->backRightLeg->pose(-90, -90);
+   // strafe
+
+    Gait frontLeftGait = Gaits::steadyGait(0, Gait::FORWARD);
+    frontLeftGait.position.spread = 60;
+    this->frontLeftLeg->walk(frontLeftGait);
+    Gait frontRightGait = Gaits::steadyGait(180, Gait::BACKWARD);
+    frontRightGait.position.spread = 60;
+    this->frontRightLeg->walk(frontRightGait);
+    Gait backLeftGait = Gaits::steadyGait(180, Gait::BACKWARD);
+    backLeftGait.position.spread = -50;
+    this->backLeftLeg->walk(backLeftGait);
+    Gait backRightGait = Gaits::steadyGait(0, Gait::FORWARD);
+    backRightGait.position.spread = -50;
+    this->backRightLeg->walk(backRightGait);
 }
 
 MiniKame::~MiniKame()

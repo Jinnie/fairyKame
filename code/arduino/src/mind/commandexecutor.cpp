@@ -44,6 +44,10 @@ void CommandExecutor::parseCommand(String command) {
     robot->just_say_hi();
   } else if (command == "pack") {
     robot->just_pack();
+  } else if (command == "strafeLeft") {
+    robot->just_strafe_left();
+  } else if (command == "strafeRight") {
+    robot->just_strafe_right();
   } else {
     robot->just_relax();
   }

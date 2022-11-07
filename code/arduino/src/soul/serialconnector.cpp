@@ -38,6 +38,10 @@ void SerialConnector::handleConnection()
         break;
         case 99: cmd = "backRight"; // C
         break;
+        case 44: cmd = "strafeLeft"; // ,
+        break;
+        case 46: cmd = "strafeRight"; // .
+        break;
         case 9: cmd = "magic"; // Tab
         break;
         case 10:
