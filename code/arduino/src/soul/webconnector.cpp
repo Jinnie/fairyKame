@@ -170,6 +170,18 @@ const char *page_html = R"CPPHTML(
         <div class="btn cB" id="confused" onclick="fireCommand('confused')">Confused</div>
         <div class="btn cB" id="sayHi" onclick="fireCommand('sayHi')">Say Hi</div>
         <div class="btn cB" id="pack" onclick="fireCommand('pack')">Pack</div>
+        <div class="btn cB" id="turnInPlaceL" onclick="fireCommand('turnInPlaceL')">Turn In Place L</div>
+        <div class="btn cB" id="turnInPlaceR" onclick="fireCommand('turnInPlaceR')">Turn In Place R</div>
+        <div class="btn cB" id="crawl" onclick="fireCommand('crawl')">Crawl</div>
+        <div class="btn cB" id="tiptoe" onclick="fireCommand('tiptoe')">Tiptoe</div>
+        <div class="btn cB" id="recover" onclick="fireCommand('recover')">Recover</div>
+        <div class="btn cB" id="sit" onclick="fireCommand('sit')">Sit</div>
+        <div class="btn cB" id="playDead" onclick="fireCommand('playDead')">Play Dead</div>
+        <div class="btn cB" id="shiver" onclick="fireCommand('shiver')">Shiver</div>
+        <div class="btn cB" id="scratchEar" onclick="fireCommand('scratchEar')">Scratch Ear</div>
+        <div class="btn cB" id="pouncePrep" onclick="fireCommand('pouncePrep')">Pounce</div>
+        <div class="btn cB" id="waveGoodbye" onclick="fireCommand('waveGoodbye')">Wave</div>
+        <div class="btn cB" id="tapFoot" onclick="fireCommand('tapFoot')">Tap Foot</div>
         
         <div class="btn cBMgc" id="magic" onclick="fireCommand('magic')">Magic</div>
     </div>

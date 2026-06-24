@@ -36,6 +36,19 @@ class MiniKame {
         void just_strafe_right();
         void magic();
 
+        // new tricks
+        void just_turn_in_place(bool left);
+        void just_crawl();
+        void just_tiptoe();
+        void just_recover();
+        void just_sit();
+        void just_play_dead();
+        void just_shiver();
+        void just_scratch_ear();
+        void just_pounce_prep();
+        void just_wave_goodbye();
+        void just_tap_foot();
+
     private:
         Leg2DOF *frontLeftLeg = new Leg2DOF(true, true);
         Leg2DOF *frontRightLeg = new Leg2DOF(true, false);
