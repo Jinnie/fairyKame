@@ -25,6 +25,8 @@ void Oscillator::reset(){
 }
 
 void Oscillator::setPeriod(int period){
+    unsigned long now = millis();
+    _ref_time = now - (unsigned long)((double)(now - _ref_time) * period / _period);
     _period = period;
 }
 

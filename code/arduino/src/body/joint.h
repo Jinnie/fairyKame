@@ -26,4 +26,6 @@ class Joint {
         int angToUsec(float value);
         float _basePosition = 90;
         bool oscillating = false;
+        int basePeriod = 2000;
+        float lastSpeed = 1.0;
 };

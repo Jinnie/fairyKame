@@ -40,7 +40,9 @@ float Joint::getPosition(){
 
 void Joint::oscillate(int period, int amplitude, int phase, int offset) {
     if (!this->oscillating) {
-        this->oscillator.setPeriod(period / Mind::getSpeedModifier());
+        this->basePeriod = period;
+        this->lastSpeed = Mind::getSpeedModifier();
+        this->oscillator.setPeriod(this->basePeriod / this->lastSpeed);
         this->oscillator.setAmplitude(amplitude);
         this->oscillator.setPhase(phase);
         this->oscillator.setOffset(offset);
@@ -74,6 +76,10 @@ void Joint::stop_work() {
 
 void Joint::pulse() {
     if (this->oscillating) {
+        if (Mind::getSpeedModifier() != this->lastSpeed) {
+            this->lastSpeed = Mind::getSpeedModifier();
+            this->oscillator.setPeriod(this->basePeriod / this->lastSpeed);
+        }
         this->setPosition(this->oscillator.refresh());
     }
 }
