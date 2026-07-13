@@ -9,6 +9,7 @@
 class MiniKame {
 
     public:
+        MiniKame();
         ~MiniKame();
         void init();
         void stop_work();
@@ -37,10 +38,10 @@ class MiniKame {
         void magic();
 
     private:
-        Leg2DOF *frontLeftLeg = new Leg2DOF(true, true);
-        Leg2DOF *frontRightLeg = new Leg2DOF(true, false);
-        Leg2DOF *backLeftLeg = new Leg2DOF(false, true);
-        Leg2DOF *backRightLeg = new Leg2DOF(false, false);
+        Leg2DOF *frontLeftLeg;
+        Leg2DOF *frontRightLeg;
+        Leg2DOF *backLeftLeg;
+        Leg2DOF *backRightLeg;
 };
 
 #endif

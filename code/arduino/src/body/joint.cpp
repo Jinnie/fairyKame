@@ -4,12 +4,13 @@ int Joint::angToUsec(float value){
     return value/180 * (DEFAULT_MAX_PULSE_WIDTH-DEFAULT_MIN_PULSE_WIDTH) + DEFAULT_MIN_PULSE_WIDTH;
 }
 
-Joint::Joint(int pin, int trim, bool reverse) {
+Joint::Joint(int pin, int calibrationTrim, bool reverse) {
     this->pin = pin;
-    this->trim = trim;
+    this->_calibrationTrim = calibrationTrim;
+    this->trim = 0;
     this->reverse = reverse;
     this->servo.attach(this->pin);
-    this->oscillator.setTrim(this->trim);
+    this->oscillator.setTrim(this->_calibrationTrim);
 }
 
 void Joint::setPosition(float target){
@@ -18,17 +19,20 @@ void Joint::setPosition(float target){
         Serial.println("SEVERE! Violation of the Laws of Robotics detected!");
         return;
     }
-    if ((target + this->trim + this->tilt) > limit) {
-        target = limit - this->trim - this->tilt;
-    } else if ((target + this->trim + this->tilt) < -limit) {
-        target = -limit - this->trim - this->tilt;
+
+    int totalTrim = this->_calibrationTrim + this->trim + this->tilt;
+
+    if ((target + totalTrim) > limit) {
+        target = limit - totalTrim;
+    } else if ((target + totalTrim) < -limit) {
+        target = -limit - totalTrim;
     }
  
     if (!this->reverse) {
-        this->servo.writeMicroseconds(this->angToUsec(this->_basePosition + target + this->trim + this->tilt));
+        this->servo.writeMicroseconds(this->angToUsec(this->_basePosition + target + totalTrim));
     }
     else {
-        this->servo.writeMicroseconds(this->angToUsec(180 - (this->_basePosition + target + this->trim + this->tilt)));
+        this->servo.writeMicroseconds(this->angToUsec(180 - (this->_basePosition + target + totalTrim)));
     }
 
     this->_position = target;
@@ -52,7 +56,7 @@ void Joint::oscillate(int period, int amplitude, int phase, int offset) {
 
 void Joint::setTrim(int trim) {
     this->trim = trim;
-    this->oscillator.setTrim(trim);
+    this->oscillator.setTrim(this->_calibrationTrim + this->trim + this->tilt);
     if (!this->oscillating) {
         this->setPosition(this->_position);
     }
@@ -60,7 +64,7 @@ void Joint::setTrim(int trim) {
 
 void Joint::setTilt(int tilt) {
     this->tilt = tilt;
-    this->oscillator.setTrim(this->trim + this->tilt);
+    this->oscillator.setTrim(this->_calibrationTrim + this->trim + this->tilt);
     if (!this->oscillating) {
         this->setPosition(this->_position);
     }

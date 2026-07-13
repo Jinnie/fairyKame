@@ -1,5 +1,22 @@
 #include "minikame.h"
 
+MiniKame::MiniKame() {
+    // Calibration trims for each motor
+    const int FL_HIP = 0;
+    const int FL_KNEE = 0;
+    const int FR_HIP = 0;
+    const int FR_KNEE = 0;
+    const int BL_HIP = 0;
+    const int BL_KNEE = 0;
+    const int BR_HIP = 0;
+    const int BR_KNEE = 0;
+
+    this->frontLeftLeg = new Leg2DOF(true, true, FL_HIP, FL_KNEE);
+    this->frontRightLeg = new Leg2DOF(true, false, FR_HIP, FR_KNEE);
+    this->backLeftLeg = new Leg2DOF(false, true, BL_HIP, BL_KNEE);
+    this->backRightLeg = new Leg2DOF(false, false, BR_HIP, BR_KNEE);
+}
+
 void MiniKame::init()
 {
     just_relax();
@@ -142,7 +159,7 @@ void MiniKame::just_jiggle()
 
 void MiniKame::just_confused()
 {
-    Pair shrug = {0, 60};
+    Pair shrug = Pair(0, 60);
     this->frontLeftLeg->flex(200, 15, 0, shrug);
     this->frontRightLeg->flex(200, 15, 0, shrug);
     this->backLeftLeg->flex(200, 15, 0, shrug);
@@ -151,15 +168,15 @@ void MiniKame::just_confused()
 
 void MiniKame::just_pushUps()
 {
-    this->frontLeftLeg->flex(1400, 65, 0, {-10, -30});
-    this->frontRightLeg->flex(1400, 65, 0, {-10, -30});
+    this->frontLeftLeg->flex(1400, 65, 0, Pair(-10, -30));
+    this->frontRightLeg->flex(1400, 65, 0, Pair(-10, -30));
     this->backLeftLeg->pose(-90, -30); // 90 is a bit too much, check after recalibration.
     this->backRightLeg->pose(-90, -30);
 }
 
 void MiniKame::just_moonwalk() {
-    Pair front_position = {-20, 30};
-    Pair back_position = {20, 30};
+    Pair front_position = Pair(-20, 30);
+    Pair back_position = Pair(20, 30);
     this->frontLeftLeg->flex(2000, 45, 0, front_position);
     this->frontRightLeg->flex(2000, 45, 120, front_position);
     this->backLeftLeg->flex(2000, 45, 0, back_position);
@@ -167,7 +184,7 @@ void MiniKame::just_moonwalk() {
 }
 
 void MiniKame::just_stretch() {
-    Pair position = {0, -20};
+    Pair position = Pair(0, -20);
     this->frontLeftLeg->flex(2000, 45, 0, position);
     this->frontRightLeg->flex(2000, 45, 120, position);
     this->backLeftLeg->flex(2000, 45, 180, position);
@@ -178,7 +195,7 @@ void MiniKame::just_say_hi() {
     this->frontLeftLeg->pose(50, -40);
     this->backLeftLeg->pose(-50, 50);
     this->backRightLeg->pose(20, -25);
-    this->frontRightLeg->flex(300, 30, 0, {60, 60});
+    this->frontRightLeg->flex(300, 30, 0, Pair(60, 60));
 }
 
 void MiniKame::just_pack() {

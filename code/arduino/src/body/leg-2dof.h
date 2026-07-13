@@ -6,12 +6,12 @@
 class Leg2DOF {
   public:
     Leg2DOF() = delete;
-    Leg2DOF(bool left, bool front);
+    Leg2DOF(bool front, bool left, int trimHip = 0, int trimKnee = 0);
     ~Leg2DOF();
     void stop_work();
     void pulse();
-    Joint *hip{};
-    Joint *knee{};
+    Joint *hip = NULL;
+    Joint *knee = NULL;
 
     // direct parameter set
     void walk(int period, Pair amplitude, int phase, const Pair offsets, bool backward);

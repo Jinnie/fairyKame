@@ -7,7 +7,7 @@
 class Joint {
     public:
         Joint() = delete;
-        Joint(int pin, int trim, bool reverse);
+        Joint(int pin, int calibrationTrim, bool reverse);
         void stop_work();
         void pulse();
         Oscillator oscillator;
@@ -19,6 +19,7 @@ class Joint {
     private:
         bool reverse;
         int pin;
+        int _calibrationTrim;
         int trim;
         int tilt = 0;
         Servo servo;

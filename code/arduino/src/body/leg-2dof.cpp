@@ -9,31 +9,27 @@
 // board_pins[6] = D2; // back left outer
 // board_pins[7] = D3; // back right outer
 
-Leg2DOF::Leg2DOF(bool front, bool left) {
+Leg2DOF::Leg2DOF(bool front, bool left, int trimHip, int trimKnee) {
     this->front = front;
     this->left = left;
     const bool clockwise = false;
     const bool anticlock = true;
-    // You can hardcode your trim here
-    // Todo: make possible to trim each leg separately.
-    const int TRIM_HEIGHT = 0;
-    const int TRIM_SPREAD = 0;
 
     if (this->front) {
         if (this->left) {
-            this->hip = new Joint(D1, TRIM_SPREAD, clockwise);
-            this->knee = new Joint(D8, TRIM_HEIGHT, clockwise);
+            this->hip = new Joint(D1, trimHip, clockwise);
+            this->knee = new Joint(D8, trimKnee, clockwise);
         } else {
-            this->hip = new Joint(D4, TRIM_SPREAD, anticlock);
-            this->knee = new Joint(D6, TRIM_HEIGHT, anticlock);
+            this->hip = new Joint(D4, trimHip, anticlock);
+            this->knee = new Joint(D6, trimKnee, anticlock);
         }
     } else {
         if (this->left) {
-            this->hip = new Joint(D7, -TRIM_SPREAD, clockwise);
-            this->knee = new Joint(D2, TRIM_HEIGHT, anticlock);
+            this->hip = new Joint(D7, -trimHip, clockwise);
+            this->knee = new Joint(D2, trimKnee, anticlock);
         } else {
-            this->hip = new Joint(D5, -TRIM_SPREAD, anticlock);
-            this->knee = new Joint(D3, TRIM_HEIGHT, clockwise);
+            this->hip = new Joint(D5, -trimHip, anticlock);
+            this->knee = new Joint(D3, trimKnee, clockwise);
         }
     }
 }
