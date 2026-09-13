@@ -1,5 +1,7 @@
 #include "webconnector.h"
 
+#ifndef DISABLE_WIFI
+
 const char *ssid = "MINIKAME";
 // const char* password = "asdf";
 
@@ -262,3 +264,6 @@ void WebConnector::handleConnection()
 {
   server.handleClient();
 }
+
+#endif // DISABLE_WIFI
+

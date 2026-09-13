@@ -1,13 +1,21 @@
 #include <Arduino.h>
 #include "minikame.h"
+#ifndef DISABLE_WIFI
 #include "soul/webconnector.h"
+#endif
+#ifndef DISABLE_SERIAL
 #include "soul/serialconnector.h"
+#endif
 #include "mind/commandexecutor.h"
 #include "mind/mind.h"
 
 MiniKame robot;
+#ifndef DISABLE_WIFI
 WebConnector webConnector;
+#endif
+#ifndef DISABLE_SERIAL
 SerialConnector serialConnector;
+#endif
 CommandExecutor executor;
 String activeCommand;
 
@@ -15,8 +23,12 @@ void setup() {
   Serial.begin(115200);
   delay(3000);
 
+#ifndef DISABLE_WIFI
   webConnector.init();
+#endif
+#ifndef DISABLE_SERIAL
   serialConnector.init();
+#endif
   robot.init();
   executor.init(&robot);
   Serial.println("A Fairy wakes up!");
@@ -24,8 +36,12 @@ void setup() {
 
 void loop() {
   // if there is a connection waiting, process it
+#ifndef DISABLE_WIFI
   webConnector.handleConnection();
+#endif
+#ifndef DISABLE_SERIAL
   serialConnector.handleConnection();
+#endif
 
   // get the active command
   if (activeCommand != Mind::getActiveCommand()) {
