@@ -1,13 +1,16 @@
 #ifndef serialconnector_h
 #define serialconnector_h
 
+#ifndef DISABLE_SERIAL
+
 #include <Arduino.h>
 #include "mind/mind.h"
+#include "connector.h"
 
-class SerialConnector {
+class SerialConnector : public Connector {
   public:
-    void init();
-    void handleConnection();
+    void init() override;
+    void handleConnection() override;
   private:
     boolean readCmd = false;
     unsigned long lastMovementTime = 0;
@@ -15,4 +18,7 @@ class SerialConnector {
     bool isMomentary = false;
 };
 
-#endif
+#endif // DISABLE_SERIAL
+
+#endif // serialconnector_h
+

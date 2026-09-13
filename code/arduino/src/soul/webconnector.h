@@ -1,12 +1,15 @@
 #ifndef webconnector_h
 #define webconnector_h
 
+#ifndef DISABLE_WIFI
+
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 #include "mind/mind.h"
+#include "connector.h"
 
-class WebConnector {
+class WebConnector : public Connector {
   public:
     static void handleRoot();
     static void handleCommand();
@@ -15,8 +18,11 @@ class WebConnector {
     static void handleSpeed();
     static void handleDelay();
     // Initialize the server
-    void init();
-    void handleConnection();
+    void init() override;
+    void handleConnection() override;
 };
 
-#endif
+#endif // DISABLE_WIFI
+
+#endif // webconnector_h
+

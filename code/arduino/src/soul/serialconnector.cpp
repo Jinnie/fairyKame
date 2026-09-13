@@ -1,5 +1,7 @@
 #include "serialconnector.h"
 
+#ifndef DISABLE_SERIAL
+
 void SerialConnector::init()
 {
   Serial.println("Serial fishes swimming");
@@ -206,3 +208,6 @@ void SerialConnector::handleConnection()
     }
   }
 }
+
+#endif // DISABLE_SERIAL
+
