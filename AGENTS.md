@@ -105,6 +105,8 @@ Math, communication protocols, and behavioral rules:
 fairyKame/
 ├── AGENTS.md                  # Agent architecture & developer context (this file)
 ├── README.md                  # Public project documentation & overview
+├── TODO.md                    # Project roadmap, planned features & ideas
+├── platformio.ini             # Root PlatformIO forwarding configuration for VS Code
 ├── code/
 │   ├── arduino/
 │   │   ├── platformio.ini     # PlatformIO configuration (nodemcuv2, espressif8266)
@@ -136,7 +138,7 @@ fairyKame/
 │   │           ├── serialconnector.h # Serial UART interface header
 │   │           └── serialconnector.cpp # Serial keybinding handler
 │   └── html/
-│       └── fatKameCommand.html # Standalone copy of the web controller UI
+│       └── fatKameCommand.html # Standalone developer template / spec of the web controller UI
 ├── doc/
 │   ├── data.json              # Documentation metadata
 │   └── images/                # Reference diagrams & photos
@@ -147,16 +149,14 @@ fairyKame/
 
 ---
 
-## Known Issues, Observations & Technical Notes
+## Technical Notes & Architecture Guidelines
 
-1. **Constructor & Parameter Ordering Alignment (Resolved):**
-   - Constructor declaration in `code/arduino/src/body/leg-2dof.h` is now aligned with its implementation in `leg-2dof.cpp` and usage in `minikame.h`: `Leg2DOF(bool front, bool left)`.
-   - `Joint::setTilt(int tilt)` parameter name in `joint.h` has been aligned with `joint.cpp`.
-2. **Dual Web UI (Synchronized):**
-   - `code/html/fatKameCommand.html` and embedded `page_html` in `code/arduino/src/soul/webconnector.cpp` are now in sync (including `delay` controls and `pack` button). Future improvement could serve directly from LittleFS.
-3. **Serial Terminal Key Handling (Enhanced):**
-   - Single-key commands in `code/arduino/src/soul/serialconnector.cpp` are now case-insensitive, support `S`/`s` (WASD) in addition to `X`/`x` for walking backward, and handle both CR and LF for text command entry.
-4. **Per-Leg Calibration:**
-   - Currently, `TRIM_HEIGHT` and `TRIM_SPREAD` in `leg-2dof.cpp` are set to `0` globally. A mechanism for persistent or per-leg servo trimming would simplify mechanical alignment without manual servo horn re-seating.
-5. **Timing & Servos:**
-   - Loop delay (`Mind::getDelay()`) directly bounds oscillator resolution. Lower delay yields smoother motion, but if set too low, slower servos cannot keep up with high-frequency updates.
+1. **Web Controller Asset Pipeline:**
+   - The runtime HTTP server serves the dashboard directly from `page_html` embedded in `code/arduino/src/soul/webconnector.cpp`.
+   - `code/html/fatKameCommand.html` serves as a standalone developer template/specification for previewing and modifying UI layout and CSS with proper tooling. Keep any UI modifications in sync between both files (see `TODO.md` for planned automation).
+2. **Per-Leg Calibration:**
+   - Currently, `TRIM_HEIGHT` and `TRIM_SPREAD` in `leg-2dof.cpp` are set to `0` globally. Implementing persistent per-leg servo trimming (via LittleFS or EEPROM) will simplify mechanical zeroing (see `TODO.md`).
+3. **Timing & Servo Resolution:**
+   - Loop delay (`Mind::getDelay()`) directly bounds oscillator resolution. Lower delay yields smoother motion, but if set too low, slower servos cannot keep up with high-frequency updates. Always preserve `yield()` in `main.cpp` for ESP8266 background Wi-Fi stack processing.
+4. **Roadmap & Pending Improvements:**
+   - Refer to [**`TODO.md`**](file:///C:/Users/Jinnie/Play/fairyKame/TODO.md) for tracked enhancement ideas, gait extensions, and hardware abstraction plans.
