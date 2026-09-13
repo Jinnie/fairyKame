@@ -22,6 +22,34 @@ More and finer control over robot movements and position. Adding sliders to cont
 <img src="doc/images/fairyKame-controls.jpg" width="340" align = "center">
 </p>
 
+### Control Modes
+
+You can steer and command FairyKame either via Wi-Fi or directly over a USB serial connection:
+
+#### 1. Wi-Fi Web Controller
+- Connect to the robot's Wi-Fi network: **`MINIKAME`** (open network, no password by default).
+- Navigate to **`http://192.168.4.1`** in your mobile or desktop browser.
+- Use the on-screen buttons for directional moves, exercises, and dances, and adjust the sliders to tune height, tilt, and speed in real time.
+
+#### 2. USB Serial Terminal
+Connect FairyKame via USB and open a serial terminal (or PlatformIO Serial Monitor) at **115200 baud**. You can send immediate single-key commands:
+
+| Key | Command | Description |
+| :--- | :--- | :--- |
+| `W` | `run` | Walk forward |
+| `X` | `back` | Walk backward |
+| `A` | `turnL` | Turn left |
+| `D` | `turnR` | Turn right |
+| `Q` | `upLeft` | Diagonal forward-left |
+| `E` | `upRight` | Diagonal forward-right |
+| `Z` | `backLeft` | Diagonal backward-left |
+| `C` | `backRight` | Diagonal backward-right |
+| `,` | `strafeLeft` | Strafe left |
+| `.` | `strafeRight` | Strafe right |
+| `Space` | `stop` | Stop and relax joints |
+| `Tab` | `magic` | Magic move |
+| `Enter` | *(prompt)* | Enter any named command string (e.g. `pushUps`, `dance`, `moonWalk`, `sayHi`, `pack`, `stretch`) |
+
 ## Make it Easy:
 Make it easy for everyone, with even little coding skills, to create new gaits and moves.
 ```CPP
@@ -35,7 +63,7 @@ void MiniKame::just_walk()
 ```
 Do you already have an idea what to change to make it walk backwards? Yes, you only need to change `Gait::FORWARD` to `Gait::BACKWARD`. Any ideas how to make it turn right? :) 
 
-Explore what we already have here: [minicame.cpp](https://github.com/Jinnie/fairyKame/blob/develop/code/arduino/src/minikame.cpp)
+Explore what we already have here: [minicame.cpp](code/arduino/src/minikame.cpp)
 
 ## Foster Community:
 
@@ -51,9 +79,15 @@ See our contribution guide below.
 
 # Setup guide:
 
-- Set wifi id and password in [webconnector.cpp](https://github.com/Jinnie/fairyKame/blob/develop/code/arduino/src/soul/webconnector.cpp)
-- If needed, finely calibrate your robot by setting trim height (for robot height) and trim spread (legs angle) in [leg-2dof.cpp](https://github.com/Jinnie/fairyKame/blob/develop/code/arduino/src/body/leg-2dof.cpp).
-- You can build/deploy in PlatformIO, or in the Arduino dev environment (not tested, but should work, feedback is welcome if you try it)
+- **Build & Upload with PlatformIO (Recommended):**
+  - Install the **PlatformIO IDE** extension in VS Code.
+  - Open the repository root folder in VS Code.
+  - Connect your robot via USB.
+  - Click **Upload** ($\rightarrow$ in the bottom PlatformIO toolbar, or run `pio run -t upload` in the terminal).
+  - Open the **Serial Monitor** at 115200 baud (plug icon in toolbar, or run `pio device monitor`).
+- Alternatively, you can build/deploy in the Arduino dev environment (open `code/arduino/src/src.ino`).
+- Set Wi-Fi SSID and password in [webconnector.cpp](code/arduino/src/soul/webconnector.cpp) (defaults to open AP `MINIKAME`).
+- If needed, finely calibrate your robot by setting trim height (for robot height) and trim spread (legs angle) in [leg-2dof.cpp](code/arduino/src/body/leg-2dof.cpp).
 
 # Contribution guide:
 
