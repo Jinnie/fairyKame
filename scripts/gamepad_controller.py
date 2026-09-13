@@ -271,6 +271,7 @@ def main():
 
     current_command = "stop"
     last_trick_key = None
+    last_keepalive_time = 0.0
 
     try:
         while True:
@@ -331,10 +332,20 @@ def main():
 
             # Movement state change (hold to move, release to stop)
             if desired_move is not None:
+                now = time.time()
+                # Send immediately if motion changed, OR send keepalive stream every 50ms in Serial mode
+                # to satisfy the firmware's dead-man's switch watchdog while the key is physically held.
+                should_send = False
                 if desired_move != current_command:
+                    should_send = True
+                    print(f"\rStatus: >> [{cmd_char.upper()}] {desired_move:<15}", end="", flush=True)
+                elif mode == "serial" and (now - last_keepalive_time >= 0.05):
+                    should_send = True
+
+                if should_send:
                     current_command = desired_move
+                    last_keepalive_time = now
                     transport.send_command(current_command, cmd_char)
-                    print(f"\rStatus: >> [{cmd_char.upper()}] {current_command:<15}", end="", flush=True)
             else:
                 # No movement key pressed
                 if current_command in ["run", "back", "turnL", "turnR", "upLeft", "upRight", 
