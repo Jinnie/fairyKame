@@ -80,22 +80,23 @@ Math, communication protocols, and behavioral rules:
     - `/delay?delay=<val>`: Tick delay in milliseconds.
   - *Client Note:* Since the SoftAP has no upstream internet gateway, mobile clients (iOS/Android) often require disabling mobile data or accepting "Stay Connected" prompts to avoid cellular network failover.
 - **`SerialConnector` (`serialconnector.h`, `serialconnector.cpp`):**
-  - Reads single-key commands from Serial UART (115200 baud):
-    - `W`: Forward (`run`)
-    - `X`: Backward (`back`)
-    - `A` / `D`: Turn Left / Turn Right
-    - `Q` / `E`: Diagonal Forward-Left / Forward-Right
-    - `Z` / `C`: Diagonal Back-Left / Back-Right
-    - `,` / `.`: Strafe Left / Strafe Right
-    - `Space`: Stop / Relax
-    - `Tab`: Magic
+  - Reads single-key commands from Serial UART (115200 baud) with a dead-man's switch watchdog (auto-stops ~200ms after key release on hold-to-move keys, drains FIFO buffer backlog):
+    - `W`: Forward (`run`, momentary)
+    - `S` / `X`: Backward (`back`, momentary)
+    - `A` / `D`: Turn Left / Turn Right (momentary)
+    - `Q` / `E`: Diagonal Forward-Left / Forward-Right (momentary)
+    - `Z` / `C`: Diagonal Back-Left / Back-Right (momentary)
+    - `,` / `.`: Strafe Left / Strafe Right (momentary)
+    - `Space`: Immediate Stop / Relax
+    - `1`-`9`, `0`: Direct trick poses (`dance`, `pushUps`, `sit`, `crawl`, `tiptoe`, `sayHi`, `tapFoot`, `playDead`, `shiver`, `pack`, persistent)
+    - `P` / `K` / `H` / `R` / `M`: `pouncePrep`, `scratchEar`, `sayHi`, `recover`, `magic` (persistent)
     - `Enter`: Prompt to type full command name.
 - **`ThreeLawsOfRobotics` (`threelaws.h`, `threelaws.cpp`):** Safety stub checking Asimov's Three Laws before any joint command is executed.
 
 ### 4. Coordinator & Entry Point
 - **`MiniKame` (`minikame.h`, `minikame.cpp`):** Top-level robot interface managing all four legs. Coordinates complex multi-leg routines:
   - Locomotion: `just_walk`, `just_back`, `just_left`, `just_right`, diagonals (`just_upLeft`, `just_upRight`, `just_backLeft`, `just_backRight`), strafing (`just_strafe_left`, `just_strafe_right`), `just_turn_in_place`, `just_crawl`, `just_tiptoe`.
-  - Expressive Moves & Exercises: `just_relax`, `just_dance`, `just_moonwalk`, `just_stretch`, `just_jiggle`, `just_pushUps`, `just_confused`, `just_say_hi`, `just_pack`, `magic`, `just_sit`, `just_play_dead`, `just_shiver`, `just_scratch_ear`, `just_pounce_prep`, `just_wave_goodbye`, `just_tap_foot`.
+  - Expressive Moves & Exercises: `just_relax`, `just_dance`, `just_moonwalk`, `just_stretch`, `just_jiggle`, `just_pushUps`, `just_confused`, `just_say_hi`, `just_pack`, `magic`, `just_sit`, `just_play_dead`, `just_shiver`, `just_scratch_ear`, `just_pounce_prep`, `just_tap_foot`.
 - **`main.cpp`:** Initializes modules in `setup()`. In `loop()`, handles web and serial clients, switches commands when `Mind::getActiveCommand()` changes, calls `robot.pulse()`, and regulates loop rate via `delay(Mind::getDelay())` and `yield()`.
 
 ---
@@ -140,6 +141,8 @@ fairyKame/
 │   │           └── serialconnector.cpp # Serial keybinding handler
 │   └── html/
 │       └── fatKameCommand.html # Standalone developer template / spec of the web controller UI
+├── scripts/
+│   └── gamepad_controller.py  # Interactive game-style keyboard controller (USB Serial)
 ├── doc/
 │   ├── data.json              # Documentation metadata
 │   └── images/                # Reference diagrams & photos

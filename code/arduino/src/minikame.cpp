@@ -254,10 +254,10 @@ void MiniKame::just_shiver() {
 }
 
 void MiniKame::just_scratch_ear() {
-    this->frontRightLeg->pose(15, -35);
-    this->backLeftLeg->pose(-20, 45);
-    this->backRightLeg->pose(20, -25);
-    this->frontLeftLeg->flex(150, 30, 0, Pair(40, 60));
+    this->backLeftLeg->pose(-25, 50);
+    this->backRightLeg->pose(25, 50);
+    this->frontRightLeg->pose(35, -40);
+    this->frontLeftLeg->flex(150, 30, 0, Pair(45, 65));
 }
 
 void MiniKame::just_pounce_prep() {
@@ -269,17 +269,14 @@ void MiniKame::just_pounce_prep() {
 }
 
 void MiniKame::just_wave_goodbye() {
-    this->frontRightLeg->pose(15, -35);
-    this->backLeftLeg->pose(-20, -20);
-    this->backRightLeg->pose(0, -25);
-    this->frontLeftLeg->flex(500, 35, 0, Pair(40, 55));
+    just_say_hi();
 }
 
 void MiniKame::just_tap_foot() {
-    this->frontLeftLeg->pose(15, -25);
-    this->backLeftLeg->pose(0, -20);
-    this->backRightLeg->pose(0, -20);
-    this->frontRightLeg->flex(300, 25, 0, Pair(20, 20));
+    this->frontLeftLeg->pose(40, -35);
+    this->backLeftLeg->pose(-20, -20);
+    this->backRightLeg->pose(20, -25);
+    this->frontRightLeg->flex(300, 25, 0, Pair(20, 25));
 }
 
 MiniKame::~MiniKame()

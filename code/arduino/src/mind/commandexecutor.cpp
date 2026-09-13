@@ -69,7 +69,7 @@ void CommandExecutor::parseCommand(String command) {
   } else if (command == "pouncePrep") {
     robot->just_pounce_prep();
   } else if (command == "waveGoodbye") {
-    robot->just_wave_goodbye();
+    robot->just_say_hi();
   } else if (command == "tapFoot") {
     robot->just_tap_foot();
   } else {

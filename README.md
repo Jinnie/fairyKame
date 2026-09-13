@@ -33,23 +33,50 @@ You can steer and command FairyKame either via Wi-Fi or directly over a USB seri
 - **Tip for Phones (Android / iOS):** Because the `MINIKAME` network does not provide internet access, smartphones may automatically ignore the Wi-Fi connection and route browser requests through cellular data instead. If `http://192.168.4.1` fails to load, temporarily **turn off Mobile / Cellular Data** on your phone and tap *"Stay Connected"* when prompted. Also ensure your browser uses `http://` (not `https://`).
 
 #### 2. USB Serial Terminal
-Connect FairyKame via USB and open a serial terminal (or PlatformIO Serial Monitor) at **115200 baud**. You can send immediate single-key commands:
+Connect FairyKame via USB and open a serial terminal (or PlatformIO Serial Monitor) at **115200 baud**. 
+
+- **Hold-to-Move Controls:** Movement keys support game-style hold-to-move: holding down a key keeps the robot walking via OS repeat, and releasing the key automatically stops the robot after a ~350ms heartbeat timeout (pressing `Space` also stops immediately).
+- **Keybindings:**
 
 | Key | Command | Description |
 | :--- | :--- | :--- |
-| `W` | `run` | Walk forward |
-| `X` | `back` | Walk backward |
-| `A` | `turnL` | Turn left |
-| `D` | `turnR` | Turn right |
+| `W` | `run` | Walk forward (hold to move) |
+| `S` / `X` | `back` | Walk backward (hold to move) |
+| `A` | `turnL` | Turn left (hold to turn) |
+| `D` | `turnR` | Turn right (hold to turn) |
 | `Q` | `upLeft` | Diagonal forward-left |
 | `E` | `upRight` | Diagonal forward-right |
 | `Z` | `backLeft` | Diagonal backward-left |
 | `C` | `backRight` | Diagonal backward-right |
-| `,` | `strafeLeft` | Strafe left |
-| `.` | `strafeRight` | Strafe right |
-| `Space` | `stop` | Stop and relax joints |
-| `Tab` | `magic` | Magic move |
-| `Enter` | *(prompt)* | Enter any named command string (e.g. `pushUps`, `dance`, `moonWalk`, `sayHi`, `pack`, `crawl`, `sit`, `playDead`, `shiver`, `waveGoodbye`) |
+| `,` | `strafeLeft` | Strafe left (hold to strafe) |
+| `.` | `strafeRight` | Strafe right (hold to strafe) |
+| `Space` | `stop` | Immediate stop and relax joints |
+| `1` | `dance` | Dance |
+| `2` | `pushUps` | Push-ups |
+| `3` | `sit` | Sit down |
+| `4` | `crawl` | Low crawl |
+| `5` | `tiptoe` | Stand on tiptoes |
+| `6` / `H` | `sayHi` | Say hi / wave paw |
+| `7` | `tapFoot` | Tap front foot |
+| `8` | `playDead` | Play dead flat on ground |
+| `9` | `shiver` | Shiver / vibration |
+| `0` | `pack` | Pack legs tightly |
+| `P` | `pouncePrep` | Cat butt-wiggle pounce prep |
+| `K` | `scratchEar` | Scratch ear |
+| `R` | `recover` | Self-right / flip over flail |
+| `M` / `Tab` | `magic` | Magic strafe move |
+| `Enter` | *(prompt)* | Enter any named command string |
+
+#### 3. Interactive USB Game Controller Script (`scripts/gamepad_controller.py`)
+For an authentic, zero-latency computer-game experience over USB Serial with simultaneous keys (like `W`+`A` for diagonal forward-left) and instant 0ms stopping on key release:
+
+```bash
+# Auto-detects port (e.g. COM6) and connects at 115200 baud:
+python scripts/gamepad_controller.py
+
+# Or specify a port explicitly:
+python scripts/gamepad_controller.py --port COM6
+```
 
 ## Make it Easy:
 Make it easy for everyone, with even little coding skills, to create new gaits and moves.
