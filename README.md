@@ -67,18 +67,15 @@ Connect FairyKame via USB and open a serial terminal (or PlatformIO Serial Monit
 | `M` / `Tab` | `magic` | Magic strafe move |
 | `Enter` | *(prompt)* | Enter any named command string |
 
-#### 3. Interactive Game Controller Script (`scripts/gamepad_controller.py`)
-For an authentic, zero-latency computer-game experience with simultaneous keys (like `W`+`A` for diagonal forward-left) and instant 0ms stopping on key release:
+#### 3. Interactive USB Game Controller Script (`scripts/gamepad_controller.py`)
+For an authentic, zero-latency computer-game experience over USB Serial with simultaneous keys (like `W`+`A` for diagonal forward-left) and instant 0ms stopping on key release:
 
 ```bash
-# Control over USB Serial (auto-detects port, e.g. COM6):
+# Auto-detects port (e.g. COM6) and connects at 115200 baud:
 python scripts/gamepad_controller.py
 
 # Or specify a port explicitly:
 python scripts/gamepad_controller.py --port COM6
-
-# Control wirelessly over Wi-Fi (connected to MINIKAME hotspot):
-python scripts/gamepad_controller.py --mode http
 ```
 
 ## Make it Easy:

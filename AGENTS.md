@@ -142,7 +142,7 @@ fairyKame/
 │   └── html/
 │       └── fatKameCommand.html # Standalone developer template / spec of the web controller UI
 ├── scripts/
-│   └── gamepad_controller.py  # Interactive game-style keyboard controller (Serial & HTTP)
+│   └── gamepad_controller.py  # Interactive game-style keyboard controller (USB Serial)
 ├── doc/
 │   ├── data.json              # Documentation metadata
 │   └── images/                # Reference diagrams & photos
