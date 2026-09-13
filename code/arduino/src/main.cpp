@@ -1,8 +1,4 @@
 #include <Arduino.h>
-#include <ESP8266WiFi.h>
-#include <WiFiClient.h>
-#include <Servo.h>
-#include "soul/octosnake.h"
 #include "minikame.h"
 #include "soul/webconnector.h"
 #include "soul/serialconnector.h"
