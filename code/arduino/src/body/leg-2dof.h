@@ -6,7 +6,7 @@
 class Leg2DOF {
   public:
     Leg2DOF() = delete;
-    Leg2DOF(bool left, bool front);
+    Leg2DOF(bool front, bool left);
     ~Leg2DOF();
     void stop_work();
     void pulse();
@@ -26,4 +26,6 @@ class Leg2DOF {
     bool front;  // front/rear
     int heightOverride = 0;
     int tiltCorrection = 0;
+    int hardwareTrimHeight = 0;
+    int hardwareTrimSpread = 0;
 };

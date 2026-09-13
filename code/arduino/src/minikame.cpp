@@ -189,20 +189,7 @@ void MiniKame::just_pack() {
 }
 
 void MiniKame::magic() {
-   // strafe
-
-    Gait frontLeftGait = Gaits::steadyGait(0, Gait::FORWARD);
-    frontLeftGait.position.spread = 60;
-    this->frontLeftLeg->walk(frontLeftGait);
-    Gait frontRightGait = Gaits::steadyGait(180, Gait::BACKWARD);
-    frontRightGait.position.spread = 60;
-    this->frontRightLeg->walk(frontRightGait);
-    Gait backLeftGait = Gaits::steadyGait(180, Gait::BACKWARD);
-    backLeftGait.position.spread = -50;
-    this->backLeftLeg->walk(backLeftGait);
-    Gait backRightGait = Gaits::steadyGait(0, Gait::FORWARD);
-    backRightGait.position.spread = -50;
-    this->backRightLeg->walk(backRightGait);
+    just_strafe_right();
 }
 
 MiniKame::~MiniKame()

@@ -78,6 +78,7 @@ Math, communication protocols, and behavioral rules:
     - `/tilt?tilt=<val>`: Adjust lateral tilt ($\pm 90$).
     - `/speed?speed=<val>`: Exponential speed modifier ($2^{v/2}$).
     - `/delay?delay=<val>`: Tick delay in milliseconds.
+  - *Client Note:* Since the SoftAP has no upstream internet gateway, mobile clients (iOS/Android) often require disabling mobile data or accepting "Stay Connected" prompts to avoid cellular network failover.
 - **`SerialConnector` (`serialconnector.h`, `serialconnector.cpp`):**
   - Reads single-key commands from Serial UART (115200 baud):
     - `W`: Forward (`run`)
@@ -105,6 +106,8 @@ Math, communication protocols, and behavioral rules:
 fairyKame/
 ├── AGENTS.md                  # Agent architecture & developer context (this file)
 ├── README.md                  # Public project documentation & overview
+├── TODO.md                    # Project roadmap, planned features & ideas
+├── platformio.ini             # Root PlatformIO forwarding configuration for VS Code
 ├── code/
 │   ├── arduino/
 │   │   ├── platformio.ini     # PlatformIO configuration (nodemcuv2, espressif8266)
@@ -136,7 +139,7 @@ fairyKame/
 │   │           ├── serialconnector.h # Serial UART interface header
 │   │           └── serialconnector.cpp # Serial keybinding handler
 │   └── html/
-│       └── fatKameCommand.html # Standalone copy of the web controller UI
+│       └── fatKameCommand.html # Standalone developer template / spec of the web controller UI
 ├── doc/
 │   ├── data.json              # Documentation metadata
 │   └── images/                # Reference diagrams & photos
@@ -147,16 +150,14 @@ fairyKame/
 
 ---
 
-## Known Issues, Observations & Technical Notes
+## Technical Notes & Architecture Guidelines
 
-1. **Constructor Argument Ordering Mismatch:**
-   - In `code/arduino/src/body/leg-2dof.h`: `Leg2DOF(bool left, bool front);`
-   - In `code/arduino/src/body/leg-2dof.cpp`: `Leg2DOF::Leg2DOF(bool front, bool left) { ... }`
-   - In `code/arduino/src/minikame.h`: Instantiated as `new Leg2DOF(front, left)`.
-   - *Impact:* Because both parameters are boolean, the compiler accepts it, but the header declaration order is swapped relative to the implementation. This should be aligned to avoid confusion.
-2. **Duplicate Web UI:**
-   - The HTML/JS control dashboard exists both in `code/html/fatKameCommand.html` and embedded in `code/arduino/src/soul/webconnector.cpp` (`page_html`). Any modifications to one should be mirrored to the other, or the build could be refactored to serve from LittleFS/SPIFFS.
-3. **Per-Leg Calibration:**
-   - Currently, `TRIM_HEIGHT` and `TRIM_SPREAD` in `leg-2dof.cpp` are set to `0` globally. A mechanism for persistent or per-leg servo trimming would simplify mechanical alignment without manual servo horn re-seating.
-4. **Timing & Servos:**
-   - Loop delay (`Mind::getDelay()`) directly bounds oscillator resolution. Lower delay yields smoother motion, but if set too low, slower servos cannot keep up with high-frequency updates.
+1. **Web Controller Asset Pipeline:**
+   - The runtime HTTP server serves the dashboard directly from `page_html` embedded in `code/arduino/src/soul/webconnector.cpp`.
+   - `code/html/fatKameCommand.html` serves as a standalone developer template/specification for previewing and modifying UI layout and CSS with proper tooling. Keep any UI modifications in sync between both files (see `TODO.md` for planned automation).
+2. **Per-Leg Calibration:**
+   - Currently, `TRIM_HEIGHT` and `TRIM_SPREAD` in `leg-2dof.cpp` are set to `0` globally. Implementing persistent per-leg servo trimming (via LittleFS or EEPROM) will simplify mechanical zeroing (see `TODO.md`).
+3. **Timing & Servo Resolution:**
+   - Loop delay (`Mind::getDelay()`) directly bounds oscillator resolution. Lower delay yields smoother motion, but if set too low, slower servos cannot keep up with high-frequency updates. Always preserve `yield()` in `main.cpp` for ESP8266 background Wi-Fi stack processing.
+4. **Roadmap & Pending Improvements:**
+   - Refer to [**`TODO.md`**](file:///C:/Users/Jinnie/Play/fairyKame/TODO.md) for tracked enhancement ideas, gait extensions, and hardware abstraction plans.

@@ -31,9 +31,7 @@ class Oscillator{
         int _phase;
         int _offset;
         int _trim;
-        bool _stop;
         unsigned long _ref_time = 0;
-        float _delta_time = 0;
 };
 
 #endif

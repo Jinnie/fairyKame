@@ -24,3 +24,12 @@ Gait Gaits::steadyShortGait(int phase, bool direction) {
     g.phase = phase;
     return g;
 }
+
+Gait Gaits::shortRapidGait(int phase, bool direction) {
+    Gait g;
+    g.period = 350;
+    g.amplitude = {10, 15};
+    g.direction = direction;
+    g.phase = phase;
+    return g;
+}

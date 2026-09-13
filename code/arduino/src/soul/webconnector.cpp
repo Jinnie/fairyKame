@@ -188,7 +188,7 @@ void WebConnector::handleCommand()
 {
   String cmd = server.arg("command");
   Serial.println("command " + cmd);
-  server.send(200);
+  server.send(200, "text/plain", "OK");
   Mind::setActiveCommand(cmd);
 }
 
@@ -196,7 +196,7 @@ void WebConnector::handleTrim()
 {
   String trim = server.arg("trim");
   Serial.println("trim to " + trim);
-  server.send(200);
+  server.send(200, "text/plain", "OK");
   Mind::setHeightOverride(-trim.toInt());
 }
 
@@ -204,7 +204,7 @@ void WebConnector::handleTilt()
 {
   String tilt = server.arg("tilt");
   Serial.println("tilt to " + tilt);
-  server.send(200);
+  server.send(200, "text/plain", "OK");
   Mind::setTiltCorrection(-tilt.toInt());
 }
 
@@ -212,14 +212,14 @@ void WebConnector::handleDelay()
 {
   String delay = server.arg("delay");
   Serial.println("delay to " + delay);
-  server.send(200);
+  server.send(200, "text/plain", "OK");
   Mind::setDelay(delay.toInt());
 }
 
 void WebConnector::handleSpeed()
 {
   float speed = sqrt(pow(2, server.arg("speed").toInt()));
-  server.send(200);
+  server.send(200, "text/plain", "OK");
   Mind::setSpeedModifier(speed);
 }
 
