@@ -51,8 +51,22 @@ Connect FairyKame via USB and open a serial terminal (or PlatformIO Serial Monit
 | `,` | `strafeLeft` | Strafe left (hold to strafe) |
 | `.` | `strafeRight` | Strafe right (hold to strafe) |
 | `Space` | `stop` | Immediate stop and relax joints |
-| `Tab` | `magic` | Magic move |
-| `Enter` | *(prompt)* | Enter any named command string (e.g. `pushUps`, `dance`, `moonWalk`, `sayHi`, `pack`, `crawl`, `sit`, `playDead`, `shiver`, `waveGoodbye`) |
+| `1` | `dance` | Dance |
+| `2` | `pushUps` | Push-ups |
+| `3` | `sit` | Sit down |
+| `4` | `crawl` | Low crawl |
+| `5` | `tiptoe` | Stand on tiptoes |
+| `6` | `waveGoodbye` | Wave front paw |
+| `7` | `tapFoot` | Tap front foot |
+| `8` | `playDead` | Play dead flat on ground |
+| `9` | `shiver` | Shiver / vibration |
+| `0` | `pack` | Pack legs tightly |
+| `P` | `pouncePrep` | Cat butt-wiggle pounce prep |
+| `K` | `scratchEar` | Scratch ear |
+| `H` | `sayHi` | Say hi |
+| `R` | `recover` | Self-right / flip over flail |
+| `M` / `Tab` | `magic` | Magic strafe move |
+| `Enter` | *(prompt)* | Enter any named command string |
 
 #### 3. Interactive Game Controller Script (`scripts/gamepad_controller.py`)
 For an authentic, zero-latency computer-game experience with simultaneous keys (like `W`+`A` for diagonal forward-left) and instant 0ms stopping on key release:

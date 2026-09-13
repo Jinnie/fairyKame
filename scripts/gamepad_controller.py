@@ -69,7 +69,10 @@ class SerialTransport(Transport):
     def send_command(self, cmd_name: str, cmd_char: str):
         if self.ser and self.ser.is_open:
             try:
-                self.ser.write(cmd_char.encode('ascii'))
+                if len(cmd_char) == 1:
+                    self.ser.write(cmd_char.encode('ascii'))
+                else:
+                    self.ser.write(f"\n{cmd_name}\n".encode('ascii'))
                 self.ser.flush()
             except Exception as e:
                 print(f"[Serial Error] {e}")
@@ -357,21 +360,21 @@ def main():
 
                 # Check one-shot trick keys
                 trick_map = {
-                    '1': ('dance', 'dance'),
-                    '2': ('pushUps', 'pushUps'),
-                    '3': ('sit', 'sit'),
-                    '4': ('crawl', 'crawl'),
-                    '5': ('tiptoe', 'tiptoe'),
-                    '6': ('waveGoodbye', 'waveGoodbye'),
-                    '7': ('tapFoot', 'tapFoot'),
-                    '8': ('playDead', 'playDead'),
-                    '9': ('shiver', 'shiver'),
-                    '0': ('pack', 'pack'),
-                    'P': ('pouncePrep', 'pouncePrep'),
-                    'K': ('scratchEar', 'scratchEar'),
-                    'H': ('sayHi', 'sayHi'),
-                    'R': ('recover', 'recover'),
-                    'M': ('magic', '\t'),
+                    '1': ('dance', '1'),
+                    '2': ('pushUps', '2'),
+                    '3': ('sit', '3'),
+                    '4': ('crawl', '4'),
+                    '5': ('tiptoe', '5'),
+                    '6': ('waveGoodbye', '6'),
+                    '7': ('tapFoot', '7'),
+                    '8': ('playDead', '8'),
+                    '9': ('shiver', '9'),
+                    '0': ('pack', '0'),
+                    'P': ('pouncePrep', 'p'),
+                    'K': ('scratchEar', 'k'),
+                    'H': ('sayHi', 'h'),
+                    'R': ('recover', 'r'),
+                    'M': ('magic', 'm'),
                 }
                 
                 pressed_trick = None

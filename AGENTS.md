@@ -80,7 +80,7 @@ Math, communication protocols, and behavioral rules:
     - `/delay?delay=<val>`: Tick delay in milliseconds.
   - *Client Note:* Since the SoftAP has no upstream internet gateway, mobile clients (iOS/Android) often require disabling mobile data or accepting "Stay Connected" prompts to avoid cellular network failover.
 - **`SerialConnector` (`serialconnector.h`, `serialconnector.cpp`):**
-  - Reads single-key commands from Serial UART (115200 baud) with a dead-man's switch watchdog (auto-stops ~350ms after key release on hold-to-move keys):
+  - Reads single-key commands from Serial UART (115200 baud) with a dead-man's switch watchdog (auto-stops ~200ms after key release on hold-to-move keys, drains FIFO buffer backlog):
     - `W`: Forward (`run`, momentary)
     - `S` / `X`: Backward (`back`, momentary)
     - `A` / `D`: Turn Left / Turn Right (momentary)
@@ -88,7 +88,8 @@ Math, communication protocols, and behavioral rules:
     - `Z` / `C`: Diagonal Back-Left / Back-Right (momentary)
     - `,` / `.`: Strafe Left / Strafe Right (momentary)
     - `Space`: Immediate Stop / Relax
-    - `Tab`: Magic
+    - `1`-`9`, `0`: Direct trick poses (`dance`, `pushUps`, `sit`, `crawl`, `tiptoe`, `waveGoodbye`, `tapFoot`, `playDead`, `shiver`, `pack`, persistent)
+    - `P` / `K` / `H` / `R` / `M`: `pouncePrep`, `scratchEar`, `sayHi`, `recover`, `magic` (persistent)
     - `Enter`: Prompt to type full command name.
 - **`ThreeLawsOfRobotics` (`threelaws.h`, `threelaws.cpp`):** Safety stub checking Asimov's Three Laws before any joint command is executed.
 

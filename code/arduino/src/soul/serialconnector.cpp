@@ -3,7 +3,8 @@
 void SerialConnector::init()
 {
   Serial.println("Serial fishes swimming");
-  Serial.println("  Hold WASD/diagonals/,/. to move (auto-stops on release), Space to stop, Tab for Magic, Enter to type a command.");
+  Serial.println("  Hold WASD/diagonals/,/. to move (auto-stops on release).");
+  Serial.println("  Press 0-9/P/K/H/R/M for tricks & poses. Space to stop. Enter to type a command.");
   Serial.setTimeout(5000);
 }
 
@@ -93,7 +94,83 @@ void SerialConnector::handleConnection()
         momentaryKey = true;
         break;
       case 9: // Tab
+      case 'm':
+      case 'M':
         cmd = "magic";
+        keyRecognized = true;
+        momentaryKey = false;
+        break;
+      case '1':
+        cmd = "dance";
+        keyRecognized = true;
+        momentaryKey = false;
+        break;
+      case '2':
+        cmd = "pushUps";
+        keyRecognized = true;
+        momentaryKey = false;
+        break;
+      case '3':
+        cmd = "sit";
+        keyRecognized = true;
+        momentaryKey = false;
+        break;
+      case '4':
+        cmd = "crawl";
+        keyRecognized = true;
+        momentaryKey = false;
+        break;
+      case '5':
+        cmd = "tiptoe";
+        keyRecognized = true;
+        momentaryKey = false;
+        break;
+      case '6':
+        cmd = "waveGoodbye";
+        keyRecognized = true;
+        momentaryKey = false;
+        break;
+      case '7':
+        cmd = "tapFoot";
+        keyRecognized = true;
+        momentaryKey = false;
+        break;
+      case '8':
+        cmd = "playDead";
+        keyRecognized = true;
+        momentaryKey = false;
+        break;
+      case '9':
+        cmd = "shiver";
+        keyRecognized = true;
+        momentaryKey = false;
+        break;
+      case '0':
+        cmd = "pack";
+        keyRecognized = true;
+        momentaryKey = false;
+        break;
+      case 'p':
+      case 'P':
+        cmd = "pouncePrep";
+        keyRecognized = true;
+        momentaryKey = false;
+        break;
+      case 'k':
+      case 'K':
+        cmd = "scratchEar";
+        keyRecognized = true;
+        momentaryKey = false;
+        break;
+      case 'h':
+      case 'H':
+        cmd = "sayHi";
+        keyRecognized = true;
+        momentaryKey = false;
+        break;
+      case 'r':
+      case 'R':
+        cmd = "recover";
         keyRecognized = true;
         momentaryKey = false;
         break;
