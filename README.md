@@ -49,7 +49,7 @@ Connect FairyKame via USB and open a serial terminal (or PlatformIO Serial Monit
 | `.` | `strafeRight` | Strafe right |
 | `Space` | `stop` | Stop and relax joints |
 | `Tab` | `magic` | Magic move |
-| `Enter` | *(prompt)* | Enter any named command string (e.g. `pushUps`, `dance`, `moonWalk`, `sayHi`, `pack`, `stretch`) |
+| `Enter` | *(prompt)* | Enter any named command string (e.g. `pushUps`, `dance`, `moonWalk`, `sayHi`, `pack`, `crawl`, `sit`, `playDead`, `shiver`, `waveGoodbye`) |
 
 ## Make it Easy:
 Make it easy for everyone, with even little coding skills, to create new gaits and moves.

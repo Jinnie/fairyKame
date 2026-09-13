@@ -94,8 +94,8 @@ Math, communication protocols, and behavioral rules:
 
 ### 4. Coordinator & Entry Point
 - **`MiniKame` (`minikame.h`, `minikame.cpp`):** Top-level robot interface managing all four legs. Coordinates complex multi-leg routines:
-  - Locomotion: `just_walk`, `just_back`, `just_left`, `just_right`, diagonals (`just_upLeft`, `just_upRight`, `just_backLeft`, `just_backRight`), strafing (`just_strafe_left`, `just_strafe_right`).
-  - Expressive Moves & Exercises: `just_relax`, `just_dance`, `just_moonwalk`, `just_stretch`, `just_jiggle`, `just_pushUps`, `just_confused`, `just_say_hi`, `just_pack`, `magic`.
+  - Locomotion: `just_walk`, `just_back`, `just_left`, `just_right`, diagonals (`just_upLeft`, `just_upRight`, `just_backLeft`, `just_backRight`), strafing (`just_strafe_left`, `just_strafe_right`), `just_turn_in_place`, `just_crawl`, `just_tiptoe`.
+  - Expressive Moves & Exercises: `just_relax`, `just_dance`, `just_moonwalk`, `just_stretch`, `just_jiggle`, `just_pushUps`, `just_confused`, `just_say_hi`, `just_pack`, `magic`, `just_sit`, `just_play_dead`, `just_shiver`, `just_scratch_ear`, `just_pounce_prep`, `just_wave_goodbye`, `just_tap_foot`.
 - **`main.cpp`:** Initializes modules in `setup()`. In `loop()`, handles web and serial clients, switches commands when `Mind::getActiveCommand()` changes, calls `robot.pulse()`, and regulates loop rate via `delay(Mind::getDelay())` and `yield()`.
 
 ---
