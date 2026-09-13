@@ -170,8 +170,6 @@ const char *page_html = R"CPPHTML(
         <div class="btn cB" id="confused" onclick="fireCommand('confused')">Confused</div>
         <div class="btn cB" id="sayHi" onclick="fireCommand('sayHi')">Say Hi</div>
         <div class="btn cB" id="pack" onclick="fireCommand('pack')">Pack</div>
-        <div class="btn cB" id="turnInPlaceL" onclick="fireCommand('turnInPlaceL')">Spin Left</div>
-        <div class="btn cB" id="turnInPlaceR" onclick="fireCommand('turnInPlaceR')">Spin Right</div>
         <div class="btn cB" id="crawl" onclick="fireCommand('crawl')">Crawl</div>
         <div class="btn cB" id="tiptoe" onclick="fireCommand('tiptoe')">Tiptoe</div>
         <div class="btn cB" id="recover" onclick="fireCommand('recover')">Recover</div>
