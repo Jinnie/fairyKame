@@ -15,7 +15,7 @@ class Joint {
         float getPosition();
         void oscillate(int period, int amplitude, int phase, int offset);
         void setTrim(int trim);
-        void setTilt(int trim);
+        void setTilt(int tilt);
     private:
         bool reverse;
         int pin;

@@ -6,7 +6,7 @@
 class Leg2DOF {
   public:
     Leg2DOF() = delete;
-    Leg2DOF(bool left, bool front);
+    Leg2DOF(bool front, bool left);
     ~Leg2DOF();
     void stop_work();
     void pulse();

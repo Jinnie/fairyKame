@@ -149,14 +149,14 @@ fairyKame/
 
 ## Known Issues, Observations & Technical Notes
 
-1. **Constructor Argument Ordering Mismatch:**
-   - In `code/arduino/src/body/leg-2dof.h`: `Leg2DOF(bool left, bool front);`
-   - In `code/arduino/src/body/leg-2dof.cpp`: `Leg2DOF::Leg2DOF(bool front, bool left) { ... }`
-   - In `code/arduino/src/minikame.h`: Instantiated as `new Leg2DOF(front, left)`.
-   - *Impact:* Because both parameters are boolean, the compiler accepts it, but the header declaration order is swapped relative to the implementation. This should be aligned to avoid confusion.
-2. **Duplicate Web UI:**
-   - The HTML/JS control dashboard exists both in `code/html/fatKameCommand.html` and embedded in `code/arduino/src/soul/webconnector.cpp` (`page_html`). Any modifications to one should be mirrored to the other, or the build could be refactored to serve from LittleFS/SPIFFS.
-3. **Per-Leg Calibration:**
+1. **Constructor & Parameter Ordering Alignment (Resolved):**
+   - Constructor declaration in `code/arduino/src/body/leg-2dof.h` is now aligned with its implementation in `leg-2dof.cpp` and usage in `minikame.h`: `Leg2DOF(bool front, bool left)`.
+   - `Joint::setTilt(int tilt)` parameter name in `joint.h` has been aligned with `joint.cpp`.
+2. **Dual Web UI (Synchronized):**
+   - `code/html/fatKameCommand.html` and embedded `page_html` in `code/arduino/src/soul/webconnector.cpp` are now in sync (including `delay` controls and `pack` button). Future improvement could serve directly from LittleFS.
+3. **Serial Terminal Key Handling (Enhanced):**
+   - Single-key commands in `code/arduino/src/soul/serialconnector.cpp` are now case-insensitive, support `S`/`s` (WASD) in addition to `X`/`x` for walking backward, and handle both CR and LF for text command entry.
+4. **Per-Leg Calibration:**
    - Currently, `TRIM_HEIGHT` and `TRIM_SPREAD` in `leg-2dof.cpp` are set to `0` globally. A mechanism for persistent or per-leg servo trimming would simplify mechanical alignment without manual servo horn re-seating.
-4. **Timing & Servos:**
+5. **Timing & Servos:**
    - Loop delay (`Mind::getDelay()`) directly bounds oscillator resolution. Lower delay yields smoother motion, but if set too low, slower servos cannot keep up with high-frequency updates.

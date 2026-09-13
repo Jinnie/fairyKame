@@ -22,21 +22,31 @@ void SerialConnector::handleConnection()
       switch (cmdCode) {
         case 32: cmd = "stop"; // Space
         break;
-        case 119: cmd = "run"; // W
+        case 'w':
+        case 'W': cmd = "run";
         break;
-        case 120: cmd = "back"; // X
+        case 's':
+        case 'S':
+        case 'x':
+        case 'X': cmd = "back";
         break;
-        case 97: cmd = "turnL"; // A
+        case 'a':
+        case 'A': cmd = "turnL";
         break;
-        case 100: cmd = "turnR"; // D
+        case 'd':
+        case 'D': cmd = "turnR";
         break;
-        case 113: cmd = "upLeft"; // Q
+        case 'q':
+        case 'Q': cmd = "upLeft";
         break;
-        case 101: cmd = "upRight"; // E
+        case 'e':
+        case 'E': cmd = "upRight";
         break;
-        case 122: cmd = "backLeft"; // Z
+        case 'z':
+        case 'Z': cmd = "backLeft";
         break;
-        case 99: cmd = "backRight"; // C
+        case 'c':
+        case 'C': cmd = "backRight";
         break;
         case 44: cmd = "strafeLeft"; // ,
         break;
@@ -44,7 +54,8 @@ void SerialConnector::handleConnection()
         break;
         case 9: cmd = "magic"; // Tab
         break;
-        case 10:
+        case 10: // LF
+        case 13: // CR
         Serial.println("Type command");
         readCmd = true;
         break;
