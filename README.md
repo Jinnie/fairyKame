@@ -30,6 +30,7 @@ You can steer and command FairyKame either via Wi-Fi or directly over a USB seri
 - Connect to the robot's Wi-Fi network: **`MINIKAME`** (open network, no password by default).
 - Navigate to **`http://192.168.4.1`** in your mobile or desktop browser.
 - Use the on-screen buttons for directional moves, exercises, and dances, and adjust the sliders to tune height, tilt, and speed in real time.
+- **Tip for Phones (Android / iOS):** Because the `MINIKAME` network does not provide internet access, smartphones may automatically ignore the Wi-Fi connection and route browser requests through cellular data instead. If `http://192.168.4.1` fails to load, temporarily **turn off Mobile / Cellular Data** on your phone and tap *"Stay Connected"* when prompted. Also ensure your browser uses `http://` (not `https://`).
 
 #### 2. USB Serial Terminal
 Connect FairyKame via USB and open a serial terminal (or PlatformIO Serial Monitor) at **115200 baud**. You can send immediate single-key commands:

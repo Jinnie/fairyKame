@@ -78,6 +78,7 @@ Math, communication protocols, and behavioral rules:
     - `/tilt?tilt=<val>`: Adjust lateral tilt ($\pm 90$).
     - `/speed?speed=<val>`: Exponential speed modifier ($2^{v/2}$).
     - `/delay?delay=<val>`: Tick delay in milliseconds.
+  - *Client Note:* Since the SoftAP has no upstream internet gateway, mobile clients (iOS/Android) often require disabling mobile data or accepting "Stay Connected" prompts to avoid cellular network failover.
 - **`SerialConnector` (`serialconnector.h`, `serialconnector.cpp`):**
   - Reads single-key commands from Serial UART (115200 baud):
     - `W`: Forward (`run`)
