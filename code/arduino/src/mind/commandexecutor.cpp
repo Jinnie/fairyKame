@@ -48,6 +48,30 @@ void CommandExecutor::parseCommand(String command) {
     robot->just_strafe_left();
   } else if (command == "strafeRight") {
     robot->just_strafe_right();
+  } else if (command == "turnInPlaceL") {
+    robot->just_turn_in_place(true);
+  } else if (command == "turnInPlaceR") {
+    robot->just_turn_in_place(false);
+  } else if (command == "crawl") {
+    robot->just_crawl();
+  } else if (command == "tiptoe") {
+    robot->just_tiptoe();
+  } else if (command == "recover") {
+    robot->just_recover();
+  } else if (command == "sit") {
+    robot->just_sit();
+  } else if (command == "playDead") {
+    robot->just_play_dead();
+  } else if (command == "shiver") {
+    robot->just_shiver();
+  } else if (command == "scratchEar") {
+    robot->just_scratch_ear();
+  } else if (command == "pouncePrep") {
+    robot->just_pounce_prep();
+  } else if (command == "waveGoodbye") {
+    robot->just_wave_goodbye();
+  } else if (command == "tapFoot") {
+    robot->just_tap_foot();
   } else {
     robot->just_relax();
   }

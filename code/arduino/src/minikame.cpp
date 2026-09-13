@@ -192,6 +192,102 @@ void MiniKame::magic() {
     just_strafe_right();
 }
 
+void MiniKame::just_turn_in_place(bool left) {
+    if (left) {
+        this->frontLeftLeg->walk(Gaits::steadyGait(0, Gait::BACKWARD));
+        this->frontRightLeg->walk(Gaits::steadyGait(180, Gait::FORWARD));
+        this->backLeftLeg->walk(Gaits::steadyGait(180, Gait::BACKWARD));
+        this->backRightLeg->walk(Gaits::steadyGait(0, Gait::FORWARD));
+    } else {
+        this->frontLeftLeg->walk(Gaits::steadyGait(0, Gait::FORWARD));
+        this->frontRightLeg->walk(Gaits::steadyGait(180, Gait::BACKWARD));
+        this->backLeftLeg->walk(Gaits::steadyGait(180, Gait::FORWARD));
+        this->backRightLeg->walk(Gaits::steadyGait(0, Gait::BACKWARD));
+    }
+}
+
+void MiniKame::just_crawl() {
+    Gait crawlGait = Gaits::steadyGait(0, Gait::FORWARD);
+    crawlGait.period = 2000;
+    crawlGait.position.height = -40;
+    this->frontLeftLeg->walk(crawlGait);
+    crawlGait.phase = 180;
+    this->frontRightLeg->walk(crawlGait);
+    this->backLeftLeg->walk(crawlGait);
+    crawlGait.phase = 0;
+    this->backRightLeg->walk(crawlGait);
+}
+
+void MiniKame::just_tiptoe() {
+    Gait tiptoeGait = Gaits::steadyShortGait(0, Gait::FORWARD);
+    tiptoeGait.position.height = 40;
+    this->frontLeftLeg->walk(tiptoeGait);
+    tiptoeGait.phase = 180;
+    this->frontRightLeg->walk(tiptoeGait);
+    this->backLeftLeg->walk(tiptoeGait);
+    tiptoeGait.phase = 0;
+    this->backRightLeg->walk(tiptoeGait);
+}
+
+void MiniKame::just_recover() {
+    Pair extreme = Pair(40, 40);
+    this->frontLeftLeg->flex(300, 80, 0, extreme);
+    this->frontRightLeg->flex(300, 80, 180, extreme);
+    this->backLeftLeg->flex(300, 80, 180, extreme);
+    this->backRightLeg->flex(300, 80, 0, extreme);
+}
+
+void MiniKame::just_sit() {
+    this->frontLeftLeg->pose(0, 0);
+    this->frontRightLeg->pose(0, 0);
+    this->backLeftLeg->pose(0, -90);
+    this->backRightLeg->pose(0, -90);
+}
+
+void MiniKame::just_play_dead() {
+    this->frontLeftLeg->pose(90, 0);
+    this->frontRightLeg->pose(90, 0);
+    this->backLeftLeg->pose(90, 0);
+    this->backRightLeg->pose(90, 0);
+}
+
+void MiniKame::just_shiver() {
+    Pair neutral = Pair(0, 0);
+    this->frontLeftLeg->flex(100, 10, 0, neutral);
+    this->frontRightLeg->flex(100, 10, 0, neutral);
+    this->backLeftLeg->flex(100, 10, 0, neutral);
+    this->backRightLeg->flex(100, 10, 0, neutral);
+}
+
+void MiniKame::just_scratch_ear() {
+    this->backLeftLeg->pose(0, -90);
+    this->backRightLeg->pose(0, -90);
+    this->frontRightLeg->pose(0, 0);
+    this->frontLeftLeg->flex(150, 40, 0, Pair(0, -60));
+}
+
+void MiniKame::just_pounce_prep() {
+    this->frontLeftLeg->pose(0, -40);
+    this->frontRightLeg->pose(0, -40);
+    Pair wiggle = Pair(0, -10);
+    this->backLeftLeg->flex(200, 15, 0, wiggle);
+    this->backRightLeg->flex(200, 15, 180, wiggle);
+}
+
+void MiniKame::just_wave_goodbye() {
+    this->backLeftLeg->pose(0, 0);
+    this->backRightLeg->pose(0, 0);
+    this->frontRightLeg->pose(0, 0);
+    this->frontLeftLeg->flex(600, 45, 0, Pair(45, -60));
+}
+
+void MiniKame::just_tap_foot() {
+    this->backLeftLeg->pose(0, 0);
+    this->backRightLeg->pose(0, 0);
+    this->frontLeftLeg->pose(0, 0);
+    this->frontRightLeg->flex(300, 20, 0, Pair(0, -30));
+}
+
 MiniKame::~MiniKame()
 {
     delete this->frontLeftLeg;
