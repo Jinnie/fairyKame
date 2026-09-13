@@ -1,7 +1,7 @@
 #ifndef octosnake_h
 #define octosnake_h
 
-#include <Servo.h>
+#include <Arduino.h>
 
 //-- Macro for converting from degrees to radians
 #ifndef DEG2RAD

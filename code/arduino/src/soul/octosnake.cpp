@@ -1,5 +1,4 @@
 #include "octosnake.h"
-#include <Servo.h>
 
 Oscillator::Oscillator(){
     _period = 2000;
