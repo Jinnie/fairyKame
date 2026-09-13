@@ -19,21 +19,24 @@ Leg2DOF::Leg2DOF(bool front, bool left) {
     const int TRIM_HEIGHT = 0;
     const int TRIM_SPREAD = 0;
 
+    this->hardwareTrimHeight = TRIM_HEIGHT;
+    this->hardwareTrimSpread = this->front ? TRIM_SPREAD : -TRIM_SPREAD;
+
     if (this->front) {
         if (this->left) {
-            this->hip = new Joint(D1, TRIM_SPREAD, clockwise);
-            this->knee = new Joint(D8, TRIM_HEIGHT, clockwise);
+            this->hip = new Joint(D1, this->hardwareTrimSpread, clockwise);
+            this->knee = new Joint(D8, this->hardwareTrimHeight, clockwise);
         } else {
-            this->hip = new Joint(D4, TRIM_SPREAD, anticlock);
-            this->knee = new Joint(D6, TRIM_HEIGHT, anticlock);
+            this->hip = new Joint(D4, this->hardwareTrimSpread, anticlock);
+            this->knee = new Joint(D6, this->hardwareTrimHeight, anticlock);
         }
     } else {
         if (this->left) {
-            this->hip = new Joint(D7, -TRIM_SPREAD, clockwise);
-            this->knee = new Joint(D2, TRIM_HEIGHT, anticlock);
+            this->hip = new Joint(D7, this->hardwareTrimSpread, clockwise);
+            this->knee = new Joint(D2, this->hardwareTrimHeight, anticlock);
         } else {
-            this->hip = new Joint(D5, -TRIM_SPREAD, anticlock);
-            this->knee = new Joint(D3, TRIM_HEIGHT, clockwise);
+            this->hip = new Joint(D5, this->hardwareTrimSpread, anticlock);
+            this->knee = new Joint(D3, this->hardwareTrimHeight, clockwise);
         }
     }
 }
@@ -76,7 +79,7 @@ void Leg2DOF::pulse() {
     this->knee->pulse();
     if (Mind::getHeightOverride() != this->heightOverride) {
         this->heightOverride = Mind::getHeightOverride();
-        this->knee->setTrim(this->heightOverride);
+        this->knee->setTrim(this->hardwareTrimHeight + this->heightOverride);
     }
     if (Mind::getTiltCorrection() != this->tiltCorrection) {
         this->tiltCorrection = Mind::getTiltCorrection();

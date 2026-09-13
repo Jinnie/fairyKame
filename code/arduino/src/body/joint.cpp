@@ -9,7 +9,7 @@ Joint::Joint(int pin, int trim, bool reverse) {
     this->trim = trim;
     this->reverse = reverse;
     this->servo.attach(this->pin);
-    this->oscillator.setTrim(this->trim);
+    this->oscillator.setTrim(0);
 }
 
 void Joint::setPosition(float target){
@@ -39,12 +39,17 @@ float Joint::getPosition(){
 }
 
 void Joint::oscillate(int period, int amplitude, int phase, int offset) {
-    if (!this->oscillating) {
-        this->oscillator.setPeriod(period / Mind::getSpeedModifier());
-        this->oscillator.setAmplitude(amplitude);
-        this->oscillator.setPhase(phase);
-        this->oscillator.setOffset(offset);
+    this->_basePeriod = period;
+    this->_lastSpeed = Mind::getSpeedModifier();
+    if (this->_lastSpeed <= 0) {
+        this->_lastSpeed = 1.0f;
+    }
+    this->oscillator.setPeriod(this->_basePeriod / this->_lastSpeed);
+    this->oscillator.setAmplitude(amplitude);
+    this->oscillator.setPhase(phase);
+    this->oscillator.setOffset(offset);
 
+    if (!this->oscillating) {
         this->oscillator.reset();
         this->oscillating = true;
     }
@@ -52,7 +57,6 @@ void Joint::oscillate(int period, int amplitude, int phase, int offset) {
 
 void Joint::setTrim(int trim) {
     this->trim = trim;
-    this->oscillator.setTrim(trim);
     if (!this->oscillating) {
         this->setPosition(this->_position);
     }
@@ -60,7 +64,6 @@ void Joint::setTrim(int trim) {
 
 void Joint::setTilt(int tilt) {
     this->tilt = tilt;
-    this->oscillator.setTrim(this->trim + this->tilt);
     if (!this->oscillating) {
         this->setPosition(this->_position);
     }
@@ -74,6 +77,11 @@ void Joint::stop_work() {
 
 void Joint::pulse() {
     if (this->oscillating) {
+        float currentSpeed = Mind::getSpeedModifier();
+        if (currentSpeed != this->_lastSpeed && currentSpeed > 0) {
+            this->_lastSpeed = currentSpeed;
+            this->oscillator.setPeriod(this->_basePeriod / currentSpeed);
+        }
         this->setPosition(this->oscillator.refresh());
     }
 }

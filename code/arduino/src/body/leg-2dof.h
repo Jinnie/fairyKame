@@ -26,4 +26,6 @@ class Leg2DOF {
     bool front;  // front/rear
     int heightOverride = 0;
     int tiltCorrection = 0;
+    int hardwareTrimHeight = 0;
+    int hardwareTrimSpread = 0;
 };
