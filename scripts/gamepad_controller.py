@@ -214,7 +214,7 @@ HELP_TEXT = """
 
 [ Tricks & Poses ] (Tap Key)
     1: Dance       2: Push Ups    3: Sit         4: Crawl
-    5: Tiptoe      6: Wave        7: Tap Foot    8: Play Dead
+    5: Tiptoe      6: Say Hi      7: Tap Foot    8: Play Dead
     9: Shiver      0: Pack        P: Pounce      K: Scratch Ear
     H: Say Hi      R: Recover     M: Magic       Space: Stop
 
@@ -365,7 +365,7 @@ def main():
                     '3': ('sit', '3'),
                     '4': ('crawl', '4'),
                     '5': ('tiptoe', '5'),
-                    '6': ('waveGoodbye', '6'),
+                    '6': ('sayHi', '6'),
                     '7': ('tapFoot', '7'),
                     '8': ('playDead', '8'),
                     '9': ('shiver', '9'),

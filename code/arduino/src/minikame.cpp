@@ -269,10 +269,7 @@ void MiniKame::just_pounce_prep() {
 }
 
 void MiniKame::just_wave_goodbye() {
-    this->frontRightLeg->pose(50, -40);
-    this->backRightLeg->pose(-50, 50);
-    this->backLeftLeg->pose(20, -25);
-    this->frontLeftLeg->flex(350, 30, 0, Pair(50, 60));
+    just_say_hi();
 }
 
 void MiniKame::just_tap_foot() {

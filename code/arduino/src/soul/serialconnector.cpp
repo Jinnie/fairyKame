@@ -126,7 +126,7 @@ void SerialConnector::handleConnection()
         momentaryKey = false;
         break;
       case '6':
-        cmd = "waveGoodbye";
+        cmd = "sayHi";
         keyRecognized = true;
         momentaryKey = false;
         break;

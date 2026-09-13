@@ -56,14 +56,13 @@ Connect FairyKame via USB and open a serial terminal (or PlatformIO Serial Monit
 | `3` | `sit` | Sit down |
 | `4` | `crawl` | Low crawl |
 | `5` | `tiptoe` | Stand on tiptoes |
-| `6` | `waveGoodbye` | Wave front paw |
+| `6` / `H` | `sayHi` | Say hi / wave paw |
 | `7` | `tapFoot` | Tap front foot |
 | `8` | `playDead` | Play dead flat on ground |
 | `9` | `shiver` | Shiver / vibration |
 | `0` | `pack` | Pack legs tightly |
 | `P` | `pouncePrep` | Cat butt-wiggle pounce prep |
 | `K` | `scratchEar` | Scratch ear |
-| `H` | `sayHi` | Say hi |
 | `R` | `recover` | Self-right / flip over flail |
 | `M` / `Tab` | `magic` | Magic strafe move |
 | `Enter` | *(prompt)* | Enter any named command string |
