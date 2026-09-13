@@ -10,7 +10,7 @@
 
 ## Hardware Specifications & Pinout
 
-- **Microcontroller:** ESP8266 (NodeMCU v2).
+- **Microcontroller:** ESP8266 (NodeMCU v2). *Note: ESP8266 lacks Bluetooth hardware; migration to ESP32 is tracked on the roadmap for native wireless Bluetooth Serial (SPP) control (see [TODO.md](TODO.md)). External adapters/modules (e.g. HC-05) are intentionally excluded.*
 - **Toolchain / Build:** PlatformIO (`platform = espressif8266`, `board = nodemcuv2`, `framework = arduino`).
 - **Actuators:** 8 micro-servos (2 DOF per leg: hip/spread and knee/height).
 - **Chassis / Mechanicals:** 3D-printed parts located in `parts/scad/` and `parts/stl/`.

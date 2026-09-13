@@ -40,9 +40,13 @@ This document tracks planned improvements, architectural ideas, and technical de
 ---
 
 ## 5. Mobile & Connectivity (Stretch Goals)
-- [ ] **Bluetooth Low Energy (BLE) / Bluetooth Serial Control:**
-  - Explore adding Bluetooth support for wireless mobile control.
-- [ ] **Dedicated Mobile App:**
-  - Experiment with a lightweight cross-platform app (e.g. React Native or Flutter) to steer the robot with a virtual joystick.
-- [ ] **Hardware Board Abstraction:**
-  - Abstract pinouts and HAL to support alternative microcontrollers (e.g. ESP32, Raspberry Pi Pico W).
+- [ ] **Migration to ESP32 (Hardware Upgrade):**
+  - Migrate firmware, pin configuration, and chassis mounts from ESP8266 (NodeMCU v2) to an ESP32 SoC (e.g. ESP32 DevKit / NodeMCU-32S).
+  - Abstract pinouts and HAL to leverage ESP32 hardware PWM and power routing.
+  - *Architectural Decision:* External Bluetooth adapters/modules (such as HC-05/HC-06/JDY-31) are explicitly ruled out; native on-chip ESP32 integration is the sole intended upgrade path.
+- [ ] **Native Bluetooth Serial (SPP) Control:**
+  - Leverage ESP32's built-in Bluetooth radio using `BluetoothSerial` (Serial Port Profile).
+  - Pairs directly with host PCs as a wireless virtual COM port (`COMx`), enabling `scripts/gamepad_controller.py` to operate wirelessly with zero latency and without switching Wi-Fi networks.
+- [ ] **Bluetooth Low Energy (BLE) & Mobile App:**
+  - Add BLE GATT services for motion dispatch and telemetry.
+  - Experiment with a lightweight cross-platform mobile app (e.g. React Native or Flutter) to steer FairyKame via a virtual joystick.
