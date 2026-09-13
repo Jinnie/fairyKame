@@ -10,6 +10,9 @@ class SerialConnector {
     void handleConnection();
   private:
     boolean readCmd = false;
+    unsigned long lastMovementTime = 0;
+    unsigned long momentaryTimeout = 350;
+    bool isMomentary = false;
 };
 
 #endif

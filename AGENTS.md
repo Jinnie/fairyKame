@@ -80,14 +80,14 @@ Math, communication protocols, and behavioral rules:
     - `/delay?delay=<val>`: Tick delay in milliseconds.
   - *Client Note:* Since the SoftAP has no upstream internet gateway, mobile clients (iOS/Android) often require disabling mobile data or accepting "Stay Connected" prompts to avoid cellular network failover.
 - **`SerialConnector` (`serialconnector.h`, `serialconnector.cpp`):**
-  - Reads single-key commands from Serial UART (115200 baud):
-    - `W`: Forward (`run`)
-    - `X`: Backward (`back`)
-    - `A` / `D`: Turn Left / Turn Right
-    - `Q` / `E`: Diagonal Forward-Left / Forward-Right
-    - `Z` / `C`: Diagonal Back-Left / Back-Right
-    - `,` / `.`: Strafe Left / Strafe Right
-    - `Space`: Stop / Relax
+  - Reads single-key commands from Serial UART (115200 baud) with a dead-man's switch watchdog (auto-stops ~350ms after key release on hold-to-move keys):
+    - `W`: Forward (`run`, momentary)
+    - `S` / `X`: Backward (`back`, momentary)
+    - `A` / `D`: Turn Left / Turn Right (momentary)
+    - `Q` / `E`: Diagonal Forward-Left / Forward-Right (momentary)
+    - `Z` / `C`: Diagonal Back-Left / Back-Right (momentary)
+    - `,` / `.`: Strafe Left / Strafe Right (momentary)
+    - `Space`: Immediate Stop / Relax
     - `Tab`: Magic
     - `Enter`: Prompt to type full command name.
 - **`ThreeLawsOfRobotics` (`threelaws.h`, `threelaws.cpp`):** Safety stub checking Asimov's Three Laws before any joint command is executed.
@@ -140,6 +140,8 @@ fairyKame/
 │   │           └── serialconnector.cpp # Serial keybinding handler
 │   └── html/
 │       └── fatKameCommand.html # Standalone developer template / spec of the web controller UI
+├── scripts/
+│   └── gamepad_controller.py  # Interactive game-style keyboard controller (Serial & HTTP)
 ├── doc/
 │   ├── data.json              # Documentation metadata
 │   └── images/                # Reference diagrams & photos
