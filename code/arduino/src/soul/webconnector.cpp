@@ -236,34 +236,78 @@ void WebConnector::handleSpeed()
 
 void WebConnector::init()
 {
-  // WiFi.softAP(ssid, password);
+#if defined(WIFI_STA_SSID)
+  Serial.print("Connecting to Wi-Fi: ");
+  Serial.println(WIFI_STA_SSID);
+  WiFi.mode(WIFI_STA);
+
+#if defined(WIFI_STA_PASS)
+  if (strlen(WIFI_STA_PASS) > 0) {
+    WiFi.begin(WIFI_STA_SSID, WIFI_STA_PASS);
+  } else {
+    WiFi.begin(WIFI_STA_SSID);
+  }
+#else
+  WiFi.begin(WIFI_STA_SSID);
+#endif
+
+  // Wait up to 10 seconds (20 * 500ms) for connection
+  int attempts = 0;
+  while (WiFi.status() != WL_CONNECTED && attempts < 20) {
+    delay(500);
+    Serial.print(".");
+    attempts++;
+  }
+
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println();
+    Serial.println("WiFi connected!");
+    Serial.print("  IP address: ");
+    Serial.println(WiFi.localIP());
+
+    if (MDNS.begin("fairy")) {
+      MDNS.addService("http", "tcp", 80);
+      Serial.println("  mDNS responder started: http://fairy.local");
+    }
+  } else {
+    Serial.println();
+    Serial.println("Failed to connect to Wi-Fi. Falling back to SoftAP...");
+    WiFi.mode(WIFI_AP);
+    WiFi.softAP(ssid);
+    Serial.println("WiFi butterflies flying (SoftAP fallback)");
+    Serial.print("  SSID: ");
+    Serial.println(WiFi.softAPSSID());
+    Serial.print("  IP: ");
+    Serial.println(WiFi.softAPIP());
+  }
+#else
+  WiFi.mode(WIFI_AP);
   WiFi.softAP(ssid); // no password
-
-  server.on("/", handleRoot);
-
-  server.on("/cmd", handleCommand);
-
-  server.on("/trim", handleTrim);
-  
-  server.on("/tilt", handleTilt);
-  
-  server.on("/speed", handleSpeed);
-
-  server.on("/delay", handleDelay);
-
-  server.begin();
-
-  Serial.println("WiFi butterfies flying");
+  Serial.println("WiFi butterflies flying (SoftAP)");
   Serial.print("  SSID: ");
   Serial.println(WiFi.softAPSSID());
   Serial.print("  IP: ");
   Serial.println(WiFi.softAPIP());
+#endif
+
+  server.on("/", handleRoot);
+  server.on("/cmd", handleCommand);
+  server.on("/trim", handleTrim);
+  server.on("/tilt", handleTilt);
+  server.on("/speed", handleSpeed);
+  server.on("/delay", handleDelay);
+
+  server.begin();
 }
 
 void WebConnector::handleConnection()
 {
+#if defined(WIFI_STA_SSID)
+  MDNS.update();
+#endif
   server.handleClient();
 }
 
 #endif // DISABLE_WIFI
+
 
