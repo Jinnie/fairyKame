@@ -4,3 +4,5 @@
 .vscode
 secrets.h
 *secrets.h
+__pycache__/
+*.py[cod]
