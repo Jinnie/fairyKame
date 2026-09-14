@@ -234,6 +234,26 @@ void WebConnector::handleSpeed()
   Mind::setSpeedModifier(speed);
 }
 
+void WebConnector::handleSpec()
+{
+  String body;
+  if (server.hasArg("plain")) {
+    body = server.arg("plain");
+  } else if (server.hasArg("spec")) {
+    body = server.arg("spec");
+  }
+
+  MoveSpec spec;
+  if (body.length() > 0 && MoveSpec::fromJson(body, spec)) {
+    Serial.println("[HTTP] Applied dynamic MoveSpec: " + spec.name);
+    Mind::setDynamicSpec(spec);
+    server.send(200, "text/plain", "OK");
+  } else {
+    Serial.println("[HTTP] Invalid MoveSpec JSON");
+    server.send(400, "text/plain", "Invalid MoveSpec JSON");
+  }
+}
+
 void WebConnector::init()
 {
 #if defined(WIFI_STA_SSID)
@@ -332,6 +352,8 @@ void WebConnector::init()
   server.on("/tilt", handleTilt);
   server.on("/speed", handleSpeed);
   server.on("/delay", handleDelay);
+  server.on("/spec", HTTP_POST, handleSpec);
+  server.on("/spec", HTTP_GET, handleSpec);
 
   server.begin();
 }
