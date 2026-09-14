@@ -29,13 +29,13 @@ void MiniKame::applyLegSpec(Leg2DOF* leg, const LegSpec& spec) {
     if (!leg) return;
     switch (spec.mode) {
         case LegMode::POSE:
-            leg->pose(spec.offsetSpread, spec.offsetHeight);
+            leg->pose(spec.pose.spread, spec.pose.height);
             break;
         case LegMode::FLEX:
-            leg->flex(spec.period, spec.ampHeight, spec.phase, Pair(spec.offsetSpread, spec.offsetHeight));
+            leg->flex(spec.flex.period, spec.flex.amplitude, spec.flex.phase, spec.flex.position);
             break;
         case LegMode::WALK:
-            leg->walk(spec.period, Pair(spec.ampSpread, spec.ampHeight), spec.phase, Pair(spec.offsetSpread, spec.offsetHeight), spec.backward);
+            leg->walk(spec.gait);
             break;
     }
 }
