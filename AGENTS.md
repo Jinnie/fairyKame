@@ -94,7 +94,8 @@ Coordination, state, and gait definitions:
   - `Pair`: Structure storing `{spread, height}` values.
   - `Gait`: Structure storing `{period, amplitude, phase, direction, position}`.
   - Predefined presets: `Gaits::steadyGait(phase, direction)` and `Gaits::steadyShortGait(phase, direction)`.
-- **`CommandExecutor` (`commandexecutor.h`, `commandexecutor.cpp`):** Routes string tokens (`run`, `turnL`, `turnR`, `back`, `stop`, `dance`, `moonWalk`, `magic`, etc.) to corresponding `MiniKame` methods.
+- **`MoveSpec` & `MoveRegistry` (`movespec.h`, `movespec.cpp`):** Declarative data-driven specification defining `LegMode` (`POSE`, `FLEX`, `WALK`), per-leg kinematic parameters (`LegSpec`), and complete 4-leg postures/gaits (`MoveSpec`). Houses the declarative registry of all 31 standard robot gaits, tricks, and postures, eliminating procedural code sprawl and preparing the spinal cord engine for dynamic over-the-wire move specifications.
+- **`CommandExecutor` (`commandexecutor.h`, `commandexecutor.cpp`):** Routes string tokens (`run`, `turnL`, `turnR`, `back`, `stop`, `dance`, `moonWalk`, `magic`, etc.) directly to `MiniKame::executeMove()` via the declarative MoveRegistry.
 
 ### 3. Soul Layer (`code/arduino/src/soul/`)
 Math, communication protocols, and behavioral rules:
@@ -232,6 +233,8 @@ fairyKame/
 │   │       │   ├── mind.cpp   # Static blackboard state implementation
 │   │       │   ├── gaits.h    # Gait data structures & presets header
 │   │       │   ├── gaits.cpp  # Gait presets implementation
+│   │       │   ├── movespec.h # Data-driven MoveSpec and LegSpec definitions
+│   │       │   ├── movespec.cpp # Move registry with declarative specs for all moves
 │   │       │   ├── commandexecutor.h   # Command router header
 │   │       │   └── commandexecutor.cpp # Command router implementation
 │   │       └── soul/
