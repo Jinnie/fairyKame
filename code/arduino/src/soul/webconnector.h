@@ -11,6 +11,11 @@
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
+
+#ifndef DISABLE_OTA
+#include <ArduinoOTA.h>
+#endif
+
 #include "mind/mind.h"
 #include "connector.h"
 
@@ -26,6 +31,9 @@ class WebConnector : public Connector {
     // Initialize the server
     void init() override;
     void handleConnection() override;
+
+  private:
+    bool otaActive = false;
 };
 
 #endif // DISABLE_WIFI

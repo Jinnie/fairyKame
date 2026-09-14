@@ -171,7 +171,18 @@ To flash the ESP8266 over USB:
 python -m platformio run -t upload --upload-port COM6
 ```
 
-### 3. Serial Monitor
+### 3. Wireless Over-The-Air (OTA) Uploading
+When FairyKame is connected to your local Wi-Fi in Station mode, you can flash firmware wirelessly:
+```bash
+# Upload wirelessly via mDNS:
+python -m platformio run -e nodemcu-ota -t upload
+
+# With password authentication (if configured in secrets.h):
+python -m platformio run -e nodemcu-ota -t upload --upload-flags "--auth=YourPassword"
+```
+*Note for Windows:* Ensure inbound connections for Python are allowed in Windows Defender Firewall on the Private network profile so the robot can stream the binary.
+
+### 4. Serial Monitor
 To monitor serial logs at 115200 baud:
 ```bash
 python -m platformio device monitor -b 115200

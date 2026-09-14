@@ -16,5 +16,7 @@
 
 // #define WIFI_STA_SSID "YourWiFiNetwork"
 // #define WIFI_STA_PASS "YourWiFiPassword"
+// #define OTA_PASSWORD  "YourOtaPassword"
 
 #endif // secrets_h
+
