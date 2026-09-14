@@ -87,32 +87,11 @@ python bridge/mcp_server.py --transport serial --port COM6
 
 ### 1. Antigravity (AGY) — Native Integration
 
-FairyKame is natively packaged for **Antigravity (AGY)**!
+FairyKame is natively packaged for **Antigravity (AGY)** as a workspace plugin at [`.agents/plugins/fairykame/`](file:///C:/Users/Jinnie/Play/fairyKame/.agents/plugins/fairykame/):
 
-#### Option A: Built-in Workspace Plugin (Zero Configuration!)
-This repository already includes the native plugin at [`.agents/plugins/fairykame/`](file:///C:/Users/Jinnie/Play/fairyKame/.agents/plugins/fairykame/):
-- Antigravity automatically discovers and activates the plugin when opening the workspace.
-- Tools (`fairykame_move`, `fairykame_express`, etc.) are directly available to the agent.
-
-#### Option B: Global Configuration
-Configured in `~/.gemini/config/mcp_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "fairykame": {
-      "command": "python",
-      "args": [
-        "C:\\Users\\Jinnie\\Play\\fairyKame\\bridge\\mcp_server.py",
-        "--transport",
-        "auto"
-      ]
-    }
-  }
-}
-```
-
-You can verify active MCP servers in the Antigravity UI under **Additional Options (...) > MCP Servers**.
+- **Zero Manual Configuration:** Antigravity automatically discovers and activates the plugin whenever you open this workspace.
+- **Project-Scoped:** Robot tools (`fairykame_move`, `fairykame_express`, `fairykame_pose`, etc.) are only loaded when working on FairyKame and won't clutter unrelated projects.
+- **Inspect Status:** You can verify the active plugin in the Antigravity UI under **Additional Options (`...`) > MCP Servers** or by typing `/mcp`.
 
 ---
 
