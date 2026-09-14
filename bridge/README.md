@@ -81,13 +81,21 @@ python bridge/mcp_server.py --transport serial --port COM6
 
 ---
 
+---
+
 ## AI Client Configuration
 
-### 1. Claude Desktop
+### 1. Antigravity (AGY) — Native Integration
 
-Add FairyKame to your Claude Desktop configuration file:
-- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
-- **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+FairyKame is natively packaged for **Antigravity (AGY)**!
+
+#### Option A: Built-in Workspace Plugin (Zero Configuration!)
+This repository already includes the native plugin at [`.agents/plugins/fairykame/`](file:///C:/Users/Jinnie/Play/fairyKame/.agents/plugins/fairykame/):
+- Antigravity automatically discovers and activates the plugin when opening the workspace.
+- Tools (`fairykame_move`, `fairykame_express`, etc.) are directly available to the agent.
+
+#### Option B: Global Configuration
+Configured in `~/.gemini/config/mcp_config.json`:
 
 ```json
 {
@@ -104,19 +112,25 @@ Add FairyKame to your Claude Desktop configuration file:
 }
 ```
 
-### 2. Antigravity / Gemini CLI
+You can verify active MCP servers in the Antigravity UI under **Additional Options (...) > MCP Servers**.
 
-Add to your `customizations` or MCP settings:
+---
+
+### 2. Claude Desktop
+
+Add FairyKame to your Claude Desktop configuration file:
+- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+- **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
 
 ```json
 {
-  "mcp_servers": {
+  "mcpServers": {
     "fairykame": {
       "command": "python",
       "args": [
-        "bridge/mcp_server.py",
+        "C:\\Users\\Jinnie\\Play\\fairyKame\\bridge\\mcp_server.py",
         "--transport",
-        "wifi"
+        "auto"
       ]
     }
   }

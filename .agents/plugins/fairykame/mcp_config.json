@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "fairykame": {
+      "command": "python",
+      "args": [
+        "bridge/mcp_server.py",
+        "--transport",
+        "auto"
+      ]
+    }
+  }
+}
