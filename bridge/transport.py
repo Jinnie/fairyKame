@@ -8,6 +8,7 @@ import os
 import time
 import socket
 import logging
+import json
 from typing import Optional, Dict, Any
 
 try:
@@ -53,6 +54,11 @@ class RobotTransport(ABC):
         pass
 
     @abstractmethod
+    def send_spec(self, spec: Dict[str, Any]) -> bool:
+        """Send dynamic MoveSpec dictionary to the robot."""
+        pass
+
+    @abstractmethod
     def get_status(self) -> Dict[str, Any]:
         """Query connection health and telemetry."""
         pass
@@ -60,6 +66,14 @@ class RobotTransport(ABC):
     def run_for_duration(self, cmd: str, duration: float) -> bool:
         """Execute a momentary command for specified duration, then stop."""
         success = self.send_command(cmd)
+        if not success:
+            return False
+        time.sleep(max(0.1, duration))
+        return self.send_command("stop")
+
+    def run_spec_for_duration(self, spec: Dict[str, Any], duration: float) -> bool:
+        """Execute a dynamic spec for specified duration, then stop."""
+        success = self.send_spec(spec)
         if not success:
             return False
         time.sleep(max(0.1, duration))
@@ -135,6 +149,24 @@ class WiFiTransport(RobotTransport):
     def send_delay(self, val: int) -> bool:
         clamped = max(1, min(100, int(val)))
         return self._get("delay", {"delay": clamped})
+
+    def send_spec(self, spec: Dict[str, Any]) -> bool:
+        url = f"{self.base_url}/spec"
+        try:
+            resp = self.session.post(url, json=spec, timeout=self.timeout)
+            return resp.status_code == 200
+        except Exception as e:
+            if self.resolved_ip and self.base_url != f"http://{self.resolved_ip}":
+                try:
+                    fallback_url = f"http://{self.resolved_ip}/spec"
+                    resp = self.session.post(fallback_url, json=spec, timeout=self.timeout)
+                    if resp.status_code == 200:
+                        self.base_url = f"http://{self.resolved_ip}"
+                        return True
+                except Exception:
+                    pass
+            logger.error(f"WiFi POST /spec failed ({url}): {e}")
+            return False
 
     def get_status(self) -> Dict[str, Any]:
         t0 = time.time()
@@ -249,6 +281,18 @@ class SerialTransport(RobotTransport):
     def send_delay(self, val: int) -> bool:
         logger.warning("Delay via Serial not directly mapped to key; use Wi-Fi or extended protocol.")
         return False
+
+    def send_spec(self, spec: Dict[str, Any]) -> bool:
+        if not self.ser or not self.ser.is_open:
+            return False
+        try:
+            line = json.dumps(spec) + "\n"
+            self.ser.write(line.encode("utf-8"))
+            self.ser.flush()
+            return True
+        except Exception as e:
+            logger.error(f"Serial send_spec failed: {e}")
+            return False
 
     def run_for_duration(self, cmd: str, duration: float) -> bool:
         """Keep momentary command alive by repeating key every 100ms (watchdog is ~200ms)."""

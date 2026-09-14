@@ -113,6 +113,7 @@ Math, communication protocols, and behavioral rules:
     - `/tilt?tilt=<val>`: Adjust lateral tilt ($\pm 90$).
     - `/speed?speed=<val>`: Exponential speed modifier ($2^{v/2}$).
     - `/delay?delay=<val>`: Tick delay in milliseconds.
+    - `/spec`: Dynamic `MoveSpec` JSON execution endpoint (POST or GET) allowing external AI agents to master new moves on the fly without reflashing firmware.
 - **`SerialConnector` (`serialconnector.h`, `serialconnector.cpp`):**
   - Reads single-key commands from Serial UART (115200 baud).
   - Features an integrated **dead-man's switch watchdog**: hold-to-move locomotion keys automatically stop within ~200ms after key release, and the UART FIFO buffer is drained on key events to eliminate buffered command backlog.

@@ -28,6 +28,7 @@ class WebConnector : public Connector {
     static void handleTilt();
     static void handleSpeed();
     static void handleDelay();
+    static void handleSpec();
     // Initialize the server
     void init() override;
     void handleConnection() override;

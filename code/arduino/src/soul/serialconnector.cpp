@@ -19,7 +19,14 @@ void SerialConnector::handleConnection()
       this->readCmd = false;
       this->isMomentary = false;
       if (cmd.length() > 0) {
-        Mind::setActiveCommand(cmd);
+        if (cmd.startsWith("{")) {
+          MoveSpec spec;
+          if (MoveSpec::fromJson(cmd, spec)) {
+            Mind::setDynamicSpec(spec);
+          }
+        } else {
+          Mind::setActiveCommand(cmd);
+        }
       }
       break;
     }
@@ -30,6 +37,15 @@ void SerialConnector::handleConnection()
     bool momentaryKey = false;
 
     switch (cmdCode) {
+      case '{': {
+        String json = "{" + Serial.readStringUntil('\n');
+        json.trim();
+        MoveSpec spec;
+        if (MoveSpec::fromJson(json, spec)) {
+          Mind::setDynamicSpec(spec);
+        }
+        break;
+      }
       case 32: // Space
         cmd = "stop";
         keyRecognized = true;

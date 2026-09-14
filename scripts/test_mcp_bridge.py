@@ -62,6 +62,23 @@ def run_test():
     res = mcp.fairykame_stop()
     print(f"   Result: {res}")
 
+    # 7. Test Dynamic MoveSpec (waving hind right leg on the fly)
+    print("\n7. Testing fairykame_wave_leg('br', 2.0)...")
+    res = mcp.fairykame_wave_leg("br", 2.0)
+    print(f"   Result: {res}")
+
+    # 8. Test Arbitrary Dynamic Spec (curious tilt)
+    print("\n8. Testing fairykame_custom_spec('curiousTilt', 1.5)...")
+    spec = {
+        "name": "curiousTilt",
+        "fl": [20, -40],
+        "fr": [-20, -40],
+        "bl": [-10, 40],
+        "br": [10, 40]
+    }
+    res = mcp.fairykame_custom_spec(spec, duration=1.5)
+    print(f"   Result: {res}")
+
     print("\n" + "=" * 60)
     print("All MCP Bridge tests PASSED successfully!")
     print("=" * 60)
