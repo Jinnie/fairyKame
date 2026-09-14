@@ -2,3 +2,5 @@
 .travis.yml
 .pio
 .vscode
+secrets.h
+*secrets.h

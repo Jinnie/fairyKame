@@ -102,7 +102,9 @@ Math, communication protocols, and behavioral rules:
   $$\text{angle}(t) = A \cdot \sin\left(\frac{2\pi \cdot \Delta t}{T} + \phi\right) + \text{offset} + \text{trim}$$
   Maintains internal phase continuity (`_time_ref`) across period adjustments to avoid mechanical jerking when the speed modifier changes.
 - **`WebConnector` (`webconnector.h`, `webconnector.cpp`):**
-  - Sets up Wi-Fi Access Point (`SSID: "MINIKAME"`, open/no password, IP: `192.168.4.1`).
+  - Supports dual Wi-Fi modes:
+    - **Station (STA) Mode:** When `secrets.h` (configured from `secrets.example.h`) defines `WIFI_STA_SSID` and `WIFI_STA_PASS`, FairyKame joins the local LAN, registers mDNS responder at `http://fairy.local`, and prints assigned local IP over Serial.
+    - **SoftAP Mode (Default / Fallback):** If `secrets.h` is omitted or if Wi-Fi connection times out (10s), falls back to standalone Access Point (`SSID: "MINIKAME"`, open/no password, IP: `192.168.4.1`).
   - Runs HTTP server on port 80 serving an embedded single-page control dashboard (`page_html`).
   - REST endpoints:
     - `/cmd?command=<cmd>`: Update active gait/motion.
