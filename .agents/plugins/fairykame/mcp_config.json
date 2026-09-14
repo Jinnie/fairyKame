@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "fairykame": {
+      "command": "C:\\Python314\\python.exe",
+      "args": [
+        "C:\\Users\\Jinnie\\Play\\fairyKame\\bridge\\mcp_server.py",
+        "--transport",
+        "auto"
+      ]
+    }
+  }
+}

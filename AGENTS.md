@@ -213,6 +213,11 @@ fairyKame/
 ├── README.md                  # Public project documentation & overview
 ├── TODO.md                    # Project roadmap, planned features & ideas
 ├── platformio.ini             # Root PlatformIO forwarding configuration for VS Code
+├── bridge/                    # AI Model Context Protocol (MCP) host server & bridge
+│   ├── README.md              # MCP server documentation & AI client configs
+│   ├── __init__.py            # Bridge package init
+│   ├── mcp_server.py          # FastMCP / MCPServer tool definitions & runner
+│   └── transport.py           # Pluggable transport (Wi-Fi HTTP & USB Serial)
 ├── code/
 │   ├── arduino/
 │   │   ├── platformio.ini     # PlatformIO configuration (nodemcuv2, espressif8266)
@@ -246,7 +251,8 @@ fairyKame/
 │   └── html/
 │       └── fatKameCommand.html # Standalone developer template / spec of the web controller UI
 ├── scripts/
-│   └── gamepad_controller.py  # Interactive game-style keyboard controller (USB Serial)
+│   ├── gamepad_controller.py  # Interactive game-style keyboard controller (USB Serial)
+│   └── test_mcp_bridge.py     # Standalone MCP & transport live verification test
 ├── doc/
 │   ├── data.json              # Documentation metadata
 │   └── images/                # Reference diagrams & photos
