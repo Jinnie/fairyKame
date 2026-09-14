@@ -3,6 +3,7 @@
 
 #include "body/leg-2dof.h"
 #include "mind/gaits.h"
+#include "mind/movespec.h"
 
 class MiniKame {
 
@@ -11,6 +12,11 @@ class MiniKame {
         void init();
         void stop_work();
         void pulse();
+
+        // Data-driven spec execution
+        void applyLegSpec(Leg2DOF* leg, const LegSpec& spec);
+        void applySpec(const MoveSpec& spec);
+        bool executeMove(const String& name);
 
         // gaits
         void just_walk();
