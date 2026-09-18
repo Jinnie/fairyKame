@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-FairyKame Gamepad Controller (Dynamic MoveSpec & Locomotion)
-------------------------------------------------------------
+FairyKame Gamepad Controller (Dynamic MoveSpecs & Predefined Library Switcher)
+------------------------------------------------------------------------------
 Interactive, low-latency keyboard controller for FairyKame over USB Serial or Wi-Fi.
 
 Features:
-  - Dynamically reads all MoveSpecs (*.json) from specs/ and offers them in the UI.
-  - Interactive MoveSpec Library Menu (press TAB or L) with arrow-key navigation.
-  - Quick-action MoveSpec Hotbar (cycle with '[' and ']', play with ENTER or '\').
-  - Low-latency hold-to-move WASD locomotion with instant release-to-stop.
-  - Direct trick keys (0-9, P, K, H, R, M) and emergency stop (Space).
-  - Dual transport support: Auto-detects USB Serial or local Wi-Fi (http://fairy.local).
+  - Dynamically reads the specs/ folder and maps MoveSpecs directly to action keys.
+  - Seamless Tab switching between [Dynamic MoveSpecs] and [Predefined Firmware Moves].
+  - Live folder watching: Automatically picks up new/edited .json files in specs/.
+  - Multi-bank pagination with '[' and ']' if specs exceed available hotkeys.
+  - Low-latency hold-to-move WASD locomotion with instant dead-man's stop on release.
+  - Dual transport: Works seamlessly over USB Serial or local Wi-Fi (http://fairy.local).
 """
 
 import sys
@@ -25,6 +25,31 @@ if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
 from bridge.transport import get_transport, RobotTransport, WiFiTransport, SerialTransport
+
+# 20 direct hotkeys assigned to dynamic MoveSpec slots (no conflicts with WASD/QEZC/,/.)
+SLOT_KEYS = [
+    '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
+    'P', 'K', 'M', 'H', 'R', 'U', 'I', 'O', 'J', 'B'
+]
+
+# Classic firmware baked-in tricks mapping
+PREDEFINED_MAP = {
+    '1': 'dance',
+    '2': 'pushUps',
+    '3': 'sit',
+    '4': 'crawl',
+    '5': 'tiptoe',
+    '6': 'sayHi',
+    '7': 'tapFoot',
+    '8': 'playDead',
+    '9': 'shiver',
+    '0': 'pack',
+    'P': 'pouncePrep',
+    'K': 'scratchEar',
+    'H': 'sayHi',
+    'R': 'recover',
+    'M': 'magic',
+}
 
 class KeyPoller:
     """Detects real-time key states and transitions using Windows ctypes."""
@@ -42,11 +67,12 @@ class KeyPoller:
                 'COMMA': 0xBC, 'PERIOD': 0xBE,
                 'SPACE': 0x20, 'ESCAPE': 0x1B,
                 'TAB': 0x09, 'RETURN': 0x0D,
-                'UP': 0x26, 'DOWN': 0x28, 'LEFT': 0x25, 'RIGHT': 0x27,
                 'LBRACKET': 0xDB, 'RBRACKET': 0xDD, 'BACKSLASH': 0xDC,
-                'L': 0x4C, 'M': 0x4D, 'P': 0x50, 'K': 0x4B, 'H': 0x48, 'R': 0x52,
+                # Alphanumeric hotkeys
                 '0': 0x30, '1': 0x31, '2': 0x32, '3': 0x33, '4': 0x34,
-                '5': 0x35, '6': 0x36, '7': 0x37, '8': 0x38, '9': 0x39
+                '5': 0x35, '6': 0x36, '7': 0x37, '8': 0x38, '9': 0x39,
+                'P': 0x50, 'K': 0x4B, 'M': 0x4D, 'H': 0x48, 'R': 0x52,
+                'U': 0x55, 'I': 0x49, 'O': 0x4F, 'J': 0x4A, 'B': 0x42
             }
         else:
             self.user32 = None
@@ -68,34 +94,53 @@ class KeyPoller:
         return self._curr_state.get(key_name, False) and not self._prev_state.get(key_name, False)
 
 
-def load_specs(specs_dir: str):
-    """Dynamically reads all valid MoveSpec JSON files from specs directory."""
-    specs = []
-    if not os.path.exists(specs_dir):
-        return specs
+class SpecManager:
+    """Manages dynamic discovery, parsing, and live watching of the specs/ folder."""
+    def __init__(self, specs_dir: str):
+        self.specs_dir = specs_dir
+        self._last_mtime = 0
+        self.specs = []
+        self.rescan(force=True)
 
-    for fname in sorted(os.listdir(specs_dir)):
-        if fname.endswith(".json") and fname != "calibration.json":
-            fpath = os.path.join(specs_dir, fname)
-            try:
-                with open(fpath, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                if "fl" in data and "fr" in data:
-                    name = data.get("name", os.path.splitext(fname)[0])
-                    desc = data.get("description", "Dynamic MoveSpec").strip()
-                    # Keep description concise for terminal display
-                    desc_summary = desc.split("\n")[0]
-                    if len(desc_summary) > 65:
-                        desc_summary = desc_summary[:62] + "..."
-                    specs.append({
-                        "name": name,
-                        "description": desc_summary,
-                        "filename": fname,
-                        "data": data
-                    })
-            except Exception:
-                continue
-    return specs
+    def rescan(self, force: bool = False) -> bool:
+        """Scans specs/ directory for valid MoveSpec JSONs. Returns True if updated."""
+        if not os.path.exists(self.specs_dir):
+            return False
+
+        try:
+            mtime = os.path.getmtime(self.specs_dir)
+        except Exception:
+            mtime = 0
+
+        if not force and mtime == self._last_mtime and self.specs:
+            return False
+
+        self._last_mtime = mtime
+        new_specs = []
+
+        for fname in sorted(os.listdir(self.specs_dir)):
+            if fname.endswith(".json") and fname != "calibration.json":
+                fpath = os.path.join(self.specs_dir, fname)
+                try:
+                    with open(fpath, "r", encoding="utf-8") as f:
+                        data = json.load(f)
+                    if "fl" in data and "fr" in data:
+                        name = data.get("name", os.path.splitext(fname)[0])
+                        desc = data.get("description", "Dynamic MoveSpec").strip()
+                        summary = desc.split("\n")[0]
+                        if len(summary) > 55:
+                            summary = summary[:52] + "..."
+                        new_specs.append({
+                            "name": name,
+                            "description": summary,
+                            "filename": fname,
+                            "data": data
+                        })
+                except Exception:
+                    continue
+
+        self.specs = new_specs
+        return True
 
 
 BANNER = r"""
@@ -107,54 +152,66 @@ BANNER = r"""
   >>> Computer-Game Keyboard Controller <<<
 """
 
-HELP_TEXT = r"""
-[ Locomotion ] (Hold to Move - Release to Stop Instantly)
-    W / S          : Forward (Park Walk) / Backward
-    A / D          : Turn Left / Turn Right
-    W+A / W+D      : Diagonal Up-Left / Up-Right
-    S+A / S+D      : Diagonal Down-Left / Down-Right
-    Q / E          : Dedicated Diagonal Up-Left / Up-Right
-    Z / C          : Dedicated Diagonal Down-Left / Down-Right
-    < , > / < . >  : Strafe Left (,) / Strafe Right (.)
 
-[ MoveSpec Library & Hotbar ]
-    [ / ]          : Select Previous / Next MoveSpec in Hotbar
-    ENTER or \     : Execute Currently Selected Hotbar MoveSpec
-    TAB or L       : Toggle Interactive MoveSpec Library Menu
-    SPACE          : Stop Robot & Zero Torques
-
-[ Baked-in Tricks & Poses ] (Tap Key)
-    1: Dance       2: Push Ups    3: Sit         4: Crawl
-    5: Tiptoe      6 / H: Say Hi  7: Tap Foot    8: Play Dead
-    9: Shiver      0: Pack        P: Pounce      K: Scratch Ear
-    R: Recover     M: Magic
-"""
-
-
-def render_menu(specs, selected_idx):
-    """Renders the interactive full-screen MoveSpec selection menu."""
+def render_board(mode: str, spec_manager: SpecManager, bank_idx: int):
+    """Renders the current active keybinding board."""
     print("\n" + "=" * 80)
-    print("===                    FAIRYKAME MOVESPEC LIBRARY                            ===")
-    print("=" * 80)
-    for i, item in enumerate(specs):
-        marker = ">>" if i == selected_idx else "  "
-        print(f" {marker} [{i + 1:2d}] {item['name']:<18} : {item['description']}")
+    if mode == "DYNAMIC":
+        total_specs = len(spec_manager.specs)
+        per_page = len(SLOT_KEYS)
+        total_banks = max(1, (total_specs + per_page - 1) // per_page)
+        start_idx = bank_idx * per_page
+        bank_specs = spec_manager.specs[start_idx : start_idx + per_page]
+
+        print(f" >>> ACTIVE LIBRARY: [ DYNAMIC MOVESPECS ({total_specs} Loaded) ] <<<")
+        print(f" Bank {bank_idx + 1}/{total_banks} (Press '[' and ']' to change bank | Press TAB for Predefined)")
+        print("-" * 80)
+
+        # Print specs 4 per row
+        row = []
+        for i, key in enumerate(SLOT_KEYS):
+            if i < len(bank_specs):
+                spec = bank_specs[i]
+                row.append(f"[{key}] {spec['name']:<14}")
+            else:
+                row.append(f"[{key}] (empty)       ")
+            if len(row) == 4:
+                print("  " + "  ".join(row))
+                row = []
+        if row:
+            print("  " + "  ".join(row))
+
+    else:
+        print(" >>> ACTIVE LIBRARY: [ PREDEFINED FIRMWARE MOVES ] <<<")
+        print(" Classic Baked-in Gaits (Press TAB to switch to Dynamic Specs)")
+        print("-" * 80)
+        items = list(PREDEFINED_MAP.items())
+        row = []
+        for key, cmd in items:
+            row.append(f"[{key}] {cmd:<14}")
+            if len(row) == 4:
+                print("  " + "  ".join(row))
+                row = []
+        if row:
+            print("  " + "  ".join(row))
+
     print("-" * 80)
-    print(" [UP / DOWN] Navigate | [ENTER] Play Spec | [SPACE] Stop | [TAB / ESC] Resume WASD")
+    print(" Controls: Hold WASD/Q/E/Z/C/,/. to drive | SPACE: Stop | ESC: Quit")
     print("=" * 80 + "\n")
 
 
 def main():
-    parser = argparse.ArgumentParser(description="FairyKame Gamepad Controller with Dynamic MoveSpec Library")
+    parser = argparse.ArgumentParser(description="FairyKame Gamepad Controller (Dynamic Specs & Predefined Switcher)")
     parser.add_argument("--transport", "-t", choices=["auto", "wifi", "serial"], default="auto", help="Transport mode (default: auto)")
     parser.add_argument("--port", "-p", default=None, help="Serial COM port (default: auto-detected, e.g. COM6)")
     parser.add_argument("--baud", "-b", type=int, default=115200, help="Serial baud rate (default: 115200)")
     parser.add_argument("--url", default="http://fairy.local", help="Wi-Fi base URL (default: http://fairy.local)")
+    parser.add_argument("--mode", "-m", choices=["dynamic", "predefined"], default="dynamic", help="Initial library mode (default: dynamic)")
     args = parser.parse_args()
 
-    # Load dynamic MoveSpecs
+    # Initialize dynamic spec manager
     specs_dir = os.path.join(PROJECT_ROOT, "specs")
-    specs = load_specs(specs_dir)
+    spec_mgr = SpecManager(specs_dir)
 
     print(f"Connecting to FairyKame ({args.transport})...")
     try:
@@ -163,7 +220,7 @@ def main():
         print(f"[Error] Failed to connect to robot: {e}")
         sys.exit(1)
 
-    # Optional background drain thread if serial
+    # Optional background drain thread if USB Serial
     if isinstance(robot, SerialTransport) and robot.ser and robot.ser.is_open:
         def _drain_serial():
             while robot.ser and robot.ser.is_open:
@@ -183,100 +240,61 @@ def main():
     print(BANNER)
     trans_desc = f"Wi-Fi ({args.url})" if isinstance(robot, WiFiTransport) else f"Serial ({getattr(robot, 'port', 'UART')} @ {args.baud} baud)"
     print(f"Connected to: {trans_desc}")
-    print(f"MoveSpecs Loaded: {len(specs)} dynamic specifications from specs/")
-    print(HELP_TEXT)
-    print("Controller is ACTIVE. Start pressing WASD / keys...\n")
+
+    active_mode = args.mode.upper()  # "DYNAMIC" or "PREDEFINED"
+    bank_idx = 0
+    render_board(active_mode, spec_mgr, bank_idx)
 
     current_command = "stop"
-    last_trick_key = None
     last_keepalive_time = 0.0
-    hotbar_idx = 0
-    menu_mode = False
-    menu_cursor = 0
+    last_folder_check = time.time()
 
     try:
         while True:
             poller.update()
+            now = time.time()
 
-            # -------------------------------------------------------------
-            # Interactive MoveSpec Menu Mode (TAB / L)
-            # -------------------------------------------------------------
-            if menu_mode:
-                if poller.just_pressed('ESCAPE') or poller.just_pressed('TAB'):
-                    menu_mode = False
-                    print("\n[Menu Closed] Returning to standard WASD free-roam mode.")
-                    time.sleep(0.1)
-                    continue
-
-                if poller.just_pressed('UP'):
-                    menu_cursor = (menu_cursor - 1) % len(specs)
-                    render_menu(specs, menu_cursor)
-
-                elif poller.just_pressed('DOWN'):
-                    menu_cursor = (menu_cursor + 1) % len(specs)
-                    render_menu(specs, menu_cursor)
-
-                elif poller.just_pressed('RETURN'):
-                    selected = specs[menu_cursor]
-                    hotbar_idx = menu_cursor
-                    print(f"\n[Spec Activated] Transmitting MoveSpec '{selected['name']}'...")
-                    robot.send_command("stop")
-                    time.sleep(0.1)
-                    robot.send_spec(selected['data'])
-                    current_command = f"spec:{selected['name']}"
-                    menu_mode = False
-                    print(f"[Menu Closed] Playing '{selected['name']}'. Press SPACE to stop or WASD to steer.")
-                    time.sleep(0.1)
-                    continue
-
-                elif poller.just_pressed('SPACE'):
-                    robot.send_command("stop")
-                    current_command = "stop"
-                    print("\n[Stop] Robot relaxed.")
-
-                time.sleep(0.02)
-                continue
-
-            # -------------------------------------------------------------
-            # Standard Controller Mode (WASD & Hotbar)
-            # -------------------------------------------------------------
-
-            # Check for Menu toggle (TAB or L)
-            if poller.just_pressed('TAB') or poller.just_pressed('L'):
-                menu_mode = True
-                menu_cursor = hotbar_idx
-                render_menu(specs, menu_cursor)
-                time.sleep(0.1)
-                continue
+            # Live watch: check if specs/ folder changed every 2.0 seconds
+            if now - last_folder_check >= 2.0:
+                last_folder_check = now
+                if spec_mgr.rescan():
+                    print("\n[Folder Update] Detected changes in specs/. Updating Dynamic Library...")
+                    if active_mode == "DYNAMIC":
+                        render_board(active_mode, spec_mgr, bank_idx)
 
             # Check for Exit
             if poller.is_down('ESCAPE'):
                 print("\n[Exit] Escape pressed. Shutting down...")
                 break
 
-            # Hotbar navigation ('[' and ']')
-            if specs:
+            # -------------------------------------------------------------
+            # Switch Libraries with TAB key
+            # -------------------------------------------------------------
+            if poller.just_pressed('TAB'):
+                active_mode = "PREDEFINED" if active_mode == "DYNAMIC" else "DYNAMIC"
+                spec_mgr.rescan(force=True)
+                render_board(active_mode, spec_mgr, bank_idx)
+                time.sleep(0.1)
+                continue
+
+            # -------------------------------------------------------------
+            # Bank Pagination in Dynamic Mode ('[' and ']')
+            # -------------------------------------------------------------
+            if active_mode == "DYNAMIC":
+                per_page = len(SLOT_KEYS)
+                total_banks = max(1, (len(spec_mgr.specs) + per_page - 1) // per_page)
                 if poller.just_pressed('LBRACKET'):
-                    hotbar_idx = (hotbar_idx - 1) % len(specs)
-                    s = specs[hotbar_idx]
-                    print(f"\rHotbar: << [{hotbar_idx + 1:2d}/{len(specs)}] {s['name']:<18} : {s['description']}", end="", flush=True)
-
+                    bank_idx = (bank_idx - 1) % total_banks
+                    render_board(active_mode, spec_mgr, bank_idx)
+                    continue
                 elif poller.just_pressed('RBRACKET'):
-                    hotbar_idx = (hotbar_idx + 1) % len(specs)
-                    s = specs[hotbar_idx]
-                    print(f"\rHotbar: >> [{hotbar_idx + 1:2d}/{len(specs)}] {s['name']:<18} : {s['description']}", end="", flush=True)
-
-                # Execute Hotbar MoveSpec (ENTER or BACKSLASH)
-                if poller.just_pressed('RETURN') or poller.just_pressed('BACKSLASH'):
-                    s = specs[hotbar_idx]
-                    print(f"\n\rStatus: >> [SPEC] Activating '{s['name']}'...                 ", end="", flush=True)
-                    robot.send_command("stop")
-                    time.sleep(0.1)
-                    robot.send_spec(s['data'])
-                    current_command = f"spec:{s['name']}"
+                    bank_idx = (bank_idx + 1) % total_banks
+                    render_board(active_mode, spec_mgr, bank_idx)
                     continue
 
-            # Check directional movement keys
+            # -------------------------------------------------------------
+            # Directional Locomotion Keys (WASD + Diagonals + Strafes)
+            # -------------------------------------------------------------
             w = poller.is_down('W')
             s = poller.is_down('S')
             a = poller.is_down('A')
@@ -326,16 +344,12 @@ def main():
                 desired_move = "turnR"
                 cmd_char = 'd'
 
-            # Movement state change (hold to move, release to stop)
             if desired_move is not None:
-                now = time.time()
                 should_send = False
                 if desired_move != current_command:
                     should_send = True
-                    current_spec_tag = specs[hotbar_idx]['name'] if specs else "None"
-                    print(f"\rStatus: >> [{cmd_char.upper()}] {desired_move:<14} | Hotbar: [{hotbar_idx + 1:2d}] {current_spec_tag:<16}", end="", flush=True)
+                    print(f"\rStatus: >> [{cmd_char.upper()}] {desired_move:<14} | Lib: {active_mode:<10}", end="", flush=True)
                 elif (now - last_keepalive_time >= 0.05):
-                    # Stream keepalive pulses every 50ms to satisfy firmware watchdog while held
                     should_send = True
 
                 if should_send:
@@ -343,49 +357,40 @@ def main():
                     last_keepalive_time = now
                     robot.send_command(current_command)
             else:
-                # No movement key pressed
+                # Movement key released -> auto-stop
                 if current_command in ["run", "back", "turnL", "turnR", "upLeft", "upRight", 
                                        "backLeft", "backRight", "strafeLeft", "strafeRight"]:
-                    # Movement key released -> stop immediately
                     current_command = "stop"
                     robot.send_command("stop")
-                    current_spec_tag = specs[hotbar_idx]['name'] if specs else "None"
-                    print(f"\rStatus: .. [ ] STOPPED        | Hotbar: [{hotbar_idx + 1:2d}] {current_spec_tag:<16}", end="", flush=True)
+                    print(f"\rStatus: .. [ ] STOPPED        | Lib: {active_mode:<10}", end="", flush=True)
 
-                # Check one-shot trick keys
-                trick_map = {
-                    '1': 'dance',
-                    '2': 'pushUps',
-                    '3': 'sit',
-                    '4': 'crawl',
-                    '5': 'tiptoe',
-                    '6': 'sayHi',
-                    '7': 'tapFoot',
-                    '8': 'playDead',
-                    '9': 'shiver',
-                    '0': 'pack',
-                    'P': 'pouncePrep',
-                    'K': 'scratchEar',
-                    'H': 'sayHi',
-                    'R': 'recover',
-                    'M': 'magic',
-                }
+                # ---------------------------------------------------------
+                # Action Keys: Dynamic MoveSpecs vs Predefined Tricks
+                # ---------------------------------------------------------
+                if active_mode == "DYNAMIC":
+                    per_page = len(SLOT_KEYS)
+                    start_idx = bank_idx * per_page
+                    bank_specs = spec_mgr.specs[start_idx : start_idx + per_page]
 
-                pressed_trick = None
-                for key_name, trick_cmd in trick_map.items():
-                    if poller.is_down(key_name):
-                        pressed_trick = trick_cmd
-                        break
+                    for idx, key in enumerate(SLOT_KEYS):
+                        if idx < len(bank_specs) and poller.just_pressed(key):
+                            spec = bank_specs[idx]
+                            print(f"\nStatus: >> [SPEC] Activating '{spec['name']}' ({spec['filename']})...")
+                            robot.send_command("stop")
+                            time.sleep(0.08)
+                            robot.send_spec(spec['data'])
+                            current_command = f"spec:{spec['name']}"
+                            break
 
-                if pressed_trick and pressed_trick != last_trick_key:
-                    current_command = pressed_trick
-                    robot.send_command(pressed_trick)
-                    print(f"\rStatus: ** [!] {pressed_trick:<14} | Hotbar: [{hotbar_idx + 1:2d}] {specs[hotbar_idx]['name']:<16}", end="", flush=True)
-                    last_trick_key = pressed_trick
-                elif not pressed_trick:
-                    last_trick_key = None
+                else:  # PREDEFINED MODE
+                    for key, cmd in PREDEFINED_MAP.items():
+                        if poller.just_pressed(key):
+                            print(f"\rStatus: ** [!] {cmd:<14} | Lib: PREDEFINED", end="", flush=True)
+                            robot.send_command(cmd)
+                            current_command = cmd
+                            break
 
-            time.sleep(0.02)  # 50 Hz loop
+            time.sleep(0.02)  # 50 Hz poll rate
 
     except KeyboardInterrupt:
         print("\n[Exit] Interrupted by user.")
