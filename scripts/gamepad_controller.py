@@ -1,83 +1,38 @@
 #!/usr/bin/env python3
 """
-FairyKame Gamepad Controller
-Interactive, game-style keyboard controller for FairyKame robot over USB Serial.
+FairyKame Gamepad Controller (Dynamic MoveSpec & Locomotion)
+------------------------------------------------------------
+Interactive, low-latency keyboard controller for FairyKame over USB Serial or Wi-Fi.
 
 Features:
-  - Hold-to-move controls (W/A/S/D, diagonals, strafe with ',' and '.')
-  - Instant stop (0ms lag) the moment keys are released
-  - Supports diagonal key combinations (e.g., W+A = Forward-Left)
-  - Direct number keys (0-9) and letter shortcuts for expressive tricks and poses
-  - Automatic COM port detection
-  - Zero third-party dependencies required on Windows (uses built-in ctypes)
+  - Dynamically reads all MoveSpecs (*.json) from specs/ and offers them in the UI.
+  - Interactive MoveSpec Library Menu (press TAB or L) with arrow-key navigation.
+  - Quick-action MoveSpec Hotbar (cycle with '[' and ']', play with ENTER or '\').
+  - Low-latency hold-to-move WASD locomotion with instant release-to-stop.
+  - Direct trick keys (0-9, P, K, H, R, M) and emergency stop (Space).
+  - Dual transport support: Auto-detects USB Serial or local Wi-Fi (http://fairy.local).
 """
 
 import sys
-import time
 import os
+import time
+import json
 import argparse
 import threading
 
-try:
-    import serial
-    import serial.tools.list_ports
-    HAS_SERIAL = True
-except ImportError:
-    HAS_SERIAL = False
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
 
-
-class SerialTransport:
-    def __init__(self, port: str, baudrate: int = 115200):
-        if not HAS_SERIAL:
-            raise RuntimeError("pyserial is required. Install with: pip install pyserial")
-        print(f"[Serial] Connecting to {port} @ {baudrate} baud...")
-        self.ser = serial.Serial(port, baudrate, timeout=0.1)
-        time.sleep(1.5)  # Wait for ESP8266 to reset/stabilize
-        print(f"[Serial] Connected to {port}!")
-
-        # Background reader to keep incoming serial buffer clear
-        self._running = True
-        self._reader_thread = threading.Thread(target=self._read_loop, daemon=True)
-        self._reader_thread.start()
-
-    def _read_loop(self):
-        while self._running:
-            try:
-                line = self.ser.readline()
-                if line:
-                    decoded = line.decode('utf-8', errors='ignore').strip()
-                    if decoded.startswith('#'):
-                        # Robot status update from Mind
-                        pass
-            except Exception:
-                break
-
-    def send_command(self, cmd_name: str, cmd_char: str):
-        if self.ser and self.ser.is_open:
-            try:
-                if len(cmd_char) == 1:
-                    self.ser.write(cmd_char.encode('ascii'))
-                else:
-                    self.ser.write(f"\n{cmd_name}\n".encode('ascii'))
-                self.ser.flush()
-            except Exception as e:
-                print(f"[Serial Error] {e}")
-
-    def close(self):
-        self._running = False
-        if self.ser and self.ser.is_open:
-            try:
-                self.ser.write(b' ')  # stop
-                self.ser.flush()
-                self.ser.close()
-            except Exception:
-                pass
-
+from bridge.transport import get_transport, RobotTransport, WiFiTransport, SerialTransport
 
 class KeyPoller:
-    """Detects real-time key states (down/up) using Windows ctypes."""
+    """Detects real-time key states and transitions using Windows ctypes."""
     def __init__(self):
         self.is_windows = os.name == 'nt'
+        self._prev_state = {}
+        self._curr_state = {}
+
         if self.is_windows:
             import ctypes
             self.user32 = ctypes.windll.user32
@@ -86,34 +41,61 @@ class KeyPoller:
                 'Q': 0x51, 'E': 0x45, 'Z': 0x5A, 'C': 0x43,
                 'COMMA': 0xBC, 'PERIOD': 0xBE,
                 'SPACE': 0x20, 'ESCAPE': 0x1B,
+                'TAB': 0x09, 'RETURN': 0x0D,
+                'UP': 0x26, 'DOWN': 0x28, 'LEFT': 0x25, 'RIGHT': 0x27,
+                'LBRACKET': 0xDB, 'RBRACKET': 0xDD, 'BACKSLASH': 0xDC,
+                'L': 0x4C, 'M': 0x4D, 'P': 0x50, 'K': 0x4B, 'H': 0x48, 'R': 0x52,
                 '0': 0x30, '1': 0x31, '2': 0x32, '3': 0x33, '4': 0x34,
-                '5': 0x35, '6': 0x36, '7': 0x37, '8': 0x38, '9': 0x39,
-                'M': 0x4D, 'P': 0x50, 'K': 0x4B, 'H': 0x48, 'R': 0x52
+                '5': 0x35, '6': 0x36, '7': 0x37, '8': 0x38, '9': 0x39
             }
         else:
             self.user32 = None
+            self.VK = {}
+
+    def update(self):
+        """Polls current physical state of all tracked keys."""
+        self._prev_state = self._curr_state.copy()
+        if self.is_windows and self.user32:
+            for key, code in self.VK.items():
+                self._curr_state[key] = bool(self.user32.GetAsyncKeyState(code) & 0x8000)
 
     def is_down(self, key_name: str) -> bool:
-        if self.is_windows and self.user32:
-            code = self.VK.get(key_name)
-            if code is None:
-                return False
-            return bool(self.user32.GetAsyncKeyState(code) & 0x8000)
-        return False
+        """Returns True if the key is currently held down."""
+        return self._curr_state.get(key_name, False)
+
+    def just_pressed(self, key_name: str) -> bool:
+        """Returns True only on the leading-edge transition (single tick)."""
+        return self._curr_state.get(key_name, False) and not self._prev_state.get(key_name, False)
 
 
-def auto_detect_serial_port() -> str:
-    """Finds an ESP8266 / NodeMCU serial port."""
-    if not HAS_SERIAL:
-        return "COM6"
-    ports = list(serial.tools.list_ports.comports())
-    for p in ports:
-        desc = (p.description or "").lower()
-        if "cp210" in desc or "ch340" in desc or "usb-to-uart" in desc or "nodemcu" in desc:
-            return p.device
-    if ports:
-        return ports[0].device
-    return "COM6"
+def load_specs(specs_dir: str):
+    """Dynamically reads all valid MoveSpec JSON files from specs directory."""
+    specs = []
+    if not os.path.exists(specs_dir):
+        return specs
+
+    for fname in sorted(os.listdir(specs_dir)):
+        if fname.endswith(".json") and fname != "calibration.json":
+            fpath = os.path.join(specs_dir, fname)
+            try:
+                with open(fpath, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                if "fl" in data and "fr" in data:
+                    name = data.get("name", os.path.splitext(fname)[0])
+                    desc = data.get("description", "Dynamic MoveSpec").strip()
+                    # Keep description concise for terminal display
+                    desc_summary = desc.split("\n")[0]
+                    if len(desc_summary) > 65:
+                        desc_summary = desc_summary[:62] + "..."
+                    specs.append({
+                        "name": name,
+                        "description": desc_summary,
+                        "filename": fname,
+                        "data": data
+                    })
+            except Exception:
+                continue
+    return specs
 
 
 BANNER = r"""
@@ -125,9 +107,9 @@ BANNER = r"""
   >>> Computer-Game Keyboard Controller <<<
 """
 
-HELP_TEXT = """
+HELP_TEXT = r"""
 [ Locomotion ] (Hold to Move - Release to Stop Instantly)
-    W / S          : Forward / Backward
+    W / S          : Forward (Park Walk) / Backward
     A / D          : Turn Left / Turn Right
     W+A / W+D      : Diagonal Up-Left / Up-Right
     S+A / S+D      : Diagonal Down-Left / Down-Right
@@ -135,52 +117,164 @@ HELP_TEXT = """
     Z / C          : Dedicated Diagonal Down-Left / Down-Right
     < , > / < . >  : Strafe Left (,) / Strafe Right (.)
 
-[ Tricks & Poses ] (Tap Key)
+[ MoveSpec Library & Hotbar ]
+    [ / ]          : Select Previous / Next MoveSpec in Hotbar
+    ENTER or \     : Execute Currently Selected Hotbar MoveSpec
+    TAB or L       : Toggle Interactive MoveSpec Library Menu
+    SPACE          : Stop Robot & Zero Torques
+
+[ Baked-in Tricks & Poses ] (Tap Key)
     1: Dance       2: Push Ups    3: Sit         4: Crawl
     5: Tiptoe      6 / H: Say Hi  7: Tap Foot    8: Play Dead
     9: Shiver      0: Pack        P: Pounce      K: Scratch Ear
-    R: Recover     M: Magic       Space: Stop
-
-[ Quit ]
-    Escape or Ctrl+C
+    R: Recover     M: Magic
 """
 
 
+def render_menu(specs, selected_idx):
+    """Renders the interactive full-screen MoveSpec selection menu."""
+    print("\n" + "=" * 80)
+    print("===                    FAIRYKAME MOVESPEC LIBRARY                            ===")
+    print("=" * 80)
+    for i, item in enumerate(specs):
+        marker = ">>" if i == selected_idx else "  "
+        print(f" {marker} [{i + 1:2d}] {item['name']:<18} : {item['description']}")
+    print("-" * 80)
+    print(" [UP / DOWN] Navigate | [ENTER] Play Spec | [SPACE] Stop | [TAB / ESC] Resume WASD")
+    print("=" * 80 + "\n")
+
+
 def main():
-    parser = argparse.ArgumentParser(description="FairyKame Gamepad Controller (USB Serial)")
-    parser.add_argument("--port", default=None, help="Serial COM port (default: auto-detected, e.g. COM6)")
-    parser.add_argument("--baud", type=int, default=115200, help="Serial baud rate (default: 115200)")
+    parser = argparse.ArgumentParser(description="FairyKame Gamepad Controller with Dynamic MoveSpec Library")
+    parser.add_argument("--transport", "-t", choices=["auto", "wifi", "serial"], default="auto", help="Transport mode (default: auto)")
+    parser.add_argument("--port", "-p", default=None, help="Serial COM port (default: auto-detected, e.g. COM6)")
+    parser.add_argument("--baud", "-b", type=int, default=115200, help="Serial baud rate (default: 115200)")
+    parser.add_argument("--url", default="http://fairy.local", help="Wi-Fi base URL (default: http://fairy.local)")
     args = parser.parse_args()
 
-    port = args.port or auto_detect_serial_port()
+    # Load dynamic MoveSpecs
+    specs_dir = os.path.join(PROJECT_ROOT, "specs")
+    specs = load_specs(specs_dir)
+
+    print(f"Connecting to FairyKame ({args.transport})...")
     try:
-        transport = SerialTransport(port, args.baud)
+        robot = get_transport(mode=args.transport, base_url=args.url, serial_port=args.port, baudrate=args.baud)
     except Exception as e:
-        print(f"[Error] Failed to open serial port {port}: {e}")
+        print(f"[Error] Failed to connect to robot: {e}")
         sys.exit(1)
+
+    # Optional background drain thread if serial
+    if isinstance(robot, SerialTransport) and robot.ser and robot.ser.is_open:
+        def _drain_serial():
+            while robot.ser and robot.ser.is_open:
+                try:
+                    robot.ser.readline()
+                except Exception:
+                    break
+        t = threading.Thread(target=_drain_serial, daemon=True)
+        t.start()
 
     poller = KeyPoller()
     if not poller.is_windows:
-        print("[Notice] Non-Windows OS detected. Native low-latency keyboard polling requires Windows.")
-        print("Please run this on Windows for full game-controller functionality.")
-        transport.close()
+        print("[Notice] Non-Windows OS detected. Low-latency ctypes keyboard polling requires Windows.")
+        robot.close()
         sys.exit(1)
 
     print(BANNER)
-    print(f"Connected to: {port} @ {args.baud} baud")
+    trans_desc = f"Wi-Fi ({args.url})" if isinstance(robot, WiFiTransport) else f"Serial ({getattr(robot, 'port', 'UART')} @ {args.baud} baud)"
+    print(f"Connected to: {trans_desc}")
+    print(f"MoveSpecs Loaded: {len(specs)} dynamic specifications from specs/")
     print(HELP_TEXT)
     print("Controller is ACTIVE. Start pressing WASD / keys...\n")
 
     current_command = "stop"
     last_trick_key = None
     last_keepalive_time = 0.0
+    hotbar_idx = 0
+    menu_mode = False
+    menu_cursor = 0
 
     try:
         while True:
-            # Check for exit
+            poller.update()
+
+            # -------------------------------------------------------------
+            # Interactive MoveSpec Menu Mode (TAB / L)
+            # -------------------------------------------------------------
+            if menu_mode:
+                if poller.just_pressed('ESCAPE') or poller.just_pressed('TAB'):
+                    menu_mode = False
+                    print("\n[Menu Closed] Returning to standard WASD free-roam mode.")
+                    time.sleep(0.1)
+                    continue
+
+                if poller.just_pressed('UP'):
+                    menu_cursor = (menu_cursor - 1) % len(specs)
+                    render_menu(specs, menu_cursor)
+
+                elif poller.just_pressed('DOWN'):
+                    menu_cursor = (menu_cursor + 1) % len(specs)
+                    render_menu(specs, menu_cursor)
+
+                elif poller.just_pressed('RETURN'):
+                    selected = specs[menu_cursor]
+                    hotbar_idx = menu_cursor
+                    print(f"\n[Spec Activated] Transmitting MoveSpec '{selected['name']}'...")
+                    robot.send_command("stop")
+                    time.sleep(0.1)
+                    robot.send_spec(selected['data'])
+                    current_command = f"spec:{selected['name']}"
+                    menu_mode = False
+                    print(f"[Menu Closed] Playing '{selected['name']}'. Press SPACE to stop or WASD to steer.")
+                    time.sleep(0.1)
+                    continue
+
+                elif poller.just_pressed('SPACE'):
+                    robot.send_command("stop")
+                    current_command = "stop"
+                    print("\n[Stop] Robot relaxed.")
+
+                time.sleep(0.02)
+                continue
+
+            # -------------------------------------------------------------
+            # Standard Controller Mode (WASD & Hotbar)
+            # -------------------------------------------------------------
+
+            # Check for Menu toggle (TAB or L)
+            if poller.just_pressed('TAB') or poller.just_pressed('L'):
+                menu_mode = True
+                menu_cursor = hotbar_idx
+                render_menu(specs, menu_cursor)
+                time.sleep(0.1)
+                continue
+
+            # Check for Exit
             if poller.is_down('ESCAPE'):
                 print("\n[Exit] Escape pressed. Shutting down...")
                 break
+
+            # Hotbar navigation ('[' and ']')
+            if specs:
+                if poller.just_pressed('LBRACKET'):
+                    hotbar_idx = (hotbar_idx - 1) % len(specs)
+                    s = specs[hotbar_idx]
+                    print(f"\rHotbar: << [{hotbar_idx + 1:2d}/{len(specs)}] {s['name']:<18} : {s['description']}", end="", flush=True)
+
+                elif poller.just_pressed('RBRACKET'):
+                    hotbar_idx = (hotbar_idx + 1) % len(specs)
+                    s = specs[hotbar_idx]
+                    print(f"\rHotbar: >> [{hotbar_idx + 1:2d}/{len(specs)}] {s['name']:<18} : {s['description']}", end="", flush=True)
+
+                # Execute Hotbar MoveSpec (ENTER or BACKSLASH)
+                if poller.just_pressed('RETURN') or poller.just_pressed('BACKSLASH'):
+                    s = specs[hotbar_idx]
+                    print(f"\n\rStatus: >> [SPEC] Activating '{s['name']}'...                 ", end="", flush=True)
+                    robot.send_command("stop")
+                    time.sleep(0.1)
+                    robot.send_spec(s['data'])
+                    current_command = f"spec:{s['name']}"
+                    continue
 
             # Check directional movement keys
             w = poller.is_down('W')
@@ -238,7 +332,8 @@ def main():
                 should_send = False
                 if desired_move != current_command:
                     should_send = True
-                    print(f"\rStatus: >> [{cmd_char.upper()}] {desired_move:<15}", end="", flush=True)
+                    current_spec_tag = specs[hotbar_idx]['name'] if specs else "None"
+                    print(f"\rStatus: >> [{cmd_char.upper()}] {desired_move:<14} | Hotbar: [{hotbar_idx + 1:2d}] {current_spec_tag:<16}", end="", flush=True)
                 elif (now - last_keepalive_time >= 0.05):
                     # Stream keepalive pulses every 50ms to satisfy firmware watchdog while held
                     should_send = True
@@ -246,59 +341,59 @@ def main():
                 if should_send:
                     current_command = desired_move
                     last_keepalive_time = now
-                    transport.send_command(current_command, cmd_char)
+                    robot.send_command(current_command)
             else:
                 # No movement key pressed
                 if current_command in ["run", "back", "turnL", "turnR", "upLeft", "upRight", 
                                        "backLeft", "backRight", "strafeLeft", "strafeRight"]:
-                    # Key was just released! Stop immediately.
+                    # Movement key released -> stop immediately
                     current_command = "stop"
-                    transport.send_command("stop", ' ')
-                    print(f"\rStatus: .. [ ] STOPPED        ", end="", flush=True)
+                    robot.send_command("stop")
+                    current_spec_tag = specs[hotbar_idx]['name'] if specs else "None"
+                    print(f"\rStatus: .. [ ] STOPPED        | Hotbar: [{hotbar_idx + 1:2d}] {current_spec_tag:<16}", end="", flush=True)
 
                 # Check one-shot trick keys
                 trick_map = {
-                    '1': ('dance', '1'),
-                    '2': ('pushUps', '2'),
-                    '3': ('sit', '3'),
-                    '4': ('crawl', '4'),
-                    '5': ('tiptoe', '5'),
-                    '6': ('sayHi', '6'),
-                    '7': ('tapFoot', '7'),
-                    '8': ('playDead', '8'),
-                    '9': ('shiver', '9'),
-                    '0': ('pack', '0'),
-                    'P': ('pouncePrep', 'p'),
-                    'K': ('scratchEar', 'k'),
-                    'H': ('sayHi', 'h'),
-                    'R': ('recover', 'r'),
-                    'M': ('magic', 'm'),
+                    '1': 'dance',
+                    '2': 'pushUps',
+                    '3': 'sit',
+                    '4': 'crawl',
+                    '5': 'tiptoe',
+                    '6': 'sayHi',
+                    '7': 'tapFoot',
+                    '8': 'playDead',
+                    '9': 'shiver',
+                    '0': 'pack',
+                    'P': 'pouncePrep',
+                    'K': 'scratchEar',
+                    'H': 'sayHi',
+                    'R': 'recover',
+                    'M': 'magic',
                 }
-                
+
                 pressed_trick = None
-                for key_name, (trick_cmd, char_code) in trick_map.items():
+                for key_name, trick_cmd in trick_map.items():
                     if poller.is_down(key_name):
-                        pressed_trick = (trick_cmd, char_code)
+                        pressed_trick = trick_cmd
                         break
 
                 if pressed_trick and pressed_trick != last_trick_key:
-                    trick_cmd, char_code = pressed_trick
-                    current_command = trick_cmd
-                    transport.send_command(trick_cmd, char_code)
-                    print(f"\rStatus: ** [!] {trick_cmd:<15}", end="", flush=True)
+                    current_command = pressed_trick
+                    robot.send_command(pressed_trick)
+                    print(f"\rStatus: ** [!] {pressed_trick:<14} | Hotbar: [{hotbar_idx + 1:2d}] {specs[hotbar_idx]['name']:<16}", end="", flush=True)
                     last_trick_key = pressed_trick
                 elif not pressed_trick:
                     last_trick_key = None
 
-            time.sleep(0.02)  # 50 Hz poll rate (20ms)
+            time.sleep(0.02)  # 50 Hz loop
 
     except KeyboardInterrupt:
         print("\n[Exit] Interrupted by user.")
     finally:
         print("\nStopping robot and cleaning up...")
-        if transport:
-            transport.send_command("stop", ' ')
-            transport.close()
+        if robot:
+            robot.send_command("stop")
+            robot.close()
         print("Done. Goodbye!")
 
 
