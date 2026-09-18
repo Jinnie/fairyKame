@@ -1,0 +1,44 @@
+{
+  "name": "parkWalk",
+  "description": "The Afternoon Park Walk: an AI-synthesized 4-beat lateral sequence creeping gait (BL -> FL -> BR -> FR). Features an elevated stately chassis (knee offset = -35 deg), forward-biased reach exploiting the calibrated +90 deg hip limit, and 3-point static stability polygon at all times.",
+  "fl": {
+    "mode": "walk",
+    "period": 1050,
+    "ampSpread": 24,
+    "ampHeight": 26,
+    "phase": 90,
+    "spread": 30,
+    "height": -35,
+    "direction": "forward"
+  },
+  "fr": {
+    "mode": "walk",
+    "period": 1050,
+    "ampSpread": 24,
+    "ampHeight": 26,
+    "phase": 270,
+    "spread": 30,
+    "height": -35,
+    "direction": "forward"
+  },
+  "bl": {
+    "mode": "walk",
+    "period": 1050,
+    "ampSpread": 22,
+    "ampHeight": 26,
+    "phase": 0,
+    "spread": -15,
+    "height": -35,
+    "direction": "forward"
+  },
+  "br": {
+    "mode": "walk",
+    "period": 1050,
+    "ampSpread": 22,
+    "ampHeight": 26,
+    "phase": 180,
+    "spread": -15,
+    "height": -35,
+    "direction": "forward"
+  }
+}

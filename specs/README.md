@@ -15,6 +15,7 @@ FairyKame's **Spinal Cord Engine** parses these data-driven specifications over 
 | [`neck_massage.json`](neck_massage.json) | Massage | Body-mounted neck & shoulder massage gait. Rear legs form a wide flat stabilizing kickstand while front paws perform deep 2-DOF alternating circular kneading. |
 | [`neck_massage_tap.json`](neck_massage_tap.json) | Massage | Body-mounted deep shiatsu acupressure tapping rhythm ($360\text{ms}$ period, $24^\circ$ amplitude) with wide rear anchor. |
 | [`chaplin_bread_dance.json`](chaplin_bread_dance.json) | Dance | Charlie Chaplin's 1925 "Oceana Roll" Bread Dance from *The Gold Rush*. Seated tabletop tap-dance waltz. |
+| [`park_walk.json`](park_walk.json) | Gait | AI-synthesized 4-beat lateral sequence park walk ($1050\text{ms}$ period, $-35^\circ$ elevated stance, $3$-point static stability polygon). |
 
 ---
 
