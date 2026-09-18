@@ -12,6 +12,8 @@ FairyKame's **Spinal Cord Engine** parses these data-driven specifications over 
 | :--- | :--- | :--- |
 | [`atat_walker.json`](atat_walker.json) | Gait | Star Wars AT-AT Imperial Walker 4-beat crawling gait ($1600\text{ms}$ period, $-45^\circ$ tall stance, $90^\circ$ phase shifts). |
 | [`seductive_sway.json`](seductive_sway.json) | Gesture | Slow, sultry $360^\circ$ circular hip roll with an undulating $2600\text{ms}$ rhythm. |
+| [`neck_massage.json`](neck_massage.json) | Massage | Body-mounted neck & shoulder massage gait. Rear legs form a wide flat stabilizing kickstand while front paws perform deep 2-DOF alternating circular kneading. |
+| [`neck_massage_tap.json`](neck_massage_tap.json) | Massage | Body-mounted deep shiatsu acupressure tapping rhythm ($360\text{ms}$ period, $24^\circ$ amplitude) with wide rear anchor. |
 
 ---
 
