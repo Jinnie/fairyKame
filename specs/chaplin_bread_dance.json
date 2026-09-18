@@ -1,34 +1,34 @@
 {
   "name": "chaplinBreadDance",
-  "description": "Charlie Chaplin's iconic 1925 'Oceana Roll' Bread Dance from The Gold Rush. Elevated tiptoe stance with front legs held close and forward like little dancing feet on forks.",
+  "description": "Charlie Chaplin's iconic 1925 'Oceana Roll' Bread Dance from The Gold Rush. Ultra-tall stilt tiptoe stance (rear height=-70) with front feet clenched ultra-tight together in front (spread=78) like two little shoes on forks.",
   "fl": {
     "mode": "walk",
-    "period": 550,
-    "ampSpread": 15,
-    "ampHeight": 26,
+    "period": 520,
+    "ampSpread": 10,
+    "ampHeight": 28,
     "phase": 0,
-    "spread": 55,
-    "height": -10,
+    "spread": 78,
+    "height": -35,
     "direction": "forward"
   },
   "fr": {
     "mode": "walk",
-    "period": 550,
-    "ampSpread": 15,
-    "ampHeight": 26,
+    "period": 520,
+    "ampSpread": 10,
+    "ampHeight": 28,
     "phase": 180,
-    "spread": 55,
-    "height": -10,
+    "spread": 78,
+    "height": -35,
     "direction": "forward"
   },
   "bl": {
     "mode": "pose",
-    "spread": 20,
-    "height": -40
+    "spread": 5,
+    "height": -70
   },
   "br": {
     "mode": "pose",
-    "spread": 20,
-    "height": -40
+    "spread": 5,
+    "height": -70
   }
 }
