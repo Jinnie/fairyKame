@@ -5,9 +5,10 @@ void CommandExecutor::init(MiniKame* kame) {
 }
 
 void CommandExecutor::parseCommand(String command) {
-  if (!robot || !robot->executeMove(command)) {
-    if (robot) {
-      robot->just_relax();
-    }
+  if (!robot) return;
+  if (command == "__dynamic__") {
+    robot->applySpec(Mind::getDynamicSpec());
+  } else if (!robot->executeMove(command)) {
+    robot->just_relax();
   }
 }

@@ -260,9 +260,118 @@ def fairykame_status() -> str:
     status["capabilities"] = {
         "locomotion": list(GAIT_MAP.keys()),
         "gestures": list(GESTURE_MAP.keys()),
-        "postures": list(POSE_MAP.keys())
+        "postures": list(POSE_MAP.keys()),
+        "dynamic_specs": True
     }
     return json.dumps(status, indent=2)
+
+
+@app.tool()
+def fairykame_custom_spec(spec: Dict[str, Any], duration: Optional[float] = None) -> str:
+    """
+    Execute an arbitrary dynamic 4-leg MoveSpec on the fly without recompiling firmware.
+
+    Allows AI agents to invent custom gaits, expressive body language, or asymmetric postures.
+
+    The spec dictionary defines the 4 legs: 'fl' (Front-Left), 'fr' (Front-Right),
+    'bl' (Back-Left), and 'br' (Back-Right).
+
+    Each leg supports three modes:
+    1. Static Pose:
+       {"mode": "pose", "spread": <deg>, "height": <deg>} or [<spread>, <height>]
+       Angles range from -90 to +90 degrees.
+    2. Flex Gesture:
+       {"mode": "flex", "period": <ms>, "amplitude": <deg>, "phase": <deg>, "spread": <deg>, "height": <deg>}
+       Smooth 1-DOF oscillation of the knee joint with fixed hip spread.
+    3. Walk Gait:
+       {"mode": "walk", "period": <ms>, "ampSpread": <deg>, "ampHeight": <deg>, "phase": <deg>, "spread": <deg>, "height": <deg>, "direction": "forward"|"backward"}
+       Coupled 2-DOF sinusoidal walking oscillation.
+       Or using a named preset: {"gait": "steadyGait"|"steadyShortGait"|"shortRapidGait", "phase": <deg>}
+
+    Example - Asymmetric alert posture:
+      spec = {
+        "name": "alert",
+        "fl": [20, -40],
+        "fr": [-20, -40],
+        "bl": [-10, 40],
+        "br": [10, 40]
+      }
+
+    Args:
+        spec: Dictionary configuring the 4 legs ('fl', 'fr', 'bl', 'br').
+        duration: Optional duration in seconds to run before automatically stopping (default: hold continuously).
+    """
+    global robot
+    if not robot:
+        return "Error: Robot transport not initialized."
+
+    name = spec.get("name", "custom")
+    if duration and duration > 0:
+        ok = robot.run_spec_for_duration(spec, duration)
+        if ok:
+            return f"Executed dynamic MoveSpec '{name}' for {duration:.1f}s, then stopped."
+        return f"Failed to execute dynamic MoveSpec '{name}'."
+    else:
+        ok = robot.send_spec(spec)
+        if ok:
+            return f"Dynamic MoveSpec '{name}' activated."
+        return f"Failed to activate dynamic MoveSpec '{name}'."
+
+
+@app.tool()
+def fairykame_wave_leg(leg: str = "br", duration: float = 3.0) -> str:
+    """
+    Wave a specific leg (e.g. hind right or hind left) for hello or greeting on the fly.
+    Automatically establishes a stable tripod base across the other 3 legs to prevent tipping.
+
+    Args:
+        leg: Which leg to wave: 'br' (Back Right), 'bl' (Back Left), 'fr' (Front Right), or 'fl' (Front Left). Default is 'br'.
+        duration: Duration in seconds to wave before returning to stop (default 3.0s).
+    """
+    global robot
+    if not robot:
+        return "Error: Robot transport not initialized."
+
+    leg = leg.lower().strip()
+    if leg == "br":
+        spec = {
+            "name": "waveHindRight",
+            "fl": [-20, -30],
+            "fr": [20, -30],
+            "bl": [-35, 45],
+            "br": {"mode": "flex", "period": 300, "amplitude": 30, "phase": 0, "spread": 50, "height": 50}
+        }
+    elif leg == "bl":
+        spec = {
+            "name": "waveHindLeft",
+            "fl": [-20, -30],
+            "fr": [20, -30],
+            "bl": {"mode": "flex", "period": 300, "amplitude": 30, "phase": 0, "spread": -50, "height": 50},
+            "br": [35, 45]
+        }
+    elif leg == "fr":
+        spec = {
+            "name": "waveFrontRight",
+            "fl": [50, -40],
+            "fr": {"mode": "flex", "period": 300, "amplitude": 30, "phase": 0, "spread": 60, "height": 60},
+            "bl": [-50, 50],
+            "br": [20, -25]
+        }
+    elif leg == "fl":
+        spec = {
+            "name": "waveFrontLeft",
+            "fl": {"mode": "flex", "period": 300, "amplitude": 30, "phase": 0, "spread": -60, "height": 60},
+            "fr": [-50, -40],
+            "bl": [-20, -25],
+            "br": [50, 50]
+        }
+    else:
+        return f"Unknown leg '{leg}'. Choose from 'br', 'bl', 'fr', or 'fl'."
+
+    ok = robot.run_spec_for_duration(spec, duration)
+    if ok:
+        return f"Waved {leg.upper()} leg for {duration:.1f}s with stable tripod support, then stopped."
+    return f"Failed to wave {leg.upper()} leg."
 
 
 @app.tool()
@@ -333,8 +442,13 @@ def fairykame_choreography(steps: List[Dict[str, Any]]) -> str:
                 robot.send_trim(int(h))
             if t is not None:
                 robot.send_tilt(int(t))
-            time.sleep(duration)
-            log.append(f"Step {i+1}: Adjusted trim (height={h}, tilt={t})")
+        elif action in ("spec", "custom"):
+            spec_data = step.get("spec", {})
+            if spec_data:
+                robot.run_spec_for_duration(spec_data, duration)
+                log.append(f"Step {i+1}: Executed custom MoveSpec '{spec_data.get('name', 'custom')}' ({duration:.1f}s)")
+            else:
+                log.append(f"Step {i+1}: Missing 'spec' dictionary in step")
 
         elif action == "wait":
             time.sleep(duration)

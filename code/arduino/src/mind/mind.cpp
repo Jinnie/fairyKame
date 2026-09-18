@@ -5,6 +5,8 @@ static int _tilt = 0;
 static int _delay = 20;
 static float _speed = 1;
 static String _activeCommand = "stop";
+static MoveSpec _dynamicSpec;
+static bool _hasDynamicSpec = false;
 
 int Mind::getHeightOverride() {
     return _height;
@@ -43,9 +45,37 @@ String Mind::getActiveCommand() {
 }
 
 void Mind::setActiveCommand(String activeCommand) {
+    if (activeCommand != "__dynamic__") {
+        _hasDynamicSpec = false;
+    }
     if (_activeCommand != activeCommand) {
         Serial.print('#');
         Serial.println(activeCommand);
         _activeCommand = activeCommand;
     }
+}
+
+static bool _dynamicSpecDirty = false;
+
+void Mind::setDynamicSpec(const MoveSpec& spec) {
+    _dynamicSpec = spec;
+    _hasDynamicSpec = true;
+    _dynamicSpecDirty = true;
+    setActiveCommand("__dynamic__");
+}
+
+const MoveSpec& Mind::getDynamicSpec() {
+    return _dynamicSpec;
+}
+
+bool Mind::isDynamicSpec() {
+    return _hasDynamicSpec && _activeCommand == "__dynamic__";
+}
+
+bool Mind::isDynamicSpecDirty() {
+    return _dynamicSpecDirty;
+}
+
+void Mind::clearDynamicSpecDirty() {
+    _dynamicSpecDirty = false;
 }
