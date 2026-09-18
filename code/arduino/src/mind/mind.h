@@ -18,4 +18,6 @@ class Mind {
         static void setDynamicSpec(const MoveSpec& spec);
         static const MoveSpec& getDynamicSpec();
         static bool isDynamicSpec();
+        static bool isDynamicSpecDirty();
+        static void clearDynamicSpecDirty();
 };

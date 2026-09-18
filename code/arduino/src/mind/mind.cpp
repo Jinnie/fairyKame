@@ -55,9 +55,12 @@ void Mind::setActiveCommand(String activeCommand) {
     }
 }
 
+static bool _dynamicSpecDirty = false;
+
 void Mind::setDynamicSpec(const MoveSpec& spec) {
     _dynamicSpec = spec;
     _hasDynamicSpec = true;
+    _dynamicSpecDirty = true;
     setActiveCommand("__dynamic__");
 }
 
@@ -67,4 +70,12 @@ const MoveSpec& Mind::getDynamicSpec() {
 
 bool Mind::isDynamicSpec() {
     return _hasDynamicSpec && _activeCommand == "__dynamic__";
+}
+
+bool Mind::isDynamicSpecDirty() {
+    return _dynamicSpecDirty;
+}
+
+void Mind::clearDynamicSpecDirty() {
+    _dynamicSpecDirty = false;
 }
