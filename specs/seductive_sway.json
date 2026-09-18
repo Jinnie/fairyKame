@@ -1,0 +1,44 @@
+{
+  "name": "seductiveSway",
+  "description": "Slow, sultry 360-degree circular hip roll with 2600ms undulating rhythm.",
+  "fl": {
+    "mode": "walk",
+    "period": 2600,
+    "ampSpread": 28,
+    "ampHeight": 18,
+    "phase": 0,
+    "spread": 10,
+    "height": -15,
+    "direction": "forward"
+  },
+  "fr": {
+    "mode": "walk",
+    "period": 2600,
+    "ampSpread": 28,
+    "ampHeight": 18,
+    "phase": 90,
+    "spread": -10,
+    "height": -15,
+    "direction": "forward"
+  },
+  "bl": {
+    "mode": "walk",
+    "period": 2600,
+    "ampSpread": 28,
+    "ampHeight": 18,
+    "phase": 270,
+    "spread": 10,
+    "height": -15,
+    "direction": "forward"
+  },
+  "br": {
+    "mode": "walk",
+    "period": 2600,
+    "ampSpread": 28,
+    "ampHeight": 18,
+    "phase": 180,
+    "spread": -10,
+    "height": -15,
+    "direction": "forward"
+  }
+}
