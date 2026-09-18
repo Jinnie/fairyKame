@@ -1,0 +1,30 @@
+{
+  "name": "neckMassageTap",
+  "description": "Deep-tissue shiatsu acupressure rhythm. Rear legs anchored flat and wide while front paws perform deeper, rhythmic alternating vertical tapping.",
+  "fl": {
+    "mode": "flex",
+    "period": 360,
+    "amplitude": 24,
+    "phase": 0,
+    "spread": 42,
+    "height": 14
+  },
+  "fr": {
+    "mode": "flex",
+    "period": 360,
+    "amplitude": 24,
+    "phase": 180,
+    "spread": 42,
+    "height": 14
+  },
+  "bl": {
+    "mode": "pose",
+    "spread": 45,
+    "height": -20
+  },
+  "br": {
+    "mode": "pose",
+    "spread": 45,
+    "height": -20
+  }
+}

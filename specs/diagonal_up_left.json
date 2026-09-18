@@ -1,0 +1,44 @@
+{
+  "name": "diagonalUpLeft",
+  "description": "AI-Synthesized 4-Beat Diagonal Up-Left: Vector-composed 45-degree forward-left locomotion. Right legs drive with primary forward propulsion (ampSpread=24) while left legs pivot with controlled stride (ampSpread=12) at an elevated stance (height=-35 deg).",
+  "fl": {
+    "mode": "walk",
+    "period": 1000,
+    "ampSpread": 12,
+    "ampHeight": 26,
+    "phase": 90,
+    "spread": 20,
+    "height": -35,
+    "direction": "forward"
+  },
+  "fr": {
+    "mode": "walk",
+    "period": 1000,
+    "ampSpread": 24,
+    "ampHeight": 26,
+    "phase": 270,
+    "spread": 35,
+    "height": -35,
+    "direction": "forward"
+  },
+  "bl": {
+    "mode": "walk",
+    "period": 1000,
+    "ampSpread": 12,
+    "ampHeight": 26,
+    "phase": 0,
+    "spread": -20,
+    "height": -35,
+    "direction": "forward"
+  },
+  "br": {
+    "mode": "walk",
+    "period": 1000,
+    "ampSpread": 24,
+    "ampHeight": 26,
+    "phase": 180,
+    "spread": -10,
+    "height": -35,
+    "direction": "forward"
+  }
+}

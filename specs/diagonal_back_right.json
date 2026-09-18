@@ -1,0 +1,44 @@
+{
+  "name": "diagonalBackRight",
+  "description": "AI-Synthesized 4-Beat Diagonal Back-Right: Vector-composed 45-degree backward-right retreat. Left legs drive backward with full amplitude (ampSpread=22) while right legs pivot with controlled amplitude (ampSpread=12) in an elevated stance (height=-35 deg).",
+  "fl": {
+    "mode": "walk",
+    "period": 1000,
+    "ampSpread": 22,
+    "ampHeight": 26,
+    "phase": 0,
+    "spread": 25,
+    "height": -35,
+    "direction": "backward"
+  },
+  "bl": {
+    "mode": "walk",
+    "period": 1000,
+    "ampSpread": 22,
+    "ampHeight": 26,
+    "phase": 90,
+    "spread": -20,
+    "height": -35,
+    "direction": "backward"
+  },
+  "fr": {
+    "mode": "walk",
+    "period": 1000,
+    "ampSpread": 12,
+    "ampHeight": 26,
+    "phase": 180,
+    "spread": 15,
+    "height": -35,
+    "direction": "backward"
+  },
+  "br": {
+    "mode": "walk",
+    "period": 1000,
+    "ampSpread": 12,
+    "ampHeight": 26,
+    "phase": 270,
+    "spread": -25,
+    "height": -35,
+    "direction": "backward"
+  }
+}

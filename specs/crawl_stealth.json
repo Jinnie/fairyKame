@@ -1,0 +1,44 @@
+{
+  "name": "crawlStealth",
+  "description": "AI-Synthesized Low-Profile Stealth Prowl: Tactical 4-beat stalking crawl with lowered center of mass (height = -12 deg) that stays safely suspended above the floor without belly dragging. Wide forward reach (+45 deg front, -25 deg rear) with a slow, deliberate 1350ms cadence.",
+  "fl": {
+    "mode": "walk",
+    "period": 1350,
+    "ampSpread": 20,
+    "ampHeight": 22,
+    "phase": 90,
+    "spread": 45,
+    "height": -12,
+    "direction": "forward"
+  },
+  "fr": {
+    "mode": "walk",
+    "period": 1350,
+    "ampSpread": 20,
+    "ampHeight": 22,
+    "phase": 270,
+    "spread": 45,
+    "height": -12,
+    "direction": "forward"
+  },
+  "bl": {
+    "mode": "walk",
+    "period": 1350,
+    "ampSpread": 20,
+    "ampHeight": 22,
+    "phase": 0,
+    "spread": -25,
+    "height": -12,
+    "direction": "forward"
+  },
+  "br": {
+    "mode": "walk",
+    "period": 1350,
+    "ampSpread": 20,
+    "ampHeight": 22,
+    "phase": 180,
+    "spread": -25,
+    "height": -12,
+    "direction": "forward"
+  }
+}

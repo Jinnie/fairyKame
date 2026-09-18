@@ -1,0 +1,51 @@
+{
+  "reference_leg": "fl",
+  "version": "1.0",
+  "date": "2026-09-19",
+  "calibration_results": {
+    "fl": {
+      "hip_spread": {
+        "max_forward": 90,
+        "perpendicular_neutral": -30,
+        "safe_min_backward": -30,
+        "total_range_degrees": 120,
+        "notes": "At -30 deg the leg is exactly 90 deg perpendicular to the chassis body. At +90 deg it is fully extended forward."
+      },
+      "knee_height": {
+        "max_up": 90,
+        "max_down": -90,
+        "neutral_mid": 0,
+        "total_range_degrees": 180,
+        "notes": "Full 180-deg vertical sweep! +90 deg points straight up to sky (Can-Can), -90 deg points straight down (Stilt)."
+      }
+    },
+    "fr": {
+      "notes": "Symmetrically transposed from fl (hardware reversed in firmware).",
+      "hip_spread": {
+        "max_forward": 90,
+        "perpendicular_neutral": -30,
+        "safe_min_backward": -30
+      },
+      "knee_height": {
+        "max_up": 90,
+        "max_down": -90,
+        "neutral_mid": 0
+      }
+    },
+    "rear_legs": {
+      "notes": "Symmetrically transposed vertical knee limits (+90 up, -90 down). Hips require collision-avoidance check before swinging forward into front leg space.",
+      "bl": {
+        "knee_height": { "max_up": 90, "max_down": -90 }
+      },
+      "br": {
+        "knee_height": { "max_up": 90, "max_down": -90 }
+      }
+    }
+  },
+  "kinematic_takeaways": {
+    "true_perpendicular_hip_offset": -30,
+    "can_can_kick_true_height": 90,
+    "stilt_standing_true_height": -90,
+    "software_zero_vs_physical_zero": "Software 0 deg spread is physically 30 deg forward from perpendicular line."
+  }
+}

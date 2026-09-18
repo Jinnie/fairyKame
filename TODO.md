@@ -28,6 +28,9 @@ This document tracks planned improvements, architectural ideas, and technical de
   - Explore asymmetrical step paths (different horizontal vs vertical amplitudes / elliptical trajectories) in `Leg2DOF::walk()`.
 - [ ] **Smooth Gait Transitions:**
   - Smoothly interpolate between distinct gaits or poses to prevent abrupt jerk when switching active commands in `main.cpp`.
+- [ ] **Inter-Leg Collision Avoidance & Spatial Safety Constraints:**
+  - Prevent adjacent front and rear hips/legs from colliding when swinging past physical boundaries (e.g., front hip swinging backward beyond the $90^\circ$ perpendicular line at $\approx -30^\circ$, or rear hip swinging forward into the front leg's envelope).
+  - Implement a mutual spatial clearance check in `Mind` / `Leg2DOF` / `ThreeLawsOfRobotics` before committing target angles to `Joint::setPosition()`, ensuring legs dynamically respect each other's physical boundaries.
 
 ---
 

@@ -44,9 +44,10 @@ void loop() {
 #endif
 
   // get the active command
-  if (activeCommand != Mind::getActiveCommand()) {
+  if (activeCommand != Mind::getActiveCommand() || Mind::isDynamicSpecDirty()) {
     robot.stop_work();
   
+    Mind::clearDynamicSpecDirty();
     activeCommand = Mind::getActiveCommand();
     // execute the active command, which calls the robot
     executor.parseCommand(activeCommand);

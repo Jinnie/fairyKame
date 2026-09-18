@@ -1,0 +1,34 @@
+{
+  "name": "neckMassage",
+  "description": "Deep-tissue upper-back mounted neck & shoulder massage gait. Rear legs anchored flat and wide while front paws perform deep, pressurized alternating 2-DOF circular kneading.",
+  "fl": {
+    "mode": "walk",
+    "period": 850,
+    "ampSpread": 14,
+    "ampHeight": 28,
+    "phase": 0,
+    "spread": 42,
+    "height": 10,
+    "direction": "forward"
+  },
+  "fr": {
+    "mode": "walk",
+    "period": 850,
+    "ampSpread": 14,
+    "ampHeight": 28,
+    "phase": 180,
+    "spread": 42,
+    "height": 10,
+    "direction": "forward"
+  },
+  "bl": {
+    "mode": "pose",
+    "spread": 45,
+    "height": -20
+  },
+  "br": {
+    "mode": "pose",
+    "spread": 45,
+    "height": -20
+  }
+}

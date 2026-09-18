@@ -127,9 +127,11 @@ Add FairyKame to your Claude Desktop configuration file:
 | `fairykame_pose` | `posture` (str) | Commands a static posture (`sit`, `play_dead`, `pounce_prep`, `stretch`, `confused`, `pack`, `recover`, `stop`). |
 | `fairykame_posture_trim` | `height_trim` (int: -90..90), `lateral_tilt` (int: -90..90) | Adjusts stance height (squat/stand) and lateral body roll. |
 | `fairykame_speed` | `speed_modifier` (int: -5..5) | Sets locomotion oscillator speed (0 is default). |
+| `fairykame_custom_spec` | `spec` (dict), `duration` (float, optional) | Executes an arbitrary dynamic 4-leg `MoveSpec` on the fly without firmware recompilation. |
+| `fairykame_wave_leg` | `leg` (str: `br`, `bl`, `fr`, `fl`), `duration` (float, default 3.0) | Waves a specific leg (e.g. hind right) while establishing stable tripod ground support. |
 | `fairykame_stop` | *None* | Immediate emergency stop; zeroes servos to neutral resting pose. |
 | `fairykame_status` | *None* | Returns JSON telemetry, latency, transport type, and capabilities. |
-| `fairykame_choreography` | `steps` (list of dicts) | Runs an ordered sequence of movements, gestures, and delays. |
+| `fairykame_choreography` | `steps` (list of dicts) | Runs an ordered sequence of movements, gestures, custom specs, and delays. |
 
 ---
 
