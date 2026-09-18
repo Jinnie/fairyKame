@@ -1,0 +1,34 @@
+{
+  "name": "chaplinBreadDance",
+  "description": "Charlie Chaplin's iconic 1925 'Oceana Roll' Bread Dance from The Gold Rush. Rear haunches seated firmly on table while front paws act as dancing bread rolls on forks performing an energetic tap-dance waltz.",
+  "fl": {
+    "mode": "walk",
+    "period": 550,
+    "ampSpread": 16,
+    "ampHeight": 26,
+    "phase": 0,
+    "spread": 30,
+    "height": 15,
+    "direction": "forward"
+  },
+  "fr": {
+    "mode": "walk",
+    "period": 550,
+    "ampSpread": 16,
+    "ampHeight": 26,
+    "phase": 180,
+    "spread": 30,
+    "height": 15,
+    "direction": "forward"
+  },
+  "bl": {
+    "mode": "pose",
+    "spread": 45,
+    "height": -20
+  },
+  "br": {
+    "mode": "pose",
+    "spread": 45,
+    "height": -20
+  }
+}
