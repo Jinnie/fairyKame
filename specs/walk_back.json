@@ -1,0 +1,44 @@
+{
+  "name": "walkBack",
+  "description": "AI-Synthesized 4-Beat Backward Retreat: Stately 4-beat lateral sequence in reverse (FL -> BL -> FR -> BR). Elevated stance (knee = -35 deg), front spread at +20 deg and rear spread at -25 deg for clear backward propulsion without limb interference.",
+  "fl": {
+    "mode": "walk",
+    "period": 1050,
+    "ampSpread": 22,
+    "ampHeight": 26,
+    "phase": 0,
+    "spread": 20,
+    "height": -35,
+    "direction": "backward"
+  },
+  "bl": {
+    "mode": "walk",
+    "period": 1050,
+    "ampSpread": 22,
+    "ampHeight": 26,
+    "phase": 90,
+    "spread": -25,
+    "height": -35,
+    "direction": "backward"
+  },
+  "fr": {
+    "mode": "walk",
+    "period": 1050,
+    "ampSpread": 22,
+    "ampHeight": 26,
+    "phase": 180,
+    "spread": 20,
+    "height": -35,
+    "direction": "backward"
+  },
+  "br": {
+    "mode": "walk",
+    "period": 1050,
+    "ampSpread": 22,
+    "ampHeight": 26,
+    "phase": 270,
+    "spread": -25,
+    "height": -35,
+    "direction": "backward"
+  }
+}

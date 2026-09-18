@@ -1,0 +1,44 @@
+{
+  "name": "tiptoeStilt",
+  "description": "AI-Synthesized High-Stilt Alert March: Towering high-profile gait exploiting the calibrated -90 deg knee envelope (knee baseline = -65 deg). Crisp, high-stepping 4-beat lateral sequence with tight, nimble strides for an alert, poised sentry patrol.",
+  "fl": {
+    "mode": "walk",
+    "period": 750,
+    "ampSpread": 14,
+    "ampHeight": 20,
+    "phase": 90,
+    "spread": 25,
+    "height": -65,
+    "direction": "forward"
+  },
+  "fr": {
+    "mode": "walk",
+    "period": 750,
+    "ampSpread": 14,
+    "ampHeight": 20,
+    "phase": 270,
+    "spread": 25,
+    "height": -65,
+    "direction": "forward"
+  },
+  "bl": {
+    "mode": "walk",
+    "period": 750,
+    "ampSpread": 14,
+    "ampHeight": 20,
+    "phase": 0,
+    "spread": -10,
+    "height": -65,
+    "direction": "forward"
+  },
+  "br": {
+    "mode": "walk",
+    "period": 750,
+    "ampSpread": 14,
+    "ampHeight": 20,
+    "phase": 180,
+    "spread": -10,
+    "height": -65,
+    "direction": "forward"
+  }
+}

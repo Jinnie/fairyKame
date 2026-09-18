@@ -11,109 +11,110 @@ static const MoveSpec MOVE_SPECS[] = {
     MoveSpec("relax", Pair(0, 0)),
 
     // ------------------------------------------------------------------------
-    // Standard Locomotion (Gaits::steadyGait)
+    // Standard Locomotion (AI-Synthesized 4-Beat Lateral Sequence & Calibrated Postures)
+    // Phasing: BL=0, FL=90, BR=180, FR=270 (guarantees >= 3 feet on ground)
     // ------------------------------------------------------------------------
     MoveSpec("run",
-        Gaits::steadyGait(0, Gait::FORWARD),
-        Gaits::steadyGait(180, Gait::FORWARD),
-        Gaits::steadyGait(180, Gait::FORWARD),
-        Gaits::steadyGait(0, Gait::FORWARD)
+        Gait(1050, Pair(24, 26), 90, Pair(30, -35), Gait::FORWARD),
+        Gait(1050, Pair(24, 26), 270, Pair(30, -35), Gait::FORWARD),
+        Gait(1050, Pair(22, 26), 0, Pair(-15, -35), Gait::FORWARD),
+        Gait(1050, Pair(22, 26), 180, Pair(-15, -35), Gait::FORWARD)
     ),
     MoveSpec("back",
-        Gaits::steadyGait(0, Gait::BACKWARD),
-        Gaits::steadyGait(180, Gait::BACKWARD),
-        Gaits::steadyGait(180, Gait::BACKWARD),
-        Gaits::steadyGait(0, Gait::BACKWARD)
+        Gait(1050, Pair(22, 26), 0, Pair(20, -35), Gait::BACKWARD),
+        Gait(1050, Pair(22, 26), 180, Pair(20, -35), Gait::BACKWARD),
+        Gait(1050, Pair(22, 26), 90, Pair(-25, -35), Gait::BACKWARD),
+        Gait(1050, Pair(22, 26), 270, Pair(-25, -35), Gait::BACKWARD)
     ),
     MoveSpec("turnL",
-        Gaits::steadyGait(180, Gait::BACKWARD),
-        Gaits::steadyGait(0, Gait::FORWARD),
-        Gaits::steadyGait(0, Gait::BACKWARD),
-        Gaits::steadyGait(180, Gait::FORWARD)
+        Gait(1050, Pair(8, 26), 90, Pair(20, -35), Gait::FORWARD),
+        Gait(1050, Pair(26, 26), 270, Pair(30, -35), Gait::FORWARD),
+        Gait(1050, Pair(8, 26), 0, Pair(-20, -35), Gait::FORWARD),
+        Gait(1050, Pair(26, 26), 180, Pair(-15, -35), Gait::FORWARD)
     ),
     MoveSpec("turnInPlaceL",
-        Gaits::steadyGait(180, Gait::BACKWARD),
-        Gaits::steadyGait(0, Gait::FORWARD),
-        Gaits::steadyGait(0, Gait::BACKWARD),
-        Gaits::steadyGait(180, Gait::FORWARD)
+        Gait(950, Pair(24, 26), 90, Pair(10, -35), Gait::BACKWARD),
+        Gait(950, Pair(24, 26), 270, Pair(10, -35), Gait::FORWARD),
+        Gait(950, Pair(24, 26), 0, Pair(-15, -35), Gait::BACKWARD),
+        Gait(950, Pair(24, 26), 180, Pair(-15, -35), Gait::FORWARD)
     ),
     MoveSpec("turnR",
-        Gaits::steadyGait(0, Gait::FORWARD),
-        Gaits::steadyGait(180, Gait::BACKWARD),
-        Gaits::steadyGait(180, Gait::FORWARD),
-        Gaits::steadyGait(0, Gait::BACKWARD)
+        Gait(1050, Pair(26, 26), 90, Pair(30, -35), Gait::FORWARD),
+        Gait(1050, Pair(8, 26), 270, Pair(20, -35), Gait::FORWARD),
+        Gait(1050, Pair(26, 26), 0, Pair(-15, -35), Gait::FORWARD),
+        Gait(1050, Pair(8, 26), 180, Pair(-20, -35), Gait::FORWARD)
     ),
     MoveSpec("turnInPlaceR",
-        Gaits::steadyGait(0, Gait::FORWARD),
-        Gaits::steadyGait(180, Gait::BACKWARD),
-        Gaits::steadyGait(180, Gait::FORWARD),
-        Gaits::steadyGait(0, Gait::BACKWARD)
+        Gait(950, Pair(24, 26), 90, Pair(10, -35), Gait::FORWARD),
+        Gait(950, Pair(24, 26), 270, Pair(10, -35), Gait::BACKWARD),
+        Gait(950, Pair(24, 26), 0, Pair(-15, -35), Gait::FORWARD),
+        Gait(950, Pair(24, 26), 180, Pair(-15, -35), Gait::BACKWARD)
     ),
 
     // ------------------------------------------------------------------------
-    // Diagonal Locomotion (Gaits::steadyShortGait)
+    // Diagonal Locomotion (Vector-Composed 4-Beat Lateral Sequence)
     // ------------------------------------------------------------------------
     MoveSpec("upLeft",
-        Gaits::steadyShortGait(0, Gait::FORWARD),
-        Gaits::steadyGait(180, Gait::FORWARD),
-        Gaits::steadyShortGait(180, Gait::FORWARD),
-        Gaits::steadyGait(0, Gait::FORWARD)
+        Gait(1000, Pair(12, 26), 90, Pair(20, -35), Gait::FORWARD),
+        Gait(1000, Pair(24, 26), 270, Pair(35, -35), Gait::FORWARD),
+        Gait(1000, Pair(12, 26), 0, Pair(-20, -35), Gait::FORWARD),
+        Gait(1000, Pair(24, 26), 180, Pair(-10, -35), Gait::FORWARD)
     ),
     MoveSpec("upRight",
-        Gaits::steadyGait(0, Gait::FORWARD),
-        Gaits::steadyShortGait(180, Gait::FORWARD),
-        Gaits::steadyGait(180, Gait::FORWARD),
-        Gaits::steadyShortGait(0, Gait::FORWARD)
+        Gait(1000, Pair(24, 26), 90, Pair(35, -35), Gait::FORWARD),
+        Gait(1000, Pair(12, 26), 270, Pair(20, -35), Gait::FORWARD),
+        Gait(1000, Pair(24, 26), 0, Pair(-10, -35), Gait::FORWARD),
+        Gait(1000, Pair(12, 26), 180, Pair(-20, -35), Gait::FORWARD)
     ),
     MoveSpec("backLeft",
-        Gaits::steadyShortGait(0, Gait::BACKWARD),
-        Gaits::steadyGait(180, Gait::BACKWARD),
-        Gaits::steadyShortGait(180, Gait::BACKWARD),
-        Gaits::steadyGait(0, Gait::BACKWARD)
+        Gait(1000, Pair(12, 26), 0, Pair(15, -35), Gait::BACKWARD),
+        Gait(1000, Pair(22, 26), 180, Pair(25, -35), Gait::BACKWARD),
+        Gait(1000, Pair(12, 26), 90, Pair(-25, -35), Gait::BACKWARD),
+        Gait(1000, Pair(22, 26), 270, Pair(-20, -35), Gait::BACKWARD)
     ),
     MoveSpec("backRight",
-        Gaits::steadyGait(0, Gait::BACKWARD),
-        Gaits::steadyShortGait(180, Gait::BACKWARD),
-        Gaits::steadyGait(180, Gait::BACKWARD),
-        Gaits::steadyShortGait(0, Gait::BACKWARD)
+        Gait(1000, Pair(22, 26), 0, Pair(25, -35), Gait::BACKWARD),
+        Gait(1000, Pair(12, 26), 180, Pair(15, -35), Gait::BACKWARD),
+        Gait(1000, Pair(22, 26), 90, Pair(-20, -35), Gait::BACKWARD),
+        Gait(1000, Pair(12, 26), 270, Pair(-25, -35), Gait::BACKWARD)
     ),
 
     // ------------------------------------------------------------------------
-    // Lateral Strafing (Spread Offsets)
+    // Lateral Strafing (Calibrated Planar Kinematics & Elevated Ground Clearance)
     // ------------------------------------------------------------------------
     MoveSpec("strafeLeft",
-        Gaits::steadyGait(0, Gait::BACKWARD).withSpread(60),
-        Gaits::steadyGait(180, Gait::FORWARD).withSpread(60),
-        Gaits::steadyGait(180, Gait::FORWARD).withSpread(-50),
-        Gaits::steadyGait(0, Gait::BACKWARD).withSpread(-50)
+        Gait(950, Pair(22, 26), 90, Pair(65, -35), Gait::BACKWARD),
+        Gait(950, Pair(22, 26), 270, Pair(65, -35), Gait::FORWARD),
+        Gait(950, Pair(22, 26), 0, Pair(-30, -35), Gait::FORWARD),
+        Gait(950, Pair(22, 26), 180, Pair(-30, -35), Gait::BACKWARD)
     ),
     MoveSpec("strafeRight",
-        Gaits::steadyGait(0, Gait::FORWARD).withSpread(60),
-        Gaits::steadyGait(180, Gait::BACKWARD).withSpread(60),
-        Gaits::steadyGait(180, Gait::BACKWARD).withSpread(-50),
-        Gaits::steadyGait(0, Gait::FORWARD).withSpread(-50)
+        Gait(950, Pair(22, 26), 90, Pair(65, -35), Gait::FORWARD),
+        Gait(950, Pair(22, 26), 270, Pair(65, -35), Gait::BACKWARD),
+        Gait(950, Pair(22, 26), 0, Pair(-30, -35), Gait::BACKWARD),
+        Gait(950, Pair(22, 26), 180, Pair(-30, -35), Gait::FORWARD)
     ),
     MoveSpec("magic",
-        Gaits::steadyGait(0, Gait::FORWARD).withSpread(60),
-        Gaits::steadyGait(180, Gait::BACKWARD).withSpread(60),
-        Gaits::steadyGait(180, Gait::BACKWARD).withSpread(-50),
-        Gaits::steadyGait(0, Gait::FORWARD).withSpread(-50)
+        Gait(950, Pair(22, 26), 90, Pair(65, -35), Gait::FORWARD),
+        Gait(950, Pair(22, 26), 270, Pair(65, -35), Gait::BACKWARD),
+        Gait(950, Pair(22, 26), 0, Pair(-30, -35), Gait::BACKWARD),
+        Gait(950, Pair(22, 26), 180, Pair(-30, -35), Gait::FORWARD)
     ),
 
     // ------------------------------------------------------------------------
-    // Profile Walk Variations (Crawl & Tiptoe)
+    // Profile Walk Variations (Stealth Prowl & High-Stilt Alert March)
     // ------------------------------------------------------------------------
     MoveSpec("crawl",
-        Gaits::steadyGait(0, Gait::FORWARD).withPeriod(2000).withHeight(35),
-        Gaits::steadyGait(180, Gait::FORWARD).withPeriod(2000).withHeight(35),
-        Gaits::steadyGait(180, Gait::FORWARD).withPeriod(2000).withHeight(35),
-        Gaits::steadyGait(0, Gait::FORWARD).withPeriod(2000).withHeight(35)
+        Gait(1350, Pair(20, 22), 90, Pair(45, -12), Gait::FORWARD),
+        Gait(1350, Pair(20, 22), 270, Pair(45, -12), Gait::FORWARD),
+        Gait(1350, Pair(20, 22), 0, Pair(-25, -12), Gait::FORWARD),
+        Gait(1350, Pair(20, 22), 180, Pair(-25, -12), Gait::FORWARD)
     ),
     MoveSpec("tiptoe",
-        Gaits::steadyShortGait(0, Gait::FORWARD).withHeight(-35),
-        Gaits::steadyShortGait(180, Gait::FORWARD).withHeight(-35),
-        Gaits::steadyShortGait(180, Gait::FORWARD).withHeight(-35),
-        Gaits::steadyShortGait(0, Gait::FORWARD).withHeight(-35)
+        Gait(750, Pair(14, 20), 90, Pair(25, -65), Gait::FORWARD),
+        Gait(750, Pair(14, 20), 270, Pair(25, -65), Gait::FORWARD),
+        Gait(750, Pair(14, 20), 0, Pair(-10, -65), Gait::FORWARD),
+        Gait(750, Pair(14, 20), 180, Pair(-10, -65), Gait::FORWARD)
     ),
 
     // ------------------------------------------------------------------------
