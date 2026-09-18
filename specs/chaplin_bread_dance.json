@@ -23,12 +23,12 @@
   },
   "bl": {
     "mode": "pose",
-    "spread": 2,
-    "height": -78
+    "spread": 0,
+    "height": -85
   },
   "br": {
     "mode": "pose",
-    "spread": 2,
-    "height": -78
+    "spread": 0,
+    "height": -85
   }
 }
