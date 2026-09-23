@@ -274,6 +274,7 @@ fairyKame/
 │   ├── gamepad_controller.py  # Interactive game-style keyboard controller (USB Serial)
 │   └── test_mcp_bridge.py     # Standalone MCP & transport live verification test
 ├── doc/
+│   ├── ECOSYSTEM_RESEARCH.md  # Lineage survey of miniKame/fatKame/kame32 ecosystem
 │   ├── data.json              # Documentation metadata
 │   └── images/                # Reference diagrams & photos
 └── parts/
