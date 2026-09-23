@@ -277,6 +277,7 @@ fairyKame/
 │   ├── data.json              # Documentation metadata
 │   └── images/                # Reference diagrams & photos
 └── parts/
+    ├── experimental/          # In-development CAD models & prototype STLs (FairyKameCore)
     ├── scad/                  # OpenSCAD 3D models
     └── stl/                   # 3D printable STL files
 ```
