@@ -31,6 +31,10 @@ This document tracks planned improvements, architectural ideas, and technical de
 - [ ] **Inter-Leg Collision Avoidance & Spatial Safety Constraints:**
   - Prevent adjacent front and rear hips/legs from colliding when swinging past physical boundaries (e.g., front hip swinging backward beyond the $90^\circ$ perpendicular line at $\approx -30^\circ$, or rear hip swinging forward into the front leg's envelope).
   - Implement a mutual spatial clearance check in `Mind` / `Leg2DOF` / `ThreeLawsOfRobotics` before committing target angles to `Joint::setPosition()`, ensuring legs dynamically respect each other's physical boundaries.
+- [ ] **Harmonic Knee Oscillation ($2\times$ Frequency):**
+  - Implement support for harmonic vertical frequency (knee oscillating at $2\times$ hip stride frequency) inspired by `kame32`, producing crisp double-step ground clearance curves.
+- [ ] **Dynamic Center-of-Mass (CoM) Pitch Shift (`body_shift`):**
+  - Dynamically lean hip baselines forward during high acceleration/velocity ($\text{body\_shift} = \text{step\_amplitude} \times 0.8$) to counter inertia and prevent backward tipping (see [`doc/ECOSYSTEM_RESEARCH.md`](doc/ECOSYSTEM_RESEARCH.md)).
 
 ---
 
