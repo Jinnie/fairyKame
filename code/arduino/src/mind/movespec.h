@@ -36,19 +36,23 @@ public:
  * @brief Complete 4-leg posture or motion spec for FairyKame.
  */
 struct MoveSpec {
-    const char* name = nullptr;
+    String  name;
     LegSpec fl; // Front Left
     LegSpec fr; // Front Right
     LegSpec bl; // Back Left
     LegSpec br; // Back Right
 
-    MoveSpec() = default;
+    MoveSpec() : name("") {}
     MoveSpec(const char* name, LegSpec fl, LegSpec fr, LegSpec bl, LegSpec br)
         : name(name), fl(fl), fr(fr), bl(bl), br(br) {}
 
     // Convenience constructor for symmetric 4-leg pose
     MoveSpec(const char* name, const Pair& allLegs)
         : name(name), fl(allLegs), fr(allLegs), bl(allLegs), br(allLegs) {}
+
+    // Dynamic specification parsing and serialization
+    static bool fromJson(const String& jsonStr, MoveSpec& outSpec);
+    static String toJson(const MoveSpec& spec);
 };
 
 /**

@@ -1,0 +1,44 @@
+{
+  "name": "atatWalker",
+  "description": "Star Wars AT-AT Imperial Walker 4-beat crawling gait. High towering clearance with heavy, slow, cinematic mechanical stomps.",
+  "fl": {
+    "mode": "walk",
+    "period": 1600,
+    "ampSpread": 14,
+    "ampHeight": 25,
+    "phase": 270,
+    "spread": 0,
+    "height": -45,
+    "direction": "forward"
+  },
+  "fr": {
+    "mode": "walk",
+    "period": 1600,
+    "ampSpread": 14,
+    "ampHeight": 25,
+    "phase": 90,
+    "spread": 0,
+    "height": -45,
+    "direction": "forward"
+  },
+  "bl": {
+    "mode": "walk",
+    "period": 1600,
+    "ampSpread": 14,
+    "ampHeight": 25,
+    "phase": 180,
+    "spread": 0,
+    "height": -45,
+    "direction": "forward"
+  },
+  "br": {
+    "mode": "walk",
+    "period": 1600,
+    "ampSpread": 14,
+    "ampHeight": 25,
+    "phase": 0,
+    "spread": 0,
+    "height": -45,
+    "direction": "forward"
+  }
+}
