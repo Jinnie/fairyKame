@@ -190,18 +190,23 @@ python -m platformio device monitor -b 115200
 ```
 
 ### 4. Interactive Host Gamepad Controller
-The repository includes a dedicated desktop gamepad script that connects to the robot via USB serial:
+The repository includes a dedicated desktop gamepad script that connects to the robot via USB Serial or Wi-Fi:
 ```bash
-# Run controller (auto-detects port or pass explicitly):
+# Run controller (auto-detects port or Wi-Fi, or pass explicitly):
+python scripts/gamepad_controller.py --transport auto
+python scripts/gamepad_controller.py --transport wifi --url http://fairy.local
 python scripts/gamepad_controller.py --port COM6
 ```
-- **Requirements:** `pip install pyserial`.
+- **Requirements:** `pip install pyserial requests`.
 - **Zero Windows Dependencies:** Uses native Win32 `ctypes` (`GetAsyncKeyState`) for real-time key-up/key-down detection.
 - **Controls:**
-  - `W` / `A` / `S` / `D`: Forward / Turn Left / Backward / Turn Right
+  - `W` / `A` / `S` / `D`: Forward (Park Walk) / Turn Left / Backward / Turn Right
   - `Q` / `E` / `Z` / `C`: Diagonals (also supports pressing `W+A`, `W+D`, etc.)
   - `,` / `.`: Strafe Left / Strafe Right
   - `Space`: Stop / Relax
+  - `[` / `]`: Cycle previous/next MoveSpec in hotbar
+  - `Enter` / `\`: Play selected MoveSpec
+  - `Tab` / `L`: Toggle interactive MoveSpec Library Menu (arrow keys navigate, Enter plays)
   - `0`-`9`, `P`, `K`, `H`, `R`, `M`: Expressive tricks and poses
 
 ### 5. Git & PR Conventions
@@ -272,6 +277,7 @@ fairyKame/
 │   ├── data.json              # Documentation metadata
 │   └── images/                # Reference diagrams & photos
 └── parts/
+    ├── experimental/          # In-development CAD models & prototype STLs (FairyKameCore)
     ├── scad/                  # OpenSCAD 3D models
     └── stl/                   # 3D printable STL files
 ```

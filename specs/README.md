@@ -15,6 +15,20 @@ FairyKame's **Spinal Cord Engine** parses these data-driven specifications over 
 | [`neck_massage.json`](neck_massage.json) | Massage | Body-mounted neck & shoulder massage gait. Rear legs form a wide flat stabilizing kickstand while front paws perform deep 2-DOF alternating circular kneading. |
 | [`neck_massage_tap.json`](neck_massage_tap.json) | Massage | Body-mounted deep shiatsu acupressure tapping rhythm ($360\text{ms}$ period, $24^\circ$ amplitude) with wide rear anchor. |
 | [`chaplin_bread_dance.json`](chaplin_bread_dance.json) | Dance | Charlie Chaplin's 1925 "Oceana Roll" Bread Dance from *The Gold Rush*. Seated tabletop tap-dance waltz. |
+| [`park_walk.json`](park_walk.json) | Locomotion | AI-synthesized 4-beat lateral sequence forward park walk ($1050\text{ms}$, $-35^\circ$ elevated stance, $3$-point static stability). |
+| [`walk_back.json`](walk_back.json) | Locomotion | AI-synthesized 4-beat backward retreat crawl ($1050\text{ms}$, $-35^\circ$ elevated stance, reverse phasing). |
+| [`turn_left.json`](turn_left.json) | Locomotion | AI-synthesized 4-beat differential arc turn left (outer full stride, inner compact pivot). |
+| [`turn_right.json`](turn_right.json) | Locomotion | AI-synthesized 4-beat differential arc turn right (outer full stride, inner compact pivot). |
+| [`spin_left.json`](spin_left.json) | Locomotion | AI-synthesized 4-beat zero-radius counter-clockwise pivot spin with continuous 3-point stability. |
+| [`spin_right.json`](spin_right.json) | Locomotion | AI-synthesized 4-beat zero-radius clockwise pivot spin with continuous 3-point stability. |
+| [`strafe_left.json`](strafe_left.json) | Locomotion | AI-synthesized 4-beat lateral crab walk left ($950\text{ms}$, $+65^\circ$ front splay, $-30^\circ$ rear neutral). |
+| [`strafe_right.json`](strafe_right.json) | Locomotion | AI-synthesized 4-beat lateral crab walk right ($950\text{ms}$, $+65^\circ$ front splay, $-30^\circ$ rear neutral). |
+| [`diagonal_up_left.json`](diagonal_up_left.json) | Locomotion | AI-synthesized 4-beat 45-degree forward-left diagonal locomotion. |
+| [`diagonal_up_right.json`](diagonal_up_right.json) | Locomotion | AI-synthesized 4-beat 45-degree forward-right diagonal locomotion. |
+| [`diagonal_back_left.json`](diagonal_back_left.json) | Locomotion | AI-synthesized 4-beat 45-degree backward-left diagonal retreat. |
+| [`diagonal_back_right.json`](diagonal_back_right.json) | Locomotion | AI-synthesized 4-beat 45-degree backward-right diagonal retreat. |
+| [`crawl_stealth.json`](crawl_stealth.json) | Locomotion | AI-synthesized low-profile tactical stealth prowl ($1350\text{ms}$, $-12^\circ$ height, $+45^\circ$ reach, suspended clearance). |
+| [`tiptoe_stilt.json`](tiptoe_stilt.json) | Locomotion | AI-synthesized high-stilt alert march ($750\text{ms}$, $-65^\circ$ towering stance, high knee clearance). |
 
 ---
 

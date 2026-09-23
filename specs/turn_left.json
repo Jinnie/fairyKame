@@ -1,0 +1,44 @@
+{
+  "name": "turnLeft",
+  "description": "AI-Synthesized 4-Beat Arc Turn Left: Differential forward walking where outer right legs drive full stride (ampSpread=26) and inner left legs take compact pivot strides (ampSpread=8) in a continuous 4-beat lateral sequence. Carves a graceful forward curving arc.",
+  "fl": {
+    "mode": "walk",
+    "period": 1050,
+    "ampSpread": 8,
+    "ampHeight": 26,
+    "phase": 90,
+    "spread": 20,
+    "height": -35,
+    "direction": "forward"
+  },
+  "fr": {
+    "mode": "walk",
+    "period": 1050,
+    "ampSpread": 26,
+    "ampHeight": 26,
+    "phase": 270,
+    "spread": 30,
+    "height": -35,
+    "direction": "forward"
+  },
+  "bl": {
+    "mode": "walk",
+    "period": 1050,
+    "ampSpread": 8,
+    "ampHeight": 26,
+    "phase": 0,
+    "spread": -20,
+    "height": -35,
+    "direction": "forward"
+  },
+  "br": {
+    "mode": "walk",
+    "period": 1050,
+    "ampSpread": 26,
+    "ampHeight": 26,
+    "phase": 180,
+    "spread": -15,
+    "height": -35,
+    "direction": "forward"
+  }
+}

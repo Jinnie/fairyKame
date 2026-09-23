@@ -67,16 +67,23 @@ Connect FairyKame via USB and open a serial terminal (or PlatformIO Serial Monit
 | `M` / `Tab` | `magic` | Magic strafe move |
 | `Enter` | *(prompt)* | Enter any named command string |
 
-#### 3. Interactive USB Game Controller Script (`scripts/gamepad_controller.py`)
-For an authentic, zero-latency computer-game experience over USB Serial with simultaneous keys (like `W`+`A` for diagonal forward-left) and instant 0ms stopping on key release:
+#### 3. Interactive Desktop Game Controller Script (`scripts/gamepad_controller.py`)
+For an authentic, zero-latency computer-game experience with simultaneous keys (like `W`+`A` for diagonal forward-left), instant 0ms stopping on key release, and dynamic MoveSpec execution over USB Serial or Wi-Fi:
 
 ```bash
-# Auto-detects port (e.g. COM6) and connects at 115200 baud:
-python scripts/gamepad_controller.py
+# Auto-detects USB Serial or local Wi-Fi:
+python scripts/gamepad_controller.py --transport auto
 
-# Or specify a port explicitly:
+# Play untethered over Wi-Fi:
+python scripts/gamepad_controller.py --transport wifi --url http://fairy.local
+
+# Connect explicitly via USB Serial:
 python scripts/gamepad_controller.py --port COM6
 ```
+
+- **Dynamic MoveSpec Library:** Automatically discovers and loads all `*.json` specifications from `specs/`.
+- **MoveSpec Hotbar:** Press `[` / `]` to cycle through loaded gaits and `Enter` to execute.
+- **MoveSpec Library Menu:** Press `Tab` or `L` to open an interactive full-screen menu with arrow-key navigation.
 
 ## Make it Easy:
 Make it easy for everyone, with even little coding skills, to create new gaits and moves.

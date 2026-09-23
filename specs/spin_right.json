@@ -1,0 +1,44 @@
+{
+  "name": "spinRight",
+  "description": "AI-Synthesized 4-Beat In-Place Right Pivot: Left legs drive forward, right legs drive backward in a synchronized 4-beat sequence (BL -> FL -> BR -> FR). Elevated stance (knee = -35 deg) provides clean foot clearance for zero-radius clockwise spinning with 3-point stability.",
+  "fl": {
+    "mode": "walk",
+    "period": 950,
+    "ampSpread": 24,
+    "ampHeight": 26,
+    "phase": 90,
+    "spread": 10,
+    "height": -35,
+    "direction": "forward"
+  },
+  "fr": {
+    "mode": "walk",
+    "period": 950,
+    "ampSpread": 24,
+    "ampHeight": 26,
+    "phase": 270,
+    "spread": 10,
+    "height": -35,
+    "direction": "backward"
+  },
+  "bl": {
+    "mode": "walk",
+    "period": 950,
+    "ampSpread": 24,
+    "ampHeight": 26,
+    "phase": 0,
+    "spread": -15,
+    "height": -35,
+    "direction": "forward"
+  },
+  "br": {
+    "mode": "walk",
+    "period": 950,
+    "ampSpread": 24,
+    "ampHeight": 26,
+    "phase": 180,
+    "spread": -15,
+    "height": -35,
+    "direction": "backward"
+  }
+}

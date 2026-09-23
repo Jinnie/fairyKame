@@ -1,0 +1,44 @@
+{
+  "name": "strafeRight",
+  "description": "AI-Synthesized 4-Beat Lateral Crab Walk Right: Front hips splayed forward at +65 deg and rear hips at -30 deg perpendicular neutral. Coordinated 4-beat lateral sequence (BL -> FL -> BR -> FR) converts 2-DOF planar oscillations into pure horizontal rightward translation with elevated ground clearance (height = -35 deg).",
+  "fl": {
+    "mode": "walk",
+    "period": 950,
+    "ampSpread": 22,
+    "ampHeight": 26,
+    "phase": 90,
+    "spread": 65,
+    "height": -35,
+    "direction": "forward"
+  },
+  "fr": {
+    "mode": "walk",
+    "period": 950,
+    "ampSpread": 22,
+    "ampHeight": 26,
+    "phase": 270,
+    "spread": 65,
+    "height": -35,
+    "direction": "backward"
+  },
+  "bl": {
+    "mode": "walk",
+    "period": 950,
+    "ampSpread": 22,
+    "ampHeight": 26,
+    "phase": 0,
+    "spread": -30,
+    "height": -35,
+    "direction": "backward"
+  },
+  "br": {
+    "mode": "walk",
+    "period": 950,
+    "ampSpread": 22,
+    "ampHeight": 26,
+    "phase": 180,
+    "spread": -30,
+    "height": -35,
+    "direction": "forward"
+  }
+}
