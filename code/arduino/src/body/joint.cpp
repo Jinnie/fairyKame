@@ -55,6 +55,17 @@ void Joint::oscillate(int period, int amplitude, int phase, int offset) {
     }
 }
 
+void Joint::setPeriod(int period) {
+    this->_basePeriod = period;
+    float currentSpeed = Mind::getSpeedModifier();
+    if (currentSpeed <= 0) currentSpeed = 1.0f;
+    this->oscillator.setPeriod((int)(period / currentSpeed));
+}
+
+void Joint::setAmplitude(int amplitude) {
+    this->oscillator.setAmplitude(amplitude);
+}
+
 void Joint::setTrim(int trim) {
     this->trim = trim;
     if (!this->oscillating) {

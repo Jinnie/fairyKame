@@ -14,6 +14,10 @@ class Mind {
         static void setSpeedModifier(float speed);
         static String getActiveCommand();
         static void setActiveCommand(String activeCommand);
+        static bool getIdleMode();
+        static void setIdleMode(bool enabled);
+        static void getPantingFactors(float& speedFactor, float& ampFactor);
+        static void triggerPanting();
 
         static void setDynamicSpec(const MoveSpec& spec);
         static const MoveSpec& getDynamicSpec();

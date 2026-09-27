@@ -72,7 +72,8 @@ class KeyPoller:
                 '0': 0x30, '1': 0x31, '2': 0x32, '3': 0x33, '4': 0x34,
                 '5': 0x35, '6': 0x36, '7': 0x37, '8': 0x38, '9': 0x39,
                 'P': 0x50, 'K': 0x4B, 'M': 0x4D, 'H': 0x48, 'R': 0x52,
-                'U': 0x55, 'I': 0x49, 'O': 0x4F, 'J': 0x4A, 'B': 0x42
+                'U': 0x55, 'I': 0x49, 'O': 0x4F, 'J': 0x4A, 'B': 0x42,
+                'T': 0x54
             }
         else:
             self.user32 = None
@@ -153,7 +154,7 @@ BANNER = r"""
 """
 
 
-def render_board(mode: str, spec_manager: SpecManager, bank_idx: int):
+def render_board(mode: str, spec_manager: SpecManager, bank_idx: int, idle_mode: bool = False):
     """Renders the current active keybinding board."""
     print("\n" + "=" * 80)
     if mode == "DYNAMIC":
@@ -196,7 +197,8 @@ def render_board(mode: str, spec_manager: SpecManager, bank_idx: int):
             print("  " + "  ".join(row))
 
     print("-" * 80)
-    print(" Controls: Hold WASD/Q/E/Z/C/,/. to drive | SPACE: Stop | ESC: Quit")
+    idle_status = "ALIVE (Default)" if idle_mode else "FULL RELAX (Motors Off)"
+    print(f" Controls: WASD/QEZC: Drive | SPACE: Stop | [T] Mode: {idle_status} | ESC: Quit")
     print("=" * 80 + "\n")
 
 
@@ -215,7 +217,7 @@ def main():
 
     print(f"Connecting to FairyKame ({args.transport})...")
     try:
-        robot = get_transport(mode=args.transport, base_url=args.url, serial_port=args.port, baudrate=args.baud)
+        robot = get_transport(mode=args.transport, wifi_url=args.url, serial_port=args.port, baudrate=args.baud)
     except Exception as e:
         print(f"[Error] Failed to connect to robot: {e}")
         sys.exit(1)
@@ -243,9 +245,10 @@ def main():
 
     active_mode = args.mode.upper()  # "DYNAMIC" or "PREDEFINED"
     bank_idx = 0
-    render_board(active_mode, spec_mgr, bank_idx)
+    idle_mode = True
+    render_board(active_mode, spec_mgr, bank_idx, idle_mode)
 
-    current_command = "stop"
+    current_command = "idle"
     last_keepalive_time = 0.0
     last_folder_check = time.time()
 
@@ -260,7 +263,7 @@ def main():
                 if spec_mgr.rescan():
                     print("\n[Folder Update] Detected changes in specs/. Updating Dynamic Library...")
                     if active_mode == "DYNAMIC":
-                        render_board(active_mode, spec_mgr, bank_idx)
+                        render_board(active_mode, spec_mgr, bank_idx, idle_mode)
 
             # Check for Exit
             if poller.is_down('ESCAPE'):
@@ -268,12 +271,28 @@ def main():
                 break
 
             # -------------------------------------------------------------
+            # Toggle Idle Living / Breathing Mode ('T')
+            # -------------------------------------------------------------
+            if poller.just_pressed('T'):
+                idle_mode = not idle_mode
+                robot.set_idle_mode(idle_mode)
+                if idle_mode:
+                    if current_command in ["stop", "relax"]:
+                        current_command = "idle"
+                else:
+                    if current_command == "idle":
+                        current_command = "stop"
+                render_board(active_mode, spec_mgr, bank_idx, idle_mode)
+                print(f"\n[IDLE MODE] >> {'ALIVE (Default Breathing & Torso Sway)' if idle_mode else 'FULL RELAX (Motors Off)'}")
+                continue
+
+            # -------------------------------------------------------------
             # Switch Libraries with TAB key
             # -------------------------------------------------------------
             if poller.just_pressed('TAB'):
                 active_mode = "PREDEFINED" if active_mode == "DYNAMIC" else "DYNAMIC"
                 spec_mgr.rescan(force=True)
-                render_board(active_mode, spec_mgr, bank_idx)
+                render_board(active_mode, spec_mgr, bank_idx, idle_mode)
                 time.sleep(0.1)
                 continue
 
@@ -285,11 +304,11 @@ def main():
                 total_banks = max(1, (len(spec_mgr.specs) + per_page - 1) // per_page)
                 if poller.just_pressed('LBRACKET'):
                     bank_idx = (bank_idx - 1) % total_banks
-                    render_board(active_mode, spec_mgr, bank_idx)
+                    render_board(active_mode, spec_mgr, bank_idx, idle_mode)
                     continue
                 elif poller.just_pressed('RBRACKET'):
                     bank_idx = (bank_idx + 1) % total_banks
-                    render_board(active_mode, spec_mgr, bank_idx)
+                    render_board(active_mode, spec_mgr, bank_idx, idle_mode)
                     continue
 
             # -------------------------------------------------------------
@@ -360,9 +379,10 @@ def main():
                 # Movement key released -> auto-stop
                 if current_command in ["run", "back", "turnL", "turnR", "upLeft", "upRight", 
                                        "backLeft", "backRight", "strafeLeft", "strafeRight"]:
-                    current_command = "stop"
+                    current_command = "idle" if idle_mode else "stop"
                     robot.send_command("stop")
-                    print(f"\rStatus: .. [ ] STOPPED        | Lib: {active_mode:<10}", end="", flush=True)
+                    stop_label = "IDLE ALIVE" if idle_mode else "STOPPED"
+                    print(f"\rStatus: .. [ ] {stop_label:<14} | Lib: {active_mode:<10}", end="", flush=True)
 
                 # ---------------------------------------------------------
                 # Action Keys: Dynamic MoveSpecs vs Predefined Tricks
@@ -397,6 +417,10 @@ def main():
     finally:
         print("\nStopping robot and cleaning up...")
         if robot:
+            try:
+                robot.set_idle_mode(False)
+            except Exception:
+                pass
             robot.send_command("stop")
             robot.close()
         print("Done. Goodbye!")

@@ -113,9 +113,11 @@ Math, communication protocols, and behavioral rules:
     - `/tilt?tilt=<val>`: Adjust lateral tilt ($\pm 90$).
     - `/speed?speed=<val>`: Exponential speed modifier ($2^{v/2}$).
     - `/delay?delay=<val>`: Tick delay in milliseconds.
+    - `/idle?idle=<0|1>`: Toggle or set alive/breathing idle animation mode when stopped.
     - `/spec`: Dynamic `MoveSpec` JSON execution endpoint (POST or GET) allowing external AI agents to master new moves on the fly without reflashing firmware.
 - **`SerialConnector` (`serialconnector.h`, `serialconnector.cpp`):**
   - Reads single-key commands from Serial UART (115200 baud).
+  - Key `T` toggles alive/breathing idle mode.
   - Features an integrated **dead-man's switch watchdog**: hold-to-move locomotion keys automatically stop within ~200ms after key release, and the UART FIFO buffer is drained on key events to eliminate buffered command backlog.
 - **`ThreeLawsOfRobotics` (`threelaws.h`, `threelaws.cpp`):** Safety stub checking Asimov's Three Laws before any joint command is executed.
 
@@ -147,8 +149,8 @@ Robot actions are divided into two distinct execution classes:
   - `dance`, `moonWalk`, `magic`, `jiggle`, `stretch`, `confused`, `pushUps`
   - `sayHi` (Waves front leg while leaning on rear tripod)
   - `scratchEar` (Sits on haunches while scratching)
-  - `sit`, `pouncePrep`, `tapFoot`, `playDead`, `shiver`, `recover`, `pack`
-  - `stop` / `relax` (Instant neutral stop / zero torque)
+  - `idle` (Biomimetic in-phase knee breathing heave with 20-second dynamic post-movement panting recovery)
+  - `stop` / `relax` (Instant neutral stop at lower idle resting posture `[10, -16]` / `[-10, -16]`)
 
 ---
 
@@ -274,6 +276,7 @@ fairyKame/
 │   ├── gamepad_controller.py  # Interactive game-style keyboard controller (USB Serial)
 │   └── test_mcp_bridge.py     # Standalone MCP & transport live verification test
 ├── doc/
+│   ├── ECOSYSTEM_RESEARCH.md  # Lineage survey of miniKame/fatKame/kame32 ecosystem
 │   ├── data.json              # Documentation metadata
 │   └── images/                # Reference diagrams & photos
 └── parts/

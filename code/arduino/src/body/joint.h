@@ -14,6 +14,8 @@ class Joint {
         void setPosition(float target);
         float getPosition();
         void oscillate(int period, int amplitude, int phase, int offset);
+        void setPeriod(int period);
+        void setAmplitude(int amplitude);
         void setTrim(int trim);
         void setTilt(int tilt);
     private:

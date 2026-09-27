@@ -56,17 +56,20 @@ void Leg2DOF::walk(Gait gait) {
 }
 
 void Leg2DOF::flex(int period, int amplitude, int phase, const Pair offsets) {
+    this->hip->stop_work();
     this->hip->setPosition(offsets.spread);
     this->knee->oscillate(period, amplitude, phase, offsets.height);
 }
 
 void Leg2DOF::pose(int hip, int knee) {
+    this->hip->stop_work();
+    this->knee->stop_work();
     this->hip->setPosition(hip);
     this->knee->setPosition(knee);
 }
 
 void Leg2DOF::relax() {
-    pose(0, 0);
+    pose(this->front ? 10 : -10, -16);
 }
 
 void Leg2DOF::stop_work() {
