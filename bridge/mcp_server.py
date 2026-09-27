@@ -66,6 +66,8 @@ GESTURE_MAP = {
     "scratch_ear": "scratchEar",
     "shiver": "shiver",
     "tap_foot": "tapFoot",
+    "idle": "idle",
+    "breathing": "idle",
 }
 
 POSE_MAP = {
@@ -78,6 +80,8 @@ POSE_MAP = {
     "recover": "recover",
     "stop": "stop",
     "relax": "stop",
+    "idle": "idle",
+    "breathing": "idle",
 }
 
 
@@ -124,7 +128,8 @@ def fairykame_move(
 def fairykame_express(
     gesture: Literal[
         "say_hi", "wave", "dance", "moonwalk", "magic",
-        "jiggle", "push_ups", "scratch_ear", "shiver", "tap_foot"
+        "jiggle", "push_ups", "scratch_ear", "shiver", "tap_foot",
+        "idle", "breathing"
     ]
 ) -> str:
     """
@@ -133,7 +138,7 @@ def fairykame_express(
 
     Args:
         gesture: Expressive action ('say_hi', 'wave', 'dance', 'moonwalk',
-                 'magic', 'jiggle', 'push_ups', 'scratch_ear', 'shiver', 'tap_foot').
+                 'magic', 'jiggle', 'push_ups', 'scratch_ear', 'shiver', 'tap_foot', 'idle', 'breathing').
     """
     global robot
     if not robot:
@@ -154,7 +159,8 @@ def fairykame_express(
 def fairykame_pose(
     posture: Literal[
         "sit", "play_dead", "pounce_prep", "stretch",
-        "confused", "pack", "recover", "stop", "relax"
+        "confused", "pack", "recover", "stop", "relax",
+        "idle", "breathing"
     ]
 ) -> str:
     """
@@ -162,7 +168,7 @@ def fairykame_pose(
 
     Args:
         posture: Target posture ('sit', 'play_dead', 'pounce_prep',
-                 'stretch', 'confused', 'pack', 'recover', 'stop', 'relax').
+                 'stretch', 'confused', 'pack', 'recover', 'stop', 'relax', 'idle', 'breathing').
     """
     global robot
     if not robot:
@@ -232,9 +238,34 @@ def fairykame_speed(speed_modifier: int) -> str:
 
 
 @app.tool()
+def fairykame_set_idle_mode(enabled: bool) -> str:
+    """
+    Enable or disable the alive/breathing idle movement mode.
+    When enabled, whenever FairyKame stops walking or finishes an action,
+    it enters a subtle, lifelike breathing and swaying animation loop instead
+    of going limp or sitting motionless.
+    Toggling this ON immediately starts the idle animation if the robot is currently stopped.
+
+    Args:
+        enabled: True to enable alive/breathing idle mode, False for standard relax.
+    """
+    global robot
+    if not robot:
+        return "Error: Robot transport not initialized."
+
+    success = robot.set_idle_mode(enabled)
+    if success:
+        state_str = "ENABLED (breathing and swaying when idle)" if enabled else "DISABLED (relax when stopped)"
+        return f"FairyKame idle alive mode is now {state_str}."
+    return f"Failed to set idle mode to {enabled}."
+
+
+@app.tool()
 def fairykame_stop() -> str:
     """
-    Immediate emergency stop and relax. Returns all legs to the neutral resting stance.
+    Stop current motion. If alive/idle mode is enabled, FairyKame smoothly transitions
+    into the breathing/swaying idle animation loop; if idle mode is disabled, all legs
+    relax to the neutral resting stance.
     """
     global robot
     if not robot:
@@ -242,7 +273,8 @@ def fairykame_stop() -> str:
 
     ok = robot.send_command("stop")
     if ok:
-        return "FairyKame stopped and relaxed."
+        idle_active = getattr(robot, "idle_mode", False)
+        return "FairyKame stopped and entered idle alive breathing loop." if idle_active else "FairyKame stopped and relaxed."
     return "Failed to send stop command."
 
 
@@ -250,7 +282,7 @@ def fairykame_stop() -> str:
 def fairykame_status() -> str:
     """
     Query connection status, active transport layer (Wi-Fi or Serial),
-    network latency, and available capabilities.
+    network latency, idle alive mode, and available capabilities.
     """
     global robot
     if not robot:
@@ -261,7 +293,8 @@ def fairykame_status() -> str:
         "locomotion": list(GAIT_MAP.keys()),
         "gestures": list(GESTURE_MAP.keys()),
         "postures": list(POSE_MAP.keys()),
-        "dynamic_specs": True
+        "dynamic_specs": True,
+        "idle_mode": True
     }
     return json.dumps(status, indent=2)
 

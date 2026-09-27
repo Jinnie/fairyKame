@@ -27,6 +27,7 @@ logger = logging.getLogger("fairykame.transport")
 
 class RobotTransport(ABC):
     """Abstract base class for robot communication channels."""
+    idle_mode: bool = True
 
     @abstractmethod
     def send_command(self, cmd: str) -> bool:
@@ -56,6 +57,11 @@ class RobotTransport(ABC):
     @abstractmethod
     def send_spec(self, spec: Dict[str, Any]) -> bool:
         """Send dynamic MoveSpec dictionary to the robot."""
+        pass
+
+    @abstractmethod
+    def set_idle_mode(self, enabled: bool) -> bool:
+        """Enable or disable idle breathing/swaying mode."""
         pass
 
     @abstractmethod
@@ -96,6 +102,7 @@ class WiFiTransport(RobotTransport):
         self.base_url = self.original_url
         self.timeout = timeout
         self.session = requests.Session()
+        self.session.headers.update({"Connection": "close"})
         self.resolved_ip: Optional[str] = None
 
         # Resolve hostname once to avoid repetitive mDNS multicast delays on Windows
@@ -107,29 +114,32 @@ class WiFiTransport(RobotTransport):
             parsed = self.original_url.replace("http://", "").replace("https://", "").split(":")[0]
             ip = socket.gethostbyname(parsed)
             self.resolved_ip = ip
-            # Keep original hostname for Host header, but we can talk to IP directly if preferred
-            logger.info(f"Resolved {parsed} to {ip}")
+            self.base_url = f"http://{ip}"
+            logger.info(f"Resolved {parsed} to {ip}; using direct IP for instant HTTP transport")
         except Exception as e:
             logger.debug(f"Could not pre-resolve {self.original_url}: {e}")
 
-    def _get(self, endpoint: str, params: Optional[Dict[str, Any]] = None) -> bool:
+    def _get(self, endpoint: str, params: Optional[Dict[str, Any]] = None, retries: int = 1) -> bool:
         url = f"{self.base_url}/{endpoint.lstrip('/')}"
-        try:
-            resp = self.session.get(url, params=params, timeout=self.timeout)
-            return resp.status_code == 200
-        except Exception as e:
-            # Fallback to direct IP if hostname lookup failed
-            if self.resolved_ip and self.base_url != f"http://{self.resolved_ip}":
-                try:
-                    fallback_url = f"http://{self.resolved_ip}/{endpoint.lstrip('/')}"
-                    resp = self.session.get(fallback_url, params=params, timeout=self.timeout)
-                    if resp.status_code == 200:
-                        self.base_url = f"http://{self.resolved_ip}"
-                        return True
-                except Exception:
-                    pass
-            logger.error(f"WiFi GET failed ({url}): {e}")
-            return False
+        for attempt in range(retries + 1):
+            try:
+                resp = self.session.get(url, params=params, timeout=self.timeout)
+                return resp.status_code == 200
+            except Exception as e:
+                # Fallback to direct IP if hostname lookup failed
+                if self.resolved_ip and self.base_url != f"http://{self.resolved_ip}":
+                    try:
+                        fallback_url = f"http://{self.resolved_ip}/{endpoint.lstrip('/')}"
+                        resp = self.session.get(fallback_url, params=params, timeout=self.timeout)
+                        if resp.status_code == 200:
+                            self.base_url = f"http://{self.resolved_ip}"
+                            return True
+                    except Exception:
+                        pass
+                if attempt == retries:
+                    logger.error(f"WiFi GET failed ({url}): {e}")
+                    return False
+                time.sleep(0.05)
 
     def send_command(self, cmd: str) -> bool:
         return self._get("cmd", {"command": cmd})
@@ -152,28 +162,45 @@ class WiFiTransport(RobotTransport):
 
     def send_spec(self, spec: Dict[str, Any]) -> bool:
         url = f"{self.base_url}/spec"
-        try:
-            resp = self.session.post(url, json=spec, timeout=self.timeout)
-            return resp.status_code == 200
-        except Exception as e:
-            if self.resolved_ip and self.base_url != f"http://{self.resolved_ip}":
-                try:
-                    fallback_url = f"http://{self.resolved_ip}/spec"
-                    resp = self.session.post(fallback_url, json=spec, timeout=self.timeout)
-                    if resp.status_code == 200:
-                        self.base_url = f"http://{self.resolved_ip}"
-                        return True
-                except Exception:
-                    pass
-            logger.error(f"WiFi POST /spec failed ({url}): {e}")
-            return False
+        for attempt in range(2):
+            try:
+                resp = self.session.post(url, json=spec, timeout=self.timeout)
+                return resp.status_code == 200
+            except Exception as e:
+                if self.resolved_ip and self.base_url != f"http://{self.resolved_ip}":
+                    try:
+                        fallback_url = f"http://{self.resolved_ip}/spec"
+                        resp = self.session.post(fallback_url, json=spec, timeout=self.timeout)
+                        if resp.status_code == 200:
+                            self.base_url = f"http://{self.resolved_ip}"
+                            return True
+                    except Exception:
+                        pass
+                if attempt == 1:
+                    logger.error(f"WiFi POST /spec failed ({url}): {e}")
+                    return False
+                time.sleep(0.05)
+
+    def set_idle_mode(self, enabled: bool) -> bool:
+        self.idle_mode = enabled
+        return self._get("idle", {"idle": 1 if enabled else 0})
 
     def get_status(self) -> Dict[str, Any]:
         t0 = time.time()
         ok = False
         try:
-            resp = self.session.get(f"{self.base_url}/", timeout=2.0)
-            ok = resp.status_code == 200
+            resp = self.session.get(f"{self.base_url}/idle", timeout=2.0)
+            if resp.status_code == 200:
+                try:
+                    data = resp.json()
+                    if isinstance(data, dict) and "idle" in data:
+                        self.idle_mode = bool(data["idle"])
+                except Exception:
+                    pass
+                ok = True
+            else:
+                resp_root = self.session.get(f"{self.base_url}/", timeout=2.0)
+                ok = resp_root.status_code == 200
         except Exception:
             ok = False
         latency = (time.time() - t0) * 1000.0
@@ -183,7 +210,8 @@ class WiFiTransport(RobotTransport):
             "online": ok,
             "url": self.base_url,
             "resolved_ip": self.resolved_ip,
-            "latency_ms": round(latency, 1) if ok else None
+            "latency_ms": round(latency, 1) if ok else None,
+            "idle_mode": getattr(self, "idle_mode", True),
         }
 
     def close(self) -> None:
@@ -221,6 +249,7 @@ class SerialTransport(RobotTransport):
         "scratchEar": b"K",
         "recover": b"R",
         "magic": b"M",
+        "idle": b"t",
     }
 
     def __init__(self, port: Optional[str] = None, baudrate: int = 115200):
@@ -314,13 +343,20 @@ class SerialTransport(RobotTransport):
         self.ser.flush()
         return True
 
+    def set_idle_mode(self, enabled: bool) -> bool:
+        """Enable or disable idle breathing/swaying mode."""
+        self.idle_mode = enabled
+        cmd = "idle_on" if enabled else "idle_off"
+        return self.send_command(cmd)
+
     def get_status(self) -> Dict[str, Any]:
         is_open = self.ser is not None and self.ser.is_open
         return {
             "transport": "serial",
             "online": is_open,
             "port": self.port,
-            "baudrate": self.baudrate
+            "baudrate": self.baudrate,
+            "idle_mode": getattr(self, "idle_mode", True),
         }
 
     def close(self) -> None:
@@ -331,21 +367,25 @@ class SerialTransport(RobotTransport):
 def get_transport(
     mode: str = "auto",
     wifi_url: str = "http://fairy.local",
-    serial_port: Optional[str] = None
+    base_url: Optional[str] = None,
+    serial_port: Optional[str] = None,
+    baudrate: int = 115200,
+    **kwargs
 ) -> RobotTransport:
     """
     Factory function to initialize the preferred transport.
     mode: 'auto', 'wifi', or 'serial' (can be overridden by FAIRYKAME_TRANSPORT env var).
     """
+    effective_url = base_url or wifi_url
     chosen_mode = os.environ.get("FAIRYKAME_TRANSPORT", mode).lower()
-    env_url = os.environ.get("FAIRYKAME_URL", wifi_url)
+    env_url = os.environ.get("FAIRYKAME_URL", effective_url)
     env_port = os.environ.get("FAIRYKAME_PORT", serial_port)
 
     if chosen_mode == "wifi":
         return WiFiTransport(base_url=env_url)
 
     if chosen_mode == "serial":
-        return SerialTransport(port=env_port)
+        return SerialTransport(port=env_port, baudrate=baudrate)
 
     # AUTO mode: Try Wi-Fi first, fallback to Serial
     logger.info("Auto-detecting transport channel...")
@@ -361,7 +401,7 @@ def get_transport(
 
     logger.info("Wi-Fi not reachable, probing USB Serial...")
     try:
-        ser = SerialTransport(port=env_port)
+        ser = SerialTransport(port=env_port, baudrate=baudrate)
         logger.info(f"Connected to FairyKame via Serial ({ser.port})")
         return ser
     except Exception as e:

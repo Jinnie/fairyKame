@@ -6,9 +6,32 @@
 static const MoveSpec MOVE_SPECS[] = {
     // ------------------------------------------------------------------------
     // Neutral Stop / Relax
+    // Natural resting stance: matches lower position of the idle cycle (not splayed flat)
     // ------------------------------------------------------------------------
-    MoveSpec("stop", Pair(0, 0)),
-    MoveSpec("relax", Pair(0, 0)),
+    MoveSpec("stop",
+        Pair(10, -16),
+        Pair(10, -16),
+        Pair(-10, -16),
+        Pair(-10, -16)
+    ),
+    MoveSpec("relax",
+        Pair(10, -16),
+        Pair(10, -16),
+        Pair(-10, -16),
+        Pair(-10, -16)
+    ),
+
+    // ------------------------------------------------------------------------
+    // Idle Living Animation (Organic Breathing Loop)
+    // Symmetrical in-phase knees (hips steady, 10 deg amplitude, 3600ms calm resting cycle)
+    // Starts from lower resting position (phase 90) so breath heaves upward and returns to rest
+    // ------------------------------------------------------------------------
+    MoveSpec("idle",
+        Flex(3600, 10, 90, Pair(10, -26)),
+        Flex(3600, 10, 90, Pair(10, -26)),
+        Flex(3600, 10, 90, Pair(-10, -26)),
+        Flex(3600, 10, 90, Pair(-10, -26))
+    ),
 
     // ------------------------------------------------------------------------
     // Standard Locomotion (AI-Synthesized 4-Beat Lateral Sequence & Calibrated Postures)

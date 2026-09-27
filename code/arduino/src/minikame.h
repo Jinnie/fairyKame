@@ -12,6 +12,7 @@ class MiniKame {
         void init();
         void stop_work();
         void pulse();
+        void updateIdleRecovery();
 
         // Data-driven spec execution
         void applyLegSpec(Leg2DOF* leg, const LegSpec& spec);
@@ -21,6 +22,7 @@ class MiniKame {
         // gaits
         void just_walk();
         void just_relax();
+        void just_idle();
         void just_dance();
         void just_back();
         void just_left();

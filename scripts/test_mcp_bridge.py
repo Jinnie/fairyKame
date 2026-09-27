@@ -79,6 +79,17 @@ def run_test():
     res = mcp.fairykame_custom_spec(spec, duration=1.5)
     print(f"   Result: {res}")
 
+    # 9. Test Idle Alive Mode Toggle
+    print("\n9. Testing fairykame_set_idle_mode(True) and stop behavior...")
+    res = mcp.fairykame_set_idle_mode(True)
+    print(f"   Result: {res}")
+    time.sleep(1.0)
+    stop_res = mcp.fairykame_stop()
+    print(f"   Stop Result with idle on: {stop_res}")
+    time.sleep(1.0)
+    res_off = mcp.fairykame_set_idle_mode(False)
+    print(f"   Result toggle off: {res_off}")
+
     print("\n" + "=" * 60)
     print("All MCP Bridge tests PASSED successfully!")
     print("=" * 60)

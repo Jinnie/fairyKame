@@ -52,6 +52,21 @@ const char *page_html = R"CPPHTML(
             width: 99%;
         }
 
+        .cBIdle {
+            background-color: #00aa66;
+            width: 99%;
+            height: 60px;
+            font-size: 22px;
+            line-height: 250%;
+            margin-top: 15px;
+            cursor: pointer;
+            border-radius: 8px;
+            text-align: center;
+            color: white;
+            outline: 1px solid #666666;
+            transition: background-color .2s;
+        }
+
         .sldLbl {
             color: white;
             font-size: 25px;
@@ -133,12 +148,42 @@ const char *page_html = R"CPPHTML(
         xhttp.send();
         document.getElementById('delay').innerHTML = 'delay: ' + value;
       }
+
+      var idleState = true;
+      function toggleIdle() {
+        idleState = !idleState;
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (xhttp.readyState == 4) {
+            try {
+              var res = JSON.parse(xhttp.responseText);
+              idleState = res.idle;
+            } catch(e) {}
+            updateIdleBtn();
+          }
+        };
+        xhttp.open("GET", "idle?idle=" + (idleState ? "1" : "0"), true);
+        xhttp.send();
+      }
+
+      function updateIdleBtn() {
+        var btn = document.getElementById('idleToggle');
+        if (idleState) {
+          btn.innerHTML = 'Idle Mode: ALIVE (Default)';
+          btn.style.backgroundColor = '#00aa66';
+        } else {
+          btn.innerHTML = 'Idle Mode: FULL RELAX (Motors Off)';
+          btn.style.backgroundColor = '#444444';
+        }
+      }
       
     </script>
 </head>
 
 <body>
     <div class="block">
+        <div class="cBIdle" id="idleToggle" onclick="toggleIdle()">Idle Mode: ALIVE (Default)</div>
+
         <div id="trim" class="sldLbl">trim</div>
         <input type="range" min="-90" max="90" value="0" class="slider" onchange="trim(this.value)" >
 
@@ -254,6 +299,26 @@ void WebConnector::handleSpec()
   }
 }
 
+void WebConnector::handleIdle()
+{
+  String idleVal = "";
+  if (server.hasArg("idle")) idleVal = server.arg("idle");
+  else if (server.hasArg("enabled")) idleVal = server.arg("enabled");
+  else if (server.hasArg("enable")) idleVal = server.arg("enable");
+  else if (server.hasArg("val")) idleVal = server.arg("val");
+
+  if (idleVal.length() > 0) {
+    bool enabled = (idleVal == "1" || idleVal.equalsIgnoreCase("true") || idleVal.equalsIgnoreCase("on"));
+    Mind::setIdleMode(enabled);
+    Serial.println("[HTTP] Idle mode set: " + String(Mind::getIdleMode() ? "ON" : "OFF"));
+  } else if (server.hasArg("toggle")) {
+    Mind::setIdleMode(!Mind::getIdleMode());
+    Serial.println("[HTTP] Idle mode toggled: " + String(Mind::getIdleMode() ? "ON" : "OFF"));
+  }
+
+  server.send(200, "application/json", String("{\"idle\":") + (Mind::getIdleMode() ? "true" : "false") + "}");
+}
+
 void WebConnector::init()
 {
 #if defined(WIFI_STA_SSID)
@@ -354,6 +419,8 @@ void WebConnector::init()
   server.on("/delay", handleDelay);
   server.on("/spec", HTTP_POST, handleSpec);
   server.on("/spec", HTTP_GET, handleSpec);
+  server.on("/idle", HTTP_GET, handleIdle);
+  server.on("/idle", HTTP_POST, handleIdle);
 
   server.begin();
 }

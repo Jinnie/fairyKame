@@ -1,0 +1,36 @@
+{
+  "name": "idle",
+  "description": "Organic idle breathing animation loop with symmetrical in-phase knees (10 deg amplitude, 3600ms calm cycle) starting from lower resting position (phase 90).",
+  "fl": {
+    "mode": "flex",
+    "period": 3600,
+    "amplitude": 10,
+    "phase": 90,
+    "spread": 10,
+    "height": -26
+  },
+  "fr": {
+    "mode": "flex",
+    "period": 3600,
+    "amplitude": 10,
+    "phase": 90,
+    "spread": 10,
+    "height": -26
+  },
+  "bl": {
+    "mode": "flex",
+    "period": 3600,
+    "amplitude": 10,
+    "phase": 90,
+    "spread": -10,
+    "height": -26
+  },
+  "br": {
+    "mode": "flex",
+    "period": 3600,
+    "amplitude": 10,
+    "phase": 90,
+    "spread": -10,
+    "height": -26
+  }
+}

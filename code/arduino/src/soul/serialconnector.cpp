@@ -6,7 +6,7 @@ void SerialConnector::init()
 {
   Serial.println("Serial fishes swimming");
   Serial.println("  Hold WASD/diagonals/,/. to move (auto-stops on release).");
-  Serial.println("  Press 0-9/P/K/H/R/M for tricks & poses. Space to stop. Enter to type a command.");
+  Serial.println("  Press 0-9/P/K/H/R/M for tricks & poses. Space to stop. T to toggle idle mode.");
   Serial.setTimeout(5000);
 }
 
@@ -19,7 +19,13 @@ void SerialConnector::handleConnection()
       this->readCmd = false;
       this->isMomentary = false;
       if (cmd.length() > 0) {
-        if (cmd.startsWith("{")) {
+        if (cmd.equalsIgnoreCase("idle_on")) {
+          Mind::setIdleMode(true);
+        } else if (cmd.equalsIgnoreCase("idle_off")) {
+          Mind::setIdleMode(false);
+        } else if (cmd.equalsIgnoreCase("toggle_idle")) {
+          Mind::setIdleMode(!Mind::getIdleMode());
+        } else if (cmd.startsWith("{")) {
           MoveSpec spec;
           if (MoveSpec::fromJson(cmd, spec)) {
             Mind::setDynamicSpec(spec);
@@ -191,6 +197,12 @@ void SerialConnector::handleConnection()
         cmd = "recover";
         keyRecognized = true;
         momentaryKey = false;
+        break;
+      case 't':
+      case 'T':
+        Mind::setIdleMode(!Mind::getIdleMode());
+        Serial.println(Mind::getIdleMode() ? "[Idle Mode: ON]" : "[Idle Mode: OFF]");
+        keyRecognized = false;
         break;
       case 10: // LF
       case 13: // CR

@@ -2,7 +2,12 @@
 
 void MiniKame::init()
 {
-    just_relax();
+    if (Mind::getIdleMode()) {
+        Mind::triggerPanting();
+        just_idle();
+    } else {
+        just_relax();
+    }
 }
 
 void MiniKame::stop_work()
@@ -13,8 +18,27 @@ void MiniKame::stop_work()
     this->backRightLeg->stop_work();
 }
 
+void MiniKame::updateIdleRecovery()
+{
+    if (Mind::getActiveCommand() != "idle") return;
+
+    float speedFactor = 1.0f, ampFactor = 1.0f;
+    Mind::getPantingFactors(speedFactor, ampFactor);
+
+    int curPeriod = (int)(3600.0f / speedFactor);
+    int kneeAmp   = (int)round(10.0f * ampFactor);
+
+    Leg2DOF* legs[4] = { this->frontLeftLeg, this->frontRightLeg, this->backLeftLeg, this->backRightLeg };
+    for (int i = 0; i < 4; i++) {
+        legs[i]->knee->setPeriod(curPeriod);
+        legs[i]->knee->setAmplitude(kneeAmp);
+    }
+}
+
 void MiniKame::pulse()
 {
+    updateIdleRecovery();
+
     this->frontLeftLeg->pulse();
     this->frontRightLeg->pulse();
     this->backLeftLeg->pulse();
@@ -61,6 +85,7 @@ bool MiniKame::executeMove(const String& name) {
 // ----------------------------------------------------------------------------
 
 void MiniKame::just_relax()        { executeMove("stop"); }
+void MiniKame::just_idle()         { executeMove("idle"); }
 void MiniKame::just_walk()         { executeMove("run"); }
 void MiniKame::just_back()         { executeMove("back"); }
 void MiniKame::just_left()         { executeMove("turnL"); }
