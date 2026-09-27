@@ -1,7 +1,7 @@
 # 🧚 Kame (FairyKame)
 
 <p align="center">
-<img src="doc/images/fairyKame01.jpg" width="500" align = "center">
+<img src="doc/images/fairyKame_scifi.jpg" width="500" align = "center">
 </p>
 
 Hi!
