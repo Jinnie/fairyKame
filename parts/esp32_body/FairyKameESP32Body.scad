@@ -20,6 +20,7 @@ $fn = 50; // Curve facet resolution (use 60+ for production STL export)
 // 2 = Sci-Fi Top Cover Lid (Printable)
 // 3 = Exploded Assembly View
 // 4 = Cross-Section Cutaway View (Internal Inspection)
+// 5 = Open Cabin View (Tub + Hardware Mockup, No Lid)
 // ------------------------------------------------------------------------------
 part = 0;
 explode_distance = 35; // Spacing for exploded view (mm)
@@ -57,11 +58,11 @@ esp32_usb_w     = 12.0; // Rear USB cutout width (mm)
 esp32_usb_h     = 7.5;  // Rear USB cutout height (mm)
 
 // Dual Power Pin Combs (VCC & GND Bus Rails for 8 Servos)
-comb_length     = 26.0; // Length for 1x10 standard 2.54mm header strips (mm)
-comb_slot_wid   = 2.8;  // Width of plastic header base slot (mm)
+comb_length     = 25.4; // Length for 1x10 standard 2.54mm header strips (mm)
+comb_slot_wid   = 2.6;  // Width of plastic header base slot (mm)
 comb_slot_dep   = 2.5;  // Recess depth in floor for secure press-fit (mm)
-comb_spacing    = 3.2;  // Center-to-center spacing between VCC and GND combs (mm)
-comb_x_offset   = 17.5; // Placed alongside ESP32 servo GPIO side (mm)
+comb_spacing    = 1.4;  // Gap between VCC and GND combs (mm)
+comb_x_offset   = 15.2; // Placed between ESP32 (14.25mm) and servo inner wall (22.3mm)
 
 // Front Camera & Sensor Bay (FairyKame Sci-Fi Styling)
 cam_bay_w       = 32.0; // Recessed window width (mm)
@@ -127,29 +128,30 @@ module faceted_solid(l, w, h, c) {
 // Sub-Assemblies & Cutouts
 // ==============================================================================
 
-// SG90 / MG90S Hip Servo Pocket & Floor Cutouts
+// SG90 / MG90S Hip Servo Pocket Cutout
+// (0, 0, 0) is the center of the output shaft at the chassis floor plane
 module servo_pocket_cutout() {
     union() {
-        // Motor Main Body Cutout
-        translate([-servo_body_wid/2, -servo_body_len/2, -1])
+        // Output Shaft & Horn Collar Pass-Through on Floor
+        translate([0, 0, -2])
+            cylinder(d = servo_shaft_dia + 4.5, h = floor_thickness + 4);
+
+        // Motor Main Body Cutout (Centered in X, extends in -Y towards waist)
+        translate([-servo_body_wid/2, -(servo_body_len - servo_shaft_off), floor_thickness])
             cube([servo_body_wid, servo_body_len, servo_body_hgt + 2]);
 
         // Mounting Ears Shelf Cutout
-        translate([-servo_body_wid/2, -(servo_body_len/2 + servo_ear_len), 8.0])
+        translate([-servo_body_wid/2, -(servo_body_len - servo_shaft_off + servo_ear_len), floor_thickness + 8.0])
             cube([servo_body_wid, servo_body_len + 2*servo_ear_len, 4.0]);
 
-        // Output Shaft & Horn Collar Pass-Through on Floor
-        translate([0, (servo_body_len/2 - servo_shaft_off), -3])
-            cylinder(d = servo_shaft_dia + 4.5, h = floor_thickness + 4);
-
         // M2 Ear Screw Pilot Holes
-        translate([0, (servo_body_len/2 + servo_ear_len/2), 4.0])
-            cylinder(d = 1.8, h = 12);
-        translate([0, -(servo_body_len/2 + servo_ear_len/2), 4.0])
-            cylinder(d = 1.8, h = 12);
+        translate([0, servo_shaft_off + servo_ear_len/2, floor_thickness])
+            cylinder(d = 1.8, h = 14);
+        translate([0, -(servo_body_len - servo_shaft_off + servo_ear_len/2), floor_thickness])
+            cylinder(d = 1.8, h = 14);
 
         // Internal Cable Pass-Through into Center Cabin
-        translate([0, 0, 4.0])
+        translate([0, -(servo_body_len - servo_shaft_off), floor_thickness + 4.0])
             rotate([0, 0, 90])
             cube([6.0, 16.0, 5.0], center = true);
     }
@@ -276,22 +278,22 @@ module chassis_tub() {
                 corner_chamfer - wall_thickness
             );
 
-        // 4 Hip Servo Pockets (at each corner)
+        // 4 Hip Servo Pockets (at each corner, centered on shaft coordinates)
         // Front-Left (FL)
-        translate([-shaft_x, shaft_y - (servo_body_len/2 - servo_shaft_off), 0])
+        translate([-shaft_x,  shaft_y, 0])
             servo_pocket_cutout();
 
         // Front-Right (FR)
-        translate([shaft_x, shaft_y - (servo_body_len/2 - servo_shaft_off), 0])
+        translate([shaft_x,  shaft_y, 0])
             servo_pocket_cutout();
 
         // Rear-Left (BL)
-        translate([-shaft_x, -shaft_y + (servo_body_len/2 - servo_shaft_off), 0])
+        translate([-shaft_x, -shaft_y, 0])
             rotate([0, 0, 180])
             servo_pocket_cutout();
 
         // Rear-Right (BR)
-        translate([shaft_x, -shaft_y + (servo_body_len/2 - servo_shaft_off), 0])
+        translate([shaft_x, -shaft_y, 0])
             rotate([0, 0, 180])
             servo_pocket_cutout();
 
@@ -372,20 +374,45 @@ module top_cover_lid() {
     }
 }
 
+// Realistic SG90 / MG90S Micro Servo Model
+// (0, 0, 0) is the center of the output shaft at the floor_thickness plane
+module sg90_servo_model() {
+    color([0.15, 0.40, 0.85, 0.80]) // Translucent Blue SG90 Case
+    union() {
+        // Main Motor Body (Centered in X, extends in -Y towards waist)
+        translate([-servo_body_wid/2, -(servo_body_len - servo_shaft_off), floor_thickness])
+            cube([servo_body_wid, servo_body_len, servo_body_hgt]);
+
+        // Mounting Ears Shelf
+        translate([-servo_body_wid/2, -(servo_body_len - servo_shaft_off + servo_ear_len), floor_thickness + 8.0])
+            cube([servo_body_wid, servo_body_len + 2*servo_ear_len, 2.5]);
+
+        // Output Spline Shaft (pointing downward through the floor)
+        color([0.9, 0.9, 0.9])
+        translate([0, 0, -3.0])
+            cylinder(d = servo_shaft_dia, h = floor_thickness + 3.0);
+
+        // White Servo Horn (mockup below floor)
+        color([0.95, 0.95, 0.95])
+        translate([0, 0, -3.2])
+            cylinder(d = 7.0, h = 1.2);
+    }
+}
+
 // ==============================================================================
 // Module 3: Hardware Mockup Preview (ESP32, Servos, Pin Combs)
 // ==============================================================================
 module hardware_preview() {
-    // ESP32 DevKit Board Mockup
-    color([0.15, 0.45, 0.85, 0.8]) // Blue PCB
+    // ESP32 DevKit Board Mockup (Classic Matte Black NodeMCU-32S)
+    color([0.12, 0.12, 0.14, 0.95]) // Matte Black PCB
     translate([-esp32_wid/2, -esp32_len/2, floor_thickness + esp32_standoff_h]) {
         cube([esp32_wid, esp32_len, 1.6]);
         // Metal RF Shield
-        color([0.8, 0.8, 0.85])
+        color([0.85, 0.85, 0.88])
         translate([3, esp32_len - 22, 1.6])
             cube([18, 18, 2.8]);
         // Micro-USB / Type-C Port
-        color([0.7, 0.7, 0.7])
+        color([0.75, 0.75, 0.78])
         translate([esp32_wid/2 - 4.5, -2, 1.6])
             cube([9, 6, 3]);
     }
@@ -402,19 +429,24 @@ module hardware_preview() {
         cube([comb_slot_wid, comb_length, 7.5]);
     }
 
-    // 4x SG90 Hip Servos Mockup (Translucent Blue)
-    color([0.1, 0.3, 0.7, 0.6]) {
-        for (sx = [-1, 1]) {
-            for (sy = [-1, 1]) {
-                translate([
-                    sx * shaft_x - (sx > 0 ? servo_body_wid/2 : -servo_body_wid/2),
-                    sy * shaft_y - (sy > 0 ? (servo_body_len - servo_shaft_off) : servo_shaft_off),
-                    floor_thickness
-                ])
-                cube([servo_body_wid, servo_body_len, servo_body_hgt]);
-            }
-        }
-    }
+    // 4x SG90 Hip Servos Mockup (Exact 1:1 match with chassis pockets)
+    // Front-Left (FL)
+    translate([-shaft_x,  shaft_y, 0])
+        sg90_servo_model();
+
+    // Front-Right (FR)
+    translate([ shaft_x,  shaft_y, 0])
+        sg90_servo_model();
+
+    // Rear-Left (BL)
+    translate([-shaft_x, -shaft_y, 0])
+        rotate([0, 0, 180])
+        sg90_servo_model();
+
+    // Rear-Right (BR)
+    translate([ shaft_x, -shaft_y, 0])
+        rotate([0, 0, 180])
+        sg90_servo_model();
 }
 
 // ==============================================================================
@@ -464,4 +496,11 @@ if (part == 0) {
         translate([0, 0, -5])
             cube([body_width + 10, body_length + 10, body_height + 20]);
     }
+
+} else if (part == 5) {
+    // Open Cabin View (Chassis Tub + Hardware Mockup, No Lid)
+    color([0.22, 0.23, 0.25])
+        chassis_tub();
+
+    hardware_preview();
 }

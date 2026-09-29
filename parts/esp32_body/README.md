@@ -63,6 +63,7 @@ Open [`FairyKameESP32Body.scad`](FairyKameESP32Body.scad) in OpenSCAD. The top o
 | `2` | **Top Cover Lid** | Printable top cover lid (oriented flat on the print bed) |
 | `3` | **Exploded View** | Exploded perspective showing internal component stacking |
 | `4` | **Cutaway View** | Cross-section view for internal clearance inspection |
+| `5` | **Open Cabin View** | Top-down view into open chassis with all servos, ESP32, and pin combs |
 
 ### Exporting STLs via Command Line
 
